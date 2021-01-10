@@ -12,11 +12,16 @@
     "Extension Packs"
   ],
   "activationEvents": [
+    "onCommand:ticode.help",
     "onCommand:ticode.playground"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
+      {
+        "command": "ticode.help",
+        "title": "TiCode: Help"
+      },
       {
         "command": "ticode.playground",
         "title": "TiCode: Playground"
