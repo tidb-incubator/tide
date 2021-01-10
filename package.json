@@ -36,11 +36,21 @@
         }
       }
     ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ticode-explorer",
+          "title": "TiCode Explorer",
+          "icon": "media/logo.png"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "ticode-explorer": [
         {
           "id": "ticode-tiup-playground",
-          "name": "TiUP Playground"
+          "name": "TiUP Playground",
+          "icon": "media/logo.png"
         }
       ]
     },

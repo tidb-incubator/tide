@@ -53,6 +53,7 @@ async function tiupPlayground() {
     await tiup.invokeInSharedTerminal('playground');
   } else {
     vscode.window.showInformationMessage('TiUP Playground is running');
+    vscode.commands.executeCommand('ticode.playground.refresh');
   }
 }
 

@@ -26,6 +26,4 @@ export class PlaygroundCommand {
   startPlayground() {}
 
   restartPlayground() {}
-
-  playgroundDisplay() {}
 }
