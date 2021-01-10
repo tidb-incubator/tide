@@ -1,5 +1,6 @@
 {
   "name": "ticode",
+  "publisher": "dragonly",
   "displayName": "TiCode",
   "description": "make developing TiDB a breeze",
   "version": "0.0.1",
@@ -7,19 +8,28 @@
     "vscode": "^1.52.0"
   },
   "categories": [
-    "Other"
+    "Debuggers",
+    "Extension Packs"
   ],
   "activationEvents": [
-    "onCommand:ticode.helloWorld"
+    "onCommand:ticode.playground"
   ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "ticode.helloWorld",
-        "title": "Hello World"
+        "command": "ticode.playground",
+        "title": "TiCode: Playground"
       }
-    ]
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "ticode",
+          "name": "TiCode"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
