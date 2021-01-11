@@ -4,7 +4,13 @@ export class PlaygroundCommand {
 
   checkTiUP() {}
 
-  static async checkRunPlayground() {
+  static async checkPlayground() {
+    const res = await shell.exec('ps aux | grep tiup-playground | grep -v grep')
+    const lines = res?.stdout.trim().split('\n').length
+    return res?.code === 0 && lines === 1
+  }
+
+  static async displayPlayground() {
     const res = await shell.exec('tiup playground display')
     if (res?.code === 0) {
       // running

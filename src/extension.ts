@@ -51,7 +51,7 @@ function registerCommand(
 }
 
 async function tiupPlayground() {
-  const playgroundStatus = await PlaygroundCommand.checkRunPlayground()
+  const playgroundStatus = await PlaygroundCommand.checkPlayground()
   if (!playgroundStatus) {
     await tiup.invokeInSharedTerminal('playground')
   } else {

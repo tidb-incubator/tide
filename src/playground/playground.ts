@@ -57,7 +57,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       // judge tiup installed?
 
       // start playground
-      const running = await PlaygroundCommand.checkRunPlayground()
+      const running = await PlaygroundCommand.checkPlayground()
       if (!running) {
         items.push(
           new Item('start playground', vscode.TreeItemCollapsibleState.None, {
@@ -88,12 +88,12 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       return Promise.resolve(items)
     }
     if (element.label === 'instances') {
-      const running = await PlaygroundCommand.checkRunPlayground()
-      if (running) {
-        Object.keys(running).forEach((inst) => {
+      const instances = await PlaygroundCommand.displayPlayground()
+      if (instances) {
+        Object.keys(instances).forEach((inst) => {
           items.push(
             new Item(
-              `${inst} (${running[inst]})`,
+              `${inst} (${instances[inst]})`,
               vscode.TreeItemCollapsibleState.None
             )
           )
