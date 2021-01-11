@@ -62,7 +62,7 @@ async function tiupHelp() {
 
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
-    'Are you sure reload the config?',
+    'Are you sure reload the config? Your current config will be overrided',
     'Reload'
   )
   if (res === 'Reload') {

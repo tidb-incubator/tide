@@ -1,12 +1,14 @@
-## general
+## tidb version
 # "tidb.version" = "v4.0.9" # other values: nightly
+
+## general
 # host = ""
 # monitor = true
 
 ## db
 # db = 1
 # "db.binpath" = ""
-# "db.config" = ""
+# "db.config" = "" # example: "components-config/db.config"
 # "db.host" = ""
 
 ## kv

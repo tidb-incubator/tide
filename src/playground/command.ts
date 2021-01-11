@@ -3,6 +3,7 @@ import { shell } from '../shell'
 import { TiUP } from '../tiup'
 import * as TOML from '@iarna/toml'
 import * as fs from 'fs'
+import * as path from 'path'
 export class PlaygroundCommand {
   constructor() {}
 
@@ -51,11 +52,18 @@ export class PlaygroundCommand {
     const content = fs.readFileSync(configPath, { encoding: 'utf-8' })
     const obj = TOML.parse(content)
     // build command
+    const folder = path.dirname(configPath)
     const args: string[] = []
     Object.keys(obj).forEach((k) => {
       if (k !== 'tidb.version' && obj[k] !== '') {
         if (typeof obj[k] === 'boolean') {
           args.push(`--${k}=${obj[k]}`)
+        } else if (
+          k.endsWith('.config') &&
+          (obj[k] as string).startsWith('components-config')
+        ) {
+          const fullPath = path.join(folder, obj[k] as string)
+          args.push(`--${k} "${fullPath}"`)
         } else {
           args.push(`--${k} ${obj[k]}`)
         }
