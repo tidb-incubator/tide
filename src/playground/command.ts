@@ -43,6 +43,7 @@ export class PlaygroundCommand {
 
     if (configPath === undefined) {
       await tiup.invokeInSharedTerminal('playground')
+      PlaygroundCommand.loopCheckPlayground(5)
       return
     }
 
@@ -62,6 +63,24 @@ export class PlaygroundCommand {
     })
     const cmd = `playground ${args.join(' ')}`
     await tiup.invokeInSharedTerminal(cmd)
+    PlaygroundCommand.loopCheckPlayground(5)
+  }
+
+  static loopCheckPlayground(times: number) {
+    let tried = 0
+    async function check() {
+      const instances = await PlaygroundCommand.displayPlayground()
+      if (instances) {
+        clearInterval(id)
+        vscode.commands.executeCommand('ticode.playground.refresh')
+        return
+      }
+      tried++
+      if (tried > times) {
+        clearInterval(id)
+      }
+    }
+    let id = setInterval(check, 5000)
   }
 
   restartPlayground() {}
