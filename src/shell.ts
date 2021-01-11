@@ -1,9 +1,9 @@
-import * as vscode from 'vscode';
-import * as shelljs from 'shelljs';
-import * as path from 'path';
-import { getToolPath, getUseWsl } from './components/config/config';
-import { host } from './host';
-import { ChildProcess } from 'child_process';
+import * as vscode from 'vscode'
+import * as shelljs from 'shelljs'
+import * as path from 'path'
+import { getToolPath, getUseWsl } from './components/config/config'
+import { host } from './host'
+import { ChildProcess } from 'child_process'
 
 export enum Platform {
   Windows,
@@ -54,9 +54,9 @@ export const shell: Shell = {
   which: which,
   cat: cat,
   ls: ls,
-};
+}
 
-const WINDOWS: string = 'win32';
+const WINDOWS: string = 'win32'
 
 export interface ShellResult {
   readonly code: number
@@ -68,29 +68,29 @@ export type ShellHandler = (
   code: number,
   stdout: string,
   stderr: string
-) => void;
+) => void
 
 function isWindows(): boolean {
-  return process.platform === WINDOWS && !getUseWsl();
+  return process.platform === WINDOWS && !getUseWsl()
 }
 
 function isUnix(): boolean {
-  return !isWindows();
+  return !isWindows()
 }
 
 function platform(): Platform {
   if (getUseWsl()) {
-    return Platform.Linux;
+    return Platform.Linux
   }
   switch (process.platform) {
     case 'win32':
-      return Platform.Windows;
+      return Platform.Windows
     case 'darwin':
-      return Platform.MacOS;
+      return Platform.MacOS
     case 'linux':
-      return Platform.Linux;
+      return Platform.Linux
     default:
-      return Platform.Unsupported;
+      return Platform.Unsupported
   }
 }
 
@@ -99,59 +99,59 @@ function concatIfSafe(
   homePath: string | undefined
 ): string | undefined {
   if (homeDrive && homePath) {
-    const safe = !homePath.toLowerCase().startsWith('\\windows\\system32');
+    const safe = !homePath.toLowerCase().startsWith('\\windows\\system32')
     if (safe) {
-      return homeDrive.concat(homePath);
+      return homeDrive.concat(homePath)
     }
   }
 
-  return undefined;
+  return undefined
 }
 
 function home(): string {
   if (getUseWsl()) {
-    return shelljs.exec('wsl.exe echo ${HOME}').stdout.trim();
+    return shelljs.exec('wsl.exe echo ${HOME}').stdout.trim()
   }
   return (
     process.env['HOME'] ||
     concatIfSafe(process.env['HOMEDRIVE'], process.env['HOMEPATH']) ||
     process.env['USERPROFILE'] ||
     ''
-  );
+  )
 }
 
 function combinePath(basePath: string, relativePath: string) {
-  let separator = '/';
+  let separator = '/'
   if (isWindows()) {
-    relativePath = relativePath.replace(/\//g, '\\');
-    separator = '\\';
+    relativePath = relativePath.replace(/\//g, '\\')
+    separator = '\\'
   }
-  return basePath + separator + relativePath;
+  return basePath + separator + relativePath
 }
 
 function isWindowsFilePath(filePath: string) {
-  return filePath[1] === ':' && filePath[2] === '\\';
+  return filePath[1] === ':' && filePath[2] === '\\'
 }
 
 function fileUri(filePath: string): vscode.Uri {
   if (isWindowsFilePath(filePath)) {
-    return vscode.Uri.parse('file:///' + filePath.replace(/\\/g, '/'));
+    return vscode.Uri.parse('file:///' + filePath.replace(/\\/g, '/'))
   }
-  return vscode.Uri.parse('file://' + filePath);
+  return vscode.Uri.parse('file://' + filePath)
 }
 
 function execOpts(): any {
-  let env = process.env;
+  let env = process.env
   if (isWindows()) {
-    env = Object.assign({}, env, { HOME: home() });
+    env = Object.assign({}, env, { HOME: home() })
   }
-  env = shellEnvironment(env);
+  env = shellEnvironment(env)
   const opts = {
     cwd: vscode.workspace.rootPath,
     env: env,
     async: true,
-  };
-  return opts;
+  }
+  return opts
 }
 
 async function exec(
@@ -159,10 +159,10 @@ async function exec(
   stdin?: string
 ): Promise<ShellResult | undefined> {
   try {
-    return await execCore(cmd, execOpts(), null, stdin);
+    return await execCore(cmd, execOpts(), null, stdin)
   } catch (ex) {
-    vscode.window.showErrorMessage(ex);
-    return undefined;
+    vscode.window.showErrorMessage(ex)
+    return undefined
   }
 }
 
@@ -171,10 +171,10 @@ async function execStreaming(
   callback: (proc: ChildProcess) => void
 ): Promise<ShellResult | undefined> {
   try {
-    return await execCore(cmd, execOpts(), callback);
+    return await execCore(cmd, execOpts(), callback)
   } catch (ex) {
-    vscode.window.showErrorMessage(ex);
-    return undefined;
+    vscode.window.showErrorMessage(ex)
+    return undefined
   }
 }
 
@@ -186,18 +186,18 @@ function execCore(
 ): Promise<ShellResult> {
   return new Promise<ShellResult>((resolve) => {
     if (getUseWsl()) {
-      cmd = 'wsl ' + cmd;
+      cmd = 'wsl ' + cmd
     }
     const proc = shelljs.exec(cmd, opts, (code, stdout, stderr) =>
       resolve({ code: code, stdout: stdout, stderr: stderr })
-    );
+    )
     if (stdin) {
-      proc.stdin!.end(stdin);
+      proc.stdin!.end(stdin)
     }
     if (callback) {
-      callback(proc);
+      callback(proc)
     }
-  });
+  })
 }
 
 function unquotedPath(path: string): string {
@@ -208,85 +208,85 @@ function unquotedPath(path: string): string {
     path.startsWith('"') &&
     path.endsWith('"')
   ) {
-    return path.substring(1, path.length - 1);
+    return path.substring(1, path.length - 1)
   }
-  return path;
+  return path
 }
 
 export function shellEnvironment(baseEnvironment: any): any {
-  const env = Object.assign({}, baseEnvironment);
-  const pathVariable = pathVariableName(env);
+  const env = Object.assign({}, baseEnvironment)
+  const pathVariable = pathVariableName(env)
   for (const tool of ['tiup']) {
-    const toolPath = getToolPath(host, shell, tool);
+    const toolPath = getToolPath(host, shell, tool)
     if (toolPath) {
-      const toolDirectory = path.dirname(toolPath);
-      const currentPath = env[pathVariable];
+      const toolDirectory = path.dirname(toolPath)
+      const currentPath = env[pathVariable]
       env[pathVariable] =
         toolDirectory +
-        (currentPath ? `${pathEntrySeparator()}${currentPath}` : '');
+        (currentPath ? `${pathEntrySeparator()}${currentPath}` : '')
     }
   }
 
-//   const kubeconfigPath = getKubeconfigPath();
-//   env['KUBECONFIG'] =
-//     kubeconfigPath.pathType === 'host'
-//       ? kubeconfigPath.hostPath
-//       : kubeconfigPath.wslPath;
-  return env;
+  //   const kubeconfigPath = getKubeconfigPath();
+  //   env['KUBECONFIG'] =
+  //     kubeconfigPath.pathType === 'host'
+  //       ? kubeconfigPath.hostPath
+  //       : kubeconfigPath.wslPath;
+  return env
 }
 
 function pathVariableName(env: any): string {
   if (isWindows()) {
     for (const v of Object.keys(env)) {
       if (v.toLowerCase() === 'path') {
-        return v;
+        return v
       }
     }
   }
-  return 'PATH';
+  return 'PATH'
 }
 
 function pathEntrySeparator() {
-  return isWindows() ? ';' : ':';
+  return isWindows() ? ';' : ':'
 }
 
 function which(bin: string): string | null {
   if (getUseWsl()) {
-    const result = shelljs.exec(`wsl.exe which ${bin}`);
+    const result = shelljs.exec(`wsl.exe which ${bin}`)
     if (result.code !== 0) {
-      throw new Error(result.stderr);
+      throw new Error(result.stderr)
     }
-    return result.stdout;
+    return result.stdout
   }
-  return shelljs.which(bin);
+  return shelljs.which(bin)
 }
 
 function cat(path: string): string {
   if (getUseWsl()) {
-    const filePath = path.replace(/\\/g, '/');
-    const result = shelljs.exec(`wsl.exe cat ${filePath}`);
+    const filePath = path.replace(/\\/g, '/')
+    const result = shelljs.exec(`wsl.exe cat ${filePath}`)
     if (result.code !== 0) {
-      throw new Error(result.stderr);
+      throw new Error(result.stderr)
     }
-    return result.stdout;
+    return result.stdout
   }
-  return shelljs.cat(path);
+  return shelljs.cat(path)
 }
 
 function ls(path: string): string[] {
   if (getUseWsl()) {
-    const filePath = path.replace(/\\/g, '/');
-    const result = shelljs.exec(`wsl.exe ls ${filePath}`);
+    const filePath = path.replace(/\\/g, '/')
+    const result = shelljs.exec(`wsl.exe ls ${filePath}`)
     if (result.code !== 0) {
-      throw new Error(result.stderr);
+      throw new Error(result.stderr)
     }
-    return result.stdout.trim().split('\n');
+    return result.stdout.trim().split('\n')
   }
-  return shelljs.ls(path);
+  return shelljs.ls(path)
 }
 
-const SAFE_CHARS_REGEX = /^[-,._+:@%/\w]*$/;
+const SAFE_CHARS_REGEX = /^[-,._+:@%/\w]*$/
 
 export function isSafe(s: string): boolean {
-  return SAFE_CHARS_REGEX.test(s);
+  return SAFE_CHARS_REGEX.test(s)
 }
