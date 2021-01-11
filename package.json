@@ -25,15 +25,15 @@
       },
       {
         "command": "ticode.playground.start",
-        "title": "TiCode: Start Playground"
+        "title": "TiCode: Start default playground"
       },
       {
         "command": "ticode.playground.startByConfig",
-        "title": "Start playground by this config"
+        "title": "Start playground by config"
       },
       {
         "command": "ticode.playground.reloadConfig",
-        "title": "Reload config"
+        "title": "Reload playground config"
       },
       {
         "command": "ticode.playground.refresh",

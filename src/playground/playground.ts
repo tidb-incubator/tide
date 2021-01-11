@@ -56,15 +56,15 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       // judge tiup installed?
 
       // start playground
-      // const running = await PlaygroundCommand.checkPlayground()
-      // if (!running) {
-      //   items.push(
-      //     new Item('start playground', vscode.TreeItemCollapsibleState.None, {
-      //       command: 'ticode.playground.start',
-      //       title: 'start playground',
-      //     })
-      //   )
-      // }
+      const running = await PlaygroundCommand.checkPlayground()
+      if (!running) {
+        items.push(
+          new Item('start default playground', vscode.TreeItemCollapsibleState.None, {
+            command: 'ticode.playground.start',
+            title: 'start playground',
+          })
+        )
+      }
 
       // config
       const configItem = new Item(
@@ -83,7 +83,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       // restart playground
 
       // instances
-      const running = await PlaygroundCommand.checkPlayground()
+      // const running = await PlaygroundCommand.checkPlayground()
       if (running) {
         items.push(
           new Item('instances', vscode.TreeItemCollapsibleState.Expanded)
