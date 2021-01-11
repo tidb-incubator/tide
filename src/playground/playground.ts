@@ -61,7 +61,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       if (!running) {
         items.push(
           new Item('start playground', vscode.TreeItemCollapsibleState.None, {
-            command: 'ticode.playground',
+            command: 'ticode.playground.start',
             title: 'start playground',
           })
         )

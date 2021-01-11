@@ -1,4 +1,6 @@
+import * as vscode from 'vscode'
 import { shell } from '../shell'
+import { TiUP } from '../tiup'
 export class PlaygroundCommand {
   constructor() {}
 
@@ -29,7 +31,18 @@ export class PlaygroundCommand {
     return undefined
   }
 
-  startPlayground() {}
+  static async startPlayground(tiup: TiUP) {
+    const running = await PlaygroundCommand.checkPlayground()
+    if (running) {
+      vscode.window.showInformationMessage('TiUP Playground is running')
+      vscode.commands.executeCommand('ticode.playground.refresh')
+      return
+    }
+
+    // read config
+    // start by config
+    await tiup.invokeInSharedTerminal('playground')
+  }
 
   restartPlayground() {}
 }

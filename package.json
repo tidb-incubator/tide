@@ -13,7 +13,7 @@
   ],
   "activationEvents": [
     "onCommand:ticode.help",
-    "onCommand:ticode.playground",
+    "onCommand:ticode.playground.start",
     "onView:ticode-tiup-playground"
   ],
   "main": "./out/extension.js",
@@ -24,7 +24,7 @@
         "title": "TiCode: Help"
       },
       {
-        "command": "ticode.playground",
+        "command": "ticode.playground.start",
         "title": "TiCode: Start Playground"
       },
       {
