@@ -1,4 +1,5 @@
 ## general
+# "tidb.version" = "v4.0.9" # other values: nightly
 # host = ""
 # monitor = true
 

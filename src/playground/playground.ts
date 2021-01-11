@@ -16,7 +16,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
     if (!fs.existsSync(configFolderPath)) {
       fs.mkdirSync(configFolderPath, { recursive: true })
     }
-    this.playgroundConfigPath = path.join(configFolderPath, 'config.toml')
+    this.playgroundConfigPath = path.join(configFolderPath, 'playground.toml')
     if (!fs.existsSync(this.playgroundConfigPath)) {
       this.reloadConfig()
     }
@@ -40,7 +40,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       '..',
       'config-template',
       'playground',
-      'config.toml'
+      'playground.toml'
     )
     fs.copyFileSync(templateFile, this.playgroundConfigPath)
   }
@@ -68,7 +68,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
 
       // config
       const configItem = new Item(
-        'config.toml',
+        'playground.toml',
         vscode.TreeItemCollapsibleState.None,
         {
           command: 'vscode.open',

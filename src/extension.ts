@@ -32,7 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
       )
     ),
     registerCommand('ticode.playground.reloadConfig', () =>
-      playgroundProvider.reloadConfig()
+      reloadPlaygroundConfig(playgroundProvider)
     ),
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
@@ -58,4 +58,14 @@ function registerCommand(
 async function tiupHelp() {
   vscode.window.showInformationMessage('TiCode Help')
   await tiup.invokeInSharedTerminal('help')
+}
+
+async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
+  const res = await vscode.window.showWarningMessage(
+    'Are you sure reload the config?',
+    'Reload'
+  )
+  if (res === 'Reload') {
+    playgroundProvider.reloadConfig()
+  }
 }

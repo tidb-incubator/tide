@@ -53,7 +53,7 @@ export class PlaygroundCommand {
     // build command
     const args: string[] = []
     Object.keys(obj).forEach((k) => {
-      if (obj[k] !== '') {
+      if (k !== 'tidb.version' && obj[k] !== '') {
         if (typeof obj[k] === 'boolean') {
           args.push(`--${k}=${obj[k]}`)
         } else {
@@ -61,7 +61,8 @@ export class PlaygroundCommand {
         }
       }
     })
-    const cmd = `playground ${args.join(' ')}`
+    const tidbVersion = obj['tidb.version'] || ''
+    const cmd = `playground ${tidbVersion} ${args.join(' ')}`
     await tiup.invokeInSharedTerminal(cmd)
     PlaygroundCommand.loopCheckPlayground(5)
   }
