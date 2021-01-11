@@ -1,10 +1,21 @@
+import * as vscode from 'vscode'
 import { shell } from '../shell'
+import { TiUP } from '../tiup'
+import * as TOML from '@iarna/toml'
+import * as fs from 'fs'
+import * as path from 'path'
 export class PlaygroundCommand {
   constructor() {}
 
   checkTiUP() {}
 
-  static async checkRunPlayground() {
+  static async checkPlayground() {
+    const res = await shell.exec('ps aux | grep tiup-playground | grep -v grep')
+    const lines = res?.stdout.trim().split('\n').length
+    return res?.code === 0 && lines === 1
+  }
+
+  static async displayPlayground() {
     const res = await shell.exec('tiup playground display')
     if (res?.code === 0) {
       // running
@@ -23,7 +34,63 @@ export class PlaygroundCommand {
     return undefined
   }
 
-  startPlayground() {}
+  static async startPlayground(tiup: TiUP, configPath?: string) {
+    const running = await PlaygroundCommand.checkPlayground()
+    if (running) {
+      vscode.window.showInformationMessage('TiUP Playground is running')
+      vscode.commands.executeCommand('ticode.playground.refresh')
+      return
+    }
+
+    if (configPath === undefined) {
+      await tiup.invokeInSharedTerminal('playground')
+      PlaygroundCommand.loopCheckPlayground(5)
+      return
+    }
+
+    // read config
+    const content = fs.readFileSync(configPath, { encoding: 'utf-8' })
+    const obj = TOML.parse(content)
+    // build command
+    const folder = path.dirname(configPath)
+    const args: string[] = []
+    Object.keys(obj).forEach((k) => {
+      if (k !== 'tidb.version' && obj[k] !== '') {
+        if (typeof obj[k] === 'boolean') {
+          args.push(`--${k}=${obj[k]}`)
+        } else if (
+          k.endsWith('.config') &&
+          (obj[k] as string).startsWith('components-config')
+        ) {
+          const fullPath = path.join(folder, obj[k] as string)
+          args.push(`--${k} "${fullPath}"`)
+        } else {
+          args.push(`--${k} ${obj[k]}`)
+        }
+      }
+    })
+    const tidbVersion = obj['tidb.version'] || ''
+    const cmd = `playground ${tidbVersion} ${args.join(' ')}`
+    await tiup.invokeInSharedTerminal(cmd)
+    PlaygroundCommand.loopCheckPlayground(5)
+  }
+
+  static loopCheckPlayground(times: number) {
+    let tried = 0
+    async function check() {
+      const instances = await PlaygroundCommand.displayPlayground()
+      if (instances) {
+        clearInterval(id)
+        vscode.commands.executeCommand('ticode.playground.refresh')
+        return
+      }
+      tried++
+      if (tried > times) {
+        clearInterval(id)
+      }
+    }
+    let id = setInterval(check, 5000)
+  }
 
   restartPlayground() {}
 }

@@ -1,0 +1,42 @@
+## tidb version
+# "tidb.version" = "v4.0.9" # other values: nightly
+
+## general
+# host = ""
+# monitor = true
+
+## db
+# db = 1
+# "db.binpath" = ""
+# "db.config" = "" # example: "components-config/db.config"
+# "db.host" = ""
+
+## kv
+# kv = 1
+# "kv.binpath" = ""
+# "kv.config" = ""
+
+## pd
+# pd = 1
+# "pd.binpath" = ""
+# "pd.config" = ""
+# "pd.host" = ""
+
+## tiflash
+# tiflash = 1 # set to 0 to not deploy it
+# "tiflash.binpath" = ""
+# "tiflash.config" = ""
+
+## drainer
+# drainer = 0
+# "drainer.binpath" = ""
+# "drainer.config" = ""
+
+## pump
+# pump = 0
+# "pump.binpath" = ""
+# "pump.config" = ""
+
+## ticdc
+# ticdc = 0
+# "ticdc.binpath" = ""
