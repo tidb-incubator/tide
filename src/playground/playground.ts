@@ -49,36 +49,38 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   async getChildren(element?: Item): Promise<Item[]> {
     const items: Item[] = []
     if (element === undefined) {
-      // return Promise.resolve([
-      //   new Item('start playground', vscode.TreeItemCollapsibleState.None),
-      // ]);
-
       // install tiup
       // judge tiup installed?
 
       // start playground
-      const running = await PlaygroundCommand.checkPlayground()
-      if (!running) {
-        items.push(
-          new Item('start playground', vscode.TreeItemCollapsibleState.None, {
-            command: 'ticode.playground.start',
-            title: 'start playground',
-          })
-        )
-      }
+      // const running = await PlaygroundCommand.checkPlayground()
+      // if (!running) {
+      //   items.push(
+      //     new Item('start playground', vscode.TreeItemCollapsibleState.None, {
+      //       command: 'ticode.playground.start',
+      //       title: 'start playground',
+      //     })
+      //   )
+      // }
 
       // config
-      items.push(
-        new Item('config.toml', vscode.TreeItemCollapsibleState.None, {
+      const configItem = new Item(
+        'config.toml',
+        vscode.TreeItemCollapsibleState.None,
+        {
           command: 'vscode.open',
           title: 'open',
           arguments: [vscode.Uri.file(this.playgroundConfigPath)],
-        })
+        }
       )
+      //https://code.visualstudio.com/api/extension-guides/tree-view
+      configItem.contextValue = 'playground-config'
+      items.push(configItem)
 
       // restart playground
 
       // instances
+      const running = await PlaygroundCommand.checkPlayground()
       if (running) {
         items.push(
           new Item('instances', vscode.TreeItemCollapsibleState.Expanded)

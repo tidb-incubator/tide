@@ -33,11 +33,16 @@ export class PlaygroundCommand {
     return undefined
   }
 
-  static async startPlayground(tiup: TiUP, configPath: string) {
+  static async startPlayground(tiup: TiUP, configPath?: string) {
     const running = await PlaygroundCommand.checkPlayground()
     if (running) {
       vscode.window.showInformationMessage('TiUP Playground is running')
       vscode.commands.executeCommand('ticode.playground.refresh')
+      return
+    }
+
+    if (configPath === undefined) {
+      await tiup.invokeInSharedTerminal('playground')
       return
     }
 

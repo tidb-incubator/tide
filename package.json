@@ -28,6 +28,10 @@
         "title": "TiCode: Start Playground"
       },
       {
+        "command": "ticode.playground.startByConfig",
+        "title": "Start playground by this config"
+      },
+      {
         "command": "ticode.playground.refresh",
         "title": "TiCode: Refresh Playground",
         "icon": {
@@ -60,6 +64,13 @@
           "command": "ticode.playground.refresh",
           "when": "view == ticode-tiup-playground",
           "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "ticode.playground.startByConfig",
+          "when": "view == ticode-tiup-playground && viewItem == playground-config",
+          "group": "0@1"
         }
       ]
     }
