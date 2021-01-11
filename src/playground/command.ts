@@ -1,6 +1,8 @@
 import * as vscode from 'vscode'
 import { shell } from '../shell'
 import { TiUP } from '../tiup'
+import * as TOML from '@iarna/toml'
+import * as fs from 'fs'
 export class PlaygroundCommand {
   constructor() {}
 
@@ -31,7 +33,7 @@ export class PlaygroundCommand {
     return undefined
   }
 
-  static async startPlayground(tiup: TiUP) {
+  static async startPlayground(tiup: TiUP, configPath: string) {
     const running = await PlaygroundCommand.checkPlayground()
     if (running) {
       vscode.window.showInformationMessage('TiUP Playground is running')
@@ -40,8 +42,21 @@ export class PlaygroundCommand {
     }
 
     // read config
-    // start by config
-    await tiup.invokeInSharedTerminal('playground')
+    const content = fs.readFileSync(configPath, { encoding: 'utf-8' })
+    const obj = TOML.parse(content)
+    // build command
+    const args: string[] = []
+    Object.keys(obj).forEach((k) => {
+      if (obj[k] !== '') {
+        if (typeof obj[k] === 'boolean') {
+          args.push(`--${k}=${obj[k]}`)
+        } else {
+          args.push(`--${k} ${obj[k]}`)
+        }
+      }
+    })
+    const cmd = `playground ${args.join(' ')}`
+    await tiup.invokeInSharedTerminal(cmd)
   }
 
   restartPlayground() {}

@@ -23,7 +23,7 @@ export async function activate(context: vscode.ExtensionContext) {
   const subscriptions = [
     registerCommand('ticode.help', tiupHelp),
     registerCommand('ticode.playground.start', () =>
-      PlaygroundCommand.startPlayground(tiup)
+      PlaygroundCommand.startPlayground(tiup, playgroundProvider.playgroundConfigPath)
     ),
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
