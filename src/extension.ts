@@ -31,6 +31,9 @@ export async function activate(context: vscode.ExtensionContext) {
         playgroundProvider.playgroundConfigPath
       )
     ),
+    registerCommand('ticode.playground.reloadConfig', () =>
+      playgroundProvider.reloadConfig()
+    ),
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
     ),

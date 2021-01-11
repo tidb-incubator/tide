@@ -32,6 +32,10 @@
         "title": "Start playground by this config"
       },
       {
+        "command": "ticode.playground.reloadConfig",
+        "title": "Reload config"
+      },
+      {
         "command": "ticode.playground.refresh",
         "title": "TiCode: Refresh Playground",
         "icon": {
@@ -71,6 +75,11 @@
           "command": "ticode.playground.startByConfig",
           "when": "view == ticode-tiup-playground && viewItem == playground-config",
           "group": "0@1"
+        },
+        {
+          "command": "ticode.playground.reloadConfig",
+          "when": "view == ticode-tiup-playground && viewItem == playground-config",
+          "group": "0@2"
         }
       ]
     }
