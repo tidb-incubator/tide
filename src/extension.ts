@@ -17,18 +17,21 @@ export async function activate(context: vscode.ExtensionContext) {
   console.log('TiCode activated!')
 
   // playground tree view
-  const playgroundProvider = new PlaygroundProvider(vscode.workspace.rootPath)
+  const playgroundProvider = new PlaygroundProvider(
+    vscode.workspace.rootPath,
+    context
+  )
   vscode.window.registerTreeDataProvider(
     'ticode-tiup-playground',
     playgroundProvider
-  )
-  registerCommand('ticode.playground.refresh', () =>
-    playgroundProvider.refresh()
   )
 
   const subscriptions = [
     registerCommand('ticode.playground', tiupPlayground),
     registerCommand('ticode.help', tiupHelp),
+    registerCommand('ticode.playground.refresh', () =>
+      playgroundProvider.refresh()
+    ),
   ]
 
   subscriptions.forEach((x) => context.subscriptions.push(x))

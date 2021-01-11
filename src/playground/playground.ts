@@ -1,8 +1,35 @@
 import * as vscode from 'vscode'
 import { PlaygroundCommand } from './command'
+import * as fs from 'fs'
+import * as path from 'path'
 
 export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
-  constructor(private workspaceRoot: string | undefined) {}
+  public playgroundConfigPath: string = ''
+
+  constructor(
+    private workspaceRoot: string | undefined,
+    private context: vscode.ExtensionContext
+  ) {
+    // initial config files
+    const globalStoragePath = context.globalStoragePath
+    const configFolderPath = path.join(globalStoragePath, 'playground')
+    if (!fs.existsSync(configFolderPath)) {
+      fs.mkdirSync(configFolderPath, { recursive: true })
+    }
+    const configFilePath = path.join(configFolderPath, 'config.toml')
+    this.playgroundConfigPath = configFilePath
+    if (!fs.existsSync(configFilePath)) {
+      const templateFile = path.join(
+        __dirname,
+        '..',
+        '..',
+        'config-template',
+        'playground',
+        'config.toml'
+      )
+      fs.copyFileSync(templateFile, configFilePath)
+    }
+  }
 
   private _onDidChangeTreeData: vscode.EventEmitter<
     Item | undefined | null | void
@@ -41,6 +68,13 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       }
 
       // config
+      items.push(
+        new Item('config.toml', vscode.TreeItemCollapsibleState.None, {
+          command: 'vscode.open',
+          title: 'open',
+          arguments: [vscode.Uri.file(this.playgroundConfigPath)],
+        })
+      )
 
       // restart playground
 

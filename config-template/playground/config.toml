@@ -1,0 +1,4 @@
+[playground]
+db = 2
+kv = 1
+pd = 1
