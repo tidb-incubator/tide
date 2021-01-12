@@ -45,7 +45,7 @@ export class PlaygroundCommand {
 
     if (configPath === undefined) {
       await tiup.invokeInSharedTerminal('playground')
-      PlaygroundCommand.loopCheckPlayground(5)
+      PlaygroundCommand.loopCheckPlayground()
       return
     }
 
@@ -73,24 +73,24 @@ export class PlaygroundCommand {
     const tidbVersion = obj['tidb.version'] || ''
     const cmd = `playground ${tidbVersion} ${args.join(' ')}`
     await tiup.invokeInSharedTerminal(cmd)
-    PlaygroundCommand.loopCheckPlayground(5)
+    PlaygroundCommand.loopCheckPlayground()
   }
 
-  static loopCheckPlayground(times: number) {
+  static loopCheckPlayground(times: number = 10, intervals: number = 3 * 1000) {
     let tried = 0
     async function check() {
       const instances = await PlaygroundCommand.displayPlayground()
       if (instances) {
-        clearInterval(id)
         vscode.commands.executeCommand('ticode.playground.refresh')
         return
       }
       tried++
       if (tried > times) {
-        clearInterval(id)
+        return
       }
+      setTimeout(check, intervals)
     }
-    let id = setInterval(check, 5000)
+    setTimeout(check, intervals)
   }
 
   restartPlayground() {}
@@ -111,6 +111,7 @@ export class PlaygroundCommand {
       )
     } else {
       vscode.window.showErrorMessage('open log file failed!')
+      vscode.commands.executeCommand('ticode.playground.refresh')
     }
   }
 }
