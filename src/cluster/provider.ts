@@ -9,6 +9,17 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     private context: vscode.ExtensionContext
   ) {}
 
+  private _onDidChangeTreeData: vscode.EventEmitter<
+    Item | undefined | null | void
+  > = new vscode.EventEmitter<Item | undefined | null | void>()
+  readonly onDidChangeTreeData: vscode.Event<
+    Item | undefined | null | void
+  > = this._onDidChangeTreeData.event
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire()
+  }
+
   getTreeItem(element: Item): vscode.TreeItem {
     return element
   }
