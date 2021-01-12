@@ -65,8 +65,11 @@
       "ticode-explorer": [
         {
           "id": "ticode-tiup-playground",
-          "name": "TiUP Playground",
-          "icon": "media/logo.png"
+          "name": "TiUP Playground"
+        },
+        {
+          "id": "ticode-tiup-cluster",
+          "name": "TiUP Cluster"
         }
       ]
     },

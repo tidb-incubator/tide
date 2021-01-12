@@ -1,12 +1,12 @@
 import * as vscode from 'vscode'
-import { shell } from '../shell'
-import { TiUP } from '../tiup'
-import * as TOML from '@iarna/toml'
 import * as fs from 'fs'
 import * as path from 'path'
-export class PlaygroundCommand {
-  constructor() {}
+import * as TOML from '@iarna/toml'
 
+import { shell } from '../shell'
+import { TiUP } from '../tiup'
+
+export class PlaygroundCommand {
   checkTiUP() {}
 
   static async checkPlaygroundRun() {
@@ -92,8 +92,6 @@ export class PlaygroundCommand {
     }
     setTimeout(check, intervals)
   }
-
-  restartPlayground() {}
 
   static viewIntanceLogs(pids: string[]) {
     pids.forEach(this.openInstanceLog)

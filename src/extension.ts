@@ -3,7 +3,8 @@ import * as config from './components/config/config'
 import { fs } from './fs'
 import { host } from './host'
 import { PlaygroundCommand } from './playground/command'
-import { PlaygroundProvider } from './playground/playground'
+import { PlaygroundProvider } from './playground/provider'
+import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
 
@@ -20,8 +21,19 @@ export async function activate(context: vscode.ExtensionContext) {
     playgroundProvider
   )
 
+  // clsuter tree view
+  const clusterProvider = new ClusterProvider(
+    vscode.workspace.rootPath,
+    context
+  )
+  vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
+
   const subscriptions = [
+    ////////////////
     registerCommand('ticode.help', tiupHelp),
+
+    ////////////////
+    // playground
     registerCommand('ticode.playground.start', () =>
       PlaygroundCommand.startPlayground(tiup)
     ),
@@ -64,6 +76,9 @@ async function tiupHelp() {
   await tiup.invokeInSharedTerminal('help')
 }
 
+///////////////////////////////////////////
+// playground
+
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
     'Are you sure reload the config? Your current config will be overrided',
@@ -83,3 +98,6 @@ async function stopPlayground() {
     PlaygroundCommand.stopPlayground()
   }
 }
+
+///////////////////////////////////////////
+// cluster
