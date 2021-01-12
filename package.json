@@ -6,7 +6,8 @@
     "url": "https://github.com/dragonly/ticode"
   },
   "description": "make developing TiDB a breeze",
-  "version": "0.0.2",
+  "icon": "media/logo.png",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.52.0"
   },
