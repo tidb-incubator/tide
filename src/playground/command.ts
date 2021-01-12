@@ -9,7 +9,7 @@ export class PlaygroundCommand {
 
   checkTiUP() {}
 
-  static async checkPlayground() {
+  static async checkPlaygroundRun() {
     const res = await shell.exec('ps aux | grep tiup-playground | grep -v grep')
     const lines = res?.stdout.trim().split('\n').length
     return res?.code === 0 && lines === 1
@@ -36,7 +36,7 @@ export class PlaygroundCommand {
   }
 
   static async startPlayground(tiup: TiUP, configPath?: string) {
-    const running = await PlaygroundCommand.checkPlayground()
+    const running = await PlaygroundCommand.checkPlaygroundRun()
     if (running) {
       vscode.window.showInformationMessage('TiUP Playground is running')
       vscode.commands.executeCommand('ticode.playground.refresh')
@@ -113,5 +113,43 @@ export class PlaygroundCommand {
       vscode.window.showErrorMessage('open log file failed!')
       vscode.commands.executeCommand('ticode.playground.refresh')
     }
+  }
+
+  static async stopPlayground() {
+    // use "ps ax" instead of "ps aux" make the PID first column
+    let cr = await shell.exec('ps ax | grep tiup-playground | grep -v grep')
+    const lines = cr?.stdout.trim().split('\n')
+    if (cr?.code === 0 && lines?.length === 1) {
+      const pid = lines[0].split(/\s/)[0]
+      cr = await shell.exec(`kill ${pid}`)
+      if (cr?.code === 0) {
+        // loop check tiup-playground stop
+        vscode.window.showInformationMessage('stopping playground...')
+        this.loopCheckPlaygroundStop()
+        return
+      }
+    }
+    vscode.window.showErrorMessage('stop playground failed!')
+    vscode.commands.executeCommand('ticode.playground.refresh')
+  }
+
+  static loopCheckPlaygroundStop(
+    times: number = 10,
+    intervals: number = 3 * 1000
+  ) {
+    let tried = 0
+    async function check() {
+      const running = await PlaygroundCommand.checkPlaygroundRun()
+      if (!running) {
+        vscode.commands.executeCommand('ticode.playground.refresh')
+        return
+      }
+      tried++
+      if (tried > times) {
+        return
+      }
+      setTimeout(check, intervals)
+    }
+    setTimeout(check, intervals)
   }
 }

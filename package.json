@@ -28,6 +28,10 @@
         "title": "TiCode: Start default playground"
       },
       {
+        "command": "ticode.playground.stop",
+        "title": "TiCode: Stop playground"
+      },
+      {
         "command": "ticode.playground.startByConfig",
         "title": "Start playground by config"
       },

@@ -88,7 +88,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       // judge tiup installed?
 
       // start playground
-      const running = await PlaygroundCommand.checkPlayground()
+      const running = await PlaygroundCommand.checkPlaygroundRun()
       if (!running) {
         items.push(
           new Item(
@@ -99,6 +99,13 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
               title: 'start playground',
             }
           )
+        )
+      } else {
+        items.push(
+          new Item('stop playground', vscode.TreeItemCollapsibleState.None, {
+            command: 'ticode.playground.stop',
+            title: 'stop playground',
+          })
         )
       }
 

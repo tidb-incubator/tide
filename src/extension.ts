@@ -25,6 +25,7 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.start', () =>
       PlaygroundCommand.startPlayground(tiup)
     ),
+    registerCommand('ticode.playground.stop', () => stopPlayground()),
     registerCommand('ticode.playground.startByConfig', () =>
       PlaygroundCommand.startPlayground(
         tiup,
@@ -38,7 +39,6 @@ export async function activate(context: vscode.ExtensionContext) {
       playgroundProvider.refresh()
     ),
     registerCommand('ticode.playground.viewInstanceLog', (item) => {
-      console.log(item)
       PlaygroundCommand.viewIntanceLogs(item.extra.pids)
     }),
   ]
@@ -71,5 +71,15 @@ async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   )
   if (res === 'Reload') {
     playgroundProvider.reloadConfig()
+  }
+}
+
+async function stopPlayground() {
+  const res = await vscode.window.showWarningMessage(
+    'Are you sure stop the playground',
+    'Stop'
+  )
+  if (res === 'Stop') {
+    PlaygroundCommand.stopPlayground()
   }
 }
