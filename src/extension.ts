@@ -37,6 +37,10 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
     ),
+    registerCommand('ticode.playground.viewInstanceLog', (item) => {
+      console.log(item)
+      PlaygroundCommand.viewIntanceLogs(item.extra.pids)
+    }),
   ]
 
   subscriptions.forEach((x) => context.subscriptions.push(x))

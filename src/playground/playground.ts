@@ -134,12 +134,13 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       const instances = await PlaygroundCommand.displayPlayground()
       if (instances) {
         Object.keys(instances).forEach((inst) => {
-          items.push(
-            new Item(
-              `${inst} (${instances[inst]})`,
-              vscode.TreeItemCollapsibleState.None
-            )
+          const item = new Item(
+            `${inst} (${instances[inst].length})`,
+            vscode.TreeItemCollapsibleState.None
           )
+          item.contextValue = 'playground-instance'
+          item.extra = { comp: inst, pids: instances[inst] }
+          items.push(item)
         })
       }
     }
@@ -165,6 +166,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
 }
 
 class Item extends vscode.TreeItem {
+  public extra: any
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,

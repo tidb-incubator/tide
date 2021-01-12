@@ -23,10 +23,11 @@ export class PlaygroundCommand {
       const output = res.stdout
       const arr = output.split('\n')
       arr.forEach((line) => {
-        const m = line.match(/\d+\s+(\w+)/)
+        const m = line.match(/(\d+)\s+(\w+)/)
         if (m) {
-          const comp = m[1]
-          instances[comp] = (instances[comp] || 0) + 1
+          const pid = m[1]
+          const comp = m[2]
+          instances[comp] = (instances[comp] || []).concat(pid)
         }
       })
       return instances
@@ -93,4 +94,23 @@ export class PlaygroundCommand {
   }
 
   restartPlayground() {}
+
+  static viewIntanceLogs(pids: string[]) {
+    pids.forEach(this.openInstanceLog)
+  }
+
+  static async openInstanceLog(pid: string) {
+    const res = await shell.exec(`ps -p ${pid} | grep tiup`)
+    console.log('ps result:', res)
+    const m = res?.stdout.match(/log-file=(.+)\.log/)
+    if (m) {
+      const logFilePath = m[1] + '.log'
+      vscode.commands.executeCommand(
+        'vscode.open',
+        vscode.Uri.file(logFilePath)
+      )
+    } else {
+      vscode.window.showErrorMessage('open log file failed!')
+    }
+  }
 }
