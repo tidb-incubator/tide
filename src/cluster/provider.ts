@@ -1,6 +1,7 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
+import { ClusterCommand } from './command'
 
 export class ClusterProvider implements vscode.TreeDataProvider<Item> {
   constructor(
@@ -20,6 +21,28 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
       )
     } else {
       if (element.label === 'clusters') {
+        const clusters = await ClusterCommand.listClusters()
+        clusters.forEach((cluster) => {
+          const item = new Item(
+            cluster.name,
+            vscode.TreeItemCollapsibleState.Collapsed
+          )
+          item.description = cluster.version
+          item.extra = cluster
+          item.contextValue = 'cluster-name'
+          items.push(item)
+        })
+      }
+
+      if (element.contextValue === 'cluster-name') {
+        const instances = await ClusterCommand.displayCluster(element.label)
+        instances.forEach((inst) => {
+          const item = new Item(inst.role, vscode.TreeItemCollapsibleState.None)
+          item.extra = inst
+          item.description = `${inst.id} (${inst.status.toLocaleLowerCase()})`
+          item.contextValue = 'cluster-instance'
+          items.push(item)
+        })
       }
     }
 
