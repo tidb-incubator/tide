@@ -1,7 +1,12 @@
+import * as vscode from 'vscode'
+import * as fs from 'fs'
+import * as path from 'path'
+import * as tmp from 'tmp'
+
 import { shell } from '../shell'
 
 // Name User Version Path PrivateKey
-export type ClusterListItem = Record<
+export type Cluster = Record<
   'name' | 'user' | 'version' | 'path' | 'privateKey',
   string
 >
@@ -19,10 +24,15 @@ export type ClusterInstance = Record<
   string
 >
 
+export type InstanceAndCluster = {
+  cluster: Cluster
+  instance: ClusterInstance
+}
+
 export class ClusterCommand {
   // list clusters
-  static async listClusters(): Promise<ClusterListItem[]> {
-    const clusters: ClusterListItem[] = []
+  static async listClusters(): Promise<Cluster[]> {
+    const clusters: Cluster[] = []
     const cr = await shell.exec('tiup cluster list')
     if (cr?.code === 0) {
       const lines = cr.stdout.trim().split('\n')
@@ -36,6 +46,8 @@ export class ClusterCommand {
           skip = false
         }
       })
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
     }
     return clusters
   }
@@ -78,8 +90,58 @@ export class ClusterCommand {
           skip = false
         }
       })
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
     }
     return comps
+  }
+
+  // list instance logs
+  static async listInstanceLogs(
+    instAndCluster: InstanceAndCluster
+  ): Promise<string[]> {
+    const { cluster, instance } = instAndCluster
+    const cmd = `tiup cluster exec ${cluster.name} -N ${instance.host} --command "ls ${instance.deployDir}/log"`
+    const cr = await shell.exec(cmd)
+
+    const files: string[] = []
+    if (cr?.code === 0) {
+      const lines = cr.stdout.trim().split('\n')
+      let skip = true
+      lines.forEach((line) => {
+        if (!skip) {
+          if (line) {
+            files.push(line)
+          }
+        }
+        if (line.startsWith('stdout:')) {
+          skip = false
+        }
+      })
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
+    return files
+  }
+
+  // use a uuid to record whether it is copying
+  static async scpFile(fileName: string, inst: InstanceAndCluster) {
+    const { instance, cluster } = inst
+    const tmpFile = tmp.fileSync({
+      discardDescriptor: true,
+      prefix: cluster.name,
+      postfix: fileName,
+    })
+    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/log/${fileName} ${tmpFile.name}`
+    const cr = await shell.exec(cmd)
+    if (cr?.code === 0) {
+      vscode.commands.executeCommand(
+        'vscode.open',
+        vscode.Uri.file(tmpFile.name)
+      )
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
   }
 
   // start cluster

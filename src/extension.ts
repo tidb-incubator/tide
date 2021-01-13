@@ -7,6 +7,11 @@ import { PlaygroundProvider } from './playground/provider'
 import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
+import {
+  ClusterCommand,
+  ClusterInstance,
+  InstanceAndCluster,
+} from './cluster/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -61,6 +66,7 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.display', (treeItem) =>
       displayClusters(treeItem.label)
     ),
+    registerCommand('ticode.cluster.viewInstanceLog', viewClusterInstanceLog),
   ]
   subscriptions.forEach((x) => context.subscriptions.push(x))
 
@@ -139,4 +145,13 @@ async function displayClusters(clusterName?: string) {
   const uri = vscode.Uri.parse(`ticode:display ${clusterName}`)
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
   await vscode.window.showTextDocument(doc, { preview: false })
+}
+
+async function viewClusterInstanceLog(
+  fileName: string,
+  inst: InstanceAndCluster
+) {
+  console.log(fileName)
+  console.log(inst)
+  ClusterCommand.scpFile(fileName, inst)
 }
