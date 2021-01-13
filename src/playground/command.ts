@@ -1,12 +1,12 @@
 import * as vscode from 'vscode'
-import { shell } from '../shell'
-import { TiUP } from '../tiup'
-import * as TOML from '@iarna/toml'
 import * as fs from 'fs'
 import * as path from 'path'
-export class PlaygroundCommand {
-  constructor() {}
+import * as TOML from '@iarna/toml'
 
+import { shell } from '../shell'
+import { TiUP } from '../tiup'
+
+export class PlaygroundCommand {
   checkTiUP() {}
 
   static async checkPlaygroundRun() {
@@ -93,8 +93,6 @@ export class PlaygroundCommand {
     setTimeout(check, intervals)
   }
 
-  restartPlayground() {}
-
   static viewIntanceLogs(pids: string[]) {
     pids.forEach(this.openInstanceLog)
   }
@@ -120,7 +118,7 @@ export class PlaygroundCommand {
     let cr = await shell.exec('ps ax | grep tiup-playground | grep -v grep')
     const lines = cr?.stdout.trim().split('\n')
     if (cr?.code === 0 && lines?.length === 1) {
-      const pid = lines[0].split(/\s/)[0]
+      const pid = lines[0].split(/\s+/)[0]
       cr = await shell.exec(`kill ${pid}`)
       if (cr?.code === 0) {
         // loop check tiup-playground stop

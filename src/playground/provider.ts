@@ -131,13 +131,13 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       // instances
       if (running) {
         items.push(
-          new Item('instances', vscode.TreeItemCollapsibleState.Expanded)
+          new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
         )
       }
 
       return Promise.resolve(items)
     }
-    if (element.label === 'instances') {
+    if (element.label === 'cluster') {
       const instances = await PlaygroundCommand.displayPlayground()
       if (instances) {
         Object.keys(instances).forEach((inst) => {

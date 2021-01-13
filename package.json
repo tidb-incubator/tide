@@ -18,7 +18,8 @@
   "activationEvents": [
     "onCommand:ticode.help",
     "onCommand:ticode.playground.start",
-    "onView:ticode-tiup-playground"
+    "onView:ticode-tiup-playground",
+    "onView:ticode-tiup-cluster"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -54,6 +55,22 @@
       {
         "command": "ticode.playground.viewInstanceLog",
         "title": "View log"
+      },
+      {
+        "command": "ticode.cluster.refresh",
+        "title": "TiCode: Refresh Cluters",
+        "icon": {
+          "light": "media/refresh.svg",
+          "dark": "media/refresh.svg"
+        }
+      },
+      {
+        "command": "ticode.cluster.list",
+        "title": "List clusters"
+      },
+      {
+        "command": "ticode.cluster.display",
+        "title": "Display cluster"
       }
     ],
     "viewsContainers": {
@@ -69,8 +86,11 @@
       "ticode-explorer": [
         {
           "id": "ticode-tiup-playground",
-          "name": "TiUP Playground",
-          "icon": "media/logo.png"
+          "name": "TiUP Playground"
+        },
+        {
+          "id": "ticode-tiup-cluster",
+          "name": "TiUP Cluster"
         }
       ]
     },
@@ -79,6 +99,11 @@
         {
           "command": "ticode.playground.refresh",
           "when": "view == ticode-tiup-playground",
+          "group": "navigation"
+        },
+        {
+          "command": "ticode.cluster.refresh",
+          "when": "view == ticode-tiup-cluster",
           "group": "navigation"
         }
       ],
@@ -97,6 +122,14 @@
           "command": "ticode.playground.viewInstanceLog",
           "when": "view == ticode-tiup-playground && viewItem == playground-instance",
           "group": "0@1"
+        },
+        {
+          "command": "ticode.cluster.list",
+          "when": "view == ticode-tiup-cluster && viewItem == clusters"
+        },
+        {
+          "command": "ticode.cluster.display",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name"
         }
       ]
     }

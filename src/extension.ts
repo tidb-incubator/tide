@@ -3,7 +3,8 @@ import * as config from './components/config/config'
 import { fs } from './fs'
 import { host } from './host'
 import { PlaygroundCommand } from './playground/command'
-import { PlaygroundProvider } from './playground/playground'
+import { PlaygroundProvider } from './playground/provider'
+import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
 
@@ -20,8 +21,19 @@ export async function activate(context: vscode.ExtensionContext) {
     playgroundProvider
   )
 
+  // clsuter tree view
+  const clusterProvider = new ClusterProvider(
+    vscode.workspace.rootPath,
+    context
+  )
+  vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
+
   const subscriptions = [
+    ////////////////
     registerCommand('ticode.help', tiupHelp),
+
+    ////////////////
+    // playground
     registerCommand('ticode.playground.start', () =>
       PlaygroundCommand.startPlayground(tiup)
     ),
@@ -38,12 +50,35 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
     ),
-    registerCommand('ticode.playground.viewInstanceLog', (item) => {
-      PlaygroundCommand.viewIntanceLogs(item.extra.pids)
+    registerCommand('ticode.playground.viewInstanceLog', (treeItem) => {
+      PlaygroundCommand.viewIntanceLogs(treeItem.extra.pids)
     }),
-  ]
 
+    ////////////////
+    // cluster
+    registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
+    registerCommand('ticode.cluster.list', () => listClusters()),
+    registerCommand('ticode.cluster.display', (treeItem) =>
+      displayClusters(treeItem.label)
+    ),
+  ]
   subscriptions.forEach((x) => context.subscriptions.push(x))
+
+  // virtual document
+  const myScheme = 'ticode'
+  const myProvider = new (class implements vscode.TextDocumentContentProvider {
+    // emitter and its event
+    onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
+    onDidChange = this.onDidChangeEmitter.event
+
+    async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+      const cr = await shell.exec(`tiup cluster ${uri.path}`)
+      return cr?.stdout || ''
+    }
+  })()
+  subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider)
+  )
 }
 
 // this method is called when your extension is deactivated
@@ -64,6 +99,9 @@ async function tiupHelp() {
   await tiup.invokeInSharedTerminal('help')
 }
 
+///////////////////////////////////////////
+// playground
+
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
     'Are you sure reload the config? Your current config will be overrided',
@@ -82,4 +120,23 @@ async function stopPlayground() {
   if (res === 'Stop') {
     PlaygroundCommand.stopPlayground()
   }
+}
+
+///////////////////////////////////////////
+// cluster
+async function listClusters() {
+  const uri = vscode.Uri.parse('ticode:list')
+  const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
+  await vscode.window.showTextDocument(doc, { preview: false })
+}
+
+async function displayClusters(clusterName?: string) {
+  if (clusterName === undefined) {
+    vscode.window.showErrorMessage('cluster name is unknown')
+    return
+  }
+
+  const uri = vscode.Uri.parse(`ticode:display ${clusterName}`)
+  const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
+  await vscode.window.showTextDocument(doc, { preview: false })
 }
