@@ -50,18 +50,35 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.refresh', () =>
       playgroundProvider.refresh()
     ),
-    registerCommand('ticode.playground.viewInstanceLog', (item) => {
-      PlaygroundCommand.viewIntanceLogs(item.extra.pids)
+    registerCommand('ticode.playground.viewInstanceLog', (treeItem) => {
+      PlaygroundCommand.viewIntanceLogs(treeItem.extra.pids)
     }),
 
     ////////////////
-    // playground
-    registerCommand('ticode.cluster.refresh', () =>
-      clusterProvider.refresh()
+    // cluster
+    registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
+    registerCommand('ticode.cluster.list', () => listClusters()),
+    registerCommand('ticode.cluster.display', (treeItem) =>
+      displayClusters(treeItem.label)
     ),
   ]
-
   subscriptions.forEach((x) => context.subscriptions.push(x))
+
+  // virtual document
+  const myScheme = 'ticode'
+  const myProvider = new (class implements vscode.TextDocumentContentProvider {
+    // emitter and its event
+    onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
+    onDidChange = this.onDidChangeEmitter.event
+
+    async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+      const cr = await shell.exec(`tiup cluster ${uri.path}`)
+      return cr?.stdout || ''
+    }
+  })()
+  subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider)
+  )
 }
 
 // this method is called when your extension is deactivated
@@ -107,3 +124,19 @@ async function stopPlayground() {
 
 ///////////////////////////////////////////
 // cluster
+async function listClusters() {
+  const uri = vscode.Uri.parse('ticode:list')
+  const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
+  await vscode.window.showTextDocument(doc, { preview: false })
+}
+
+async function displayClusters(clusterName?: string) {
+  if (clusterName === undefined) {
+    vscode.window.showErrorMessage('cluster name is unknown')
+    return
+  }
+
+  const uri = vscode.Uri.parse(`ticode:display ${clusterName}`)
+  const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
+  await vscode.window.showTextDocument(doc, { preview: false })
+}

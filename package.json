@@ -59,6 +59,14 @@
           "light": "media/refresh.svg",
           "dark": "media/refresh.svg"
         }
+      },
+      {
+        "command": "ticode.cluster.list",
+        "title": "List clusters"
+      },
+      {
+        "command": "ticode.cluster.display",
+        "title": "Display cluster"
       }
     ],
     "viewsContainers": {
@@ -110,6 +118,14 @@
           "command": "ticode.playground.viewInstanceLog",
           "when": "view == ticode-tiup-playground && viewItem == playground-instance",
           "group": "0@1"
+        },
+        {
+          "command": "ticode.cluster.list",
+          "when": "view == ticode-tiup-cluster && viewItem == clusters"
+        },
+        {
+          "command": "ticode.cluster.display",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name"
         }
       ]
     }

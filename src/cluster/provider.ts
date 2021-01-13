@@ -27,11 +27,18 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
   async getChildren(element?: Item): Promise<Item[]> {
     const items: Item[] = []
     if (element === undefined) {
-      items.push(
-        new Item('clusters', vscode.TreeItemCollapsibleState.Collapsed)
+      const item = new Item(
+        'clusters',
+        vscode.TreeItemCollapsibleState.Collapsed
+        // {
+        //   command: 'ticode.cluster.list',
+        //   title: 'List cluster',
+        // }
       )
+      item.contextValue = 'clusters'
+      items.push(item)
     } else {
-      if (element.label === 'clusters') {
+      if (element.contextValue === 'clusters') {
         const clusters = await ClusterCommand.listClusters()
         clusters.forEach((cluster) => {
           const item = new Item(
