@@ -1,13 +1,13 @@
 import { shell } from '../shell'
 
 // Name User Version Path PrivateKey
-type ClusterListItem = Record<
+export type ClusterListItem = Record<
   'name' | 'user' | 'version' | 'path' | 'privateKey',
   string
 >
 
 // ID Role Host Ports OS/Arch Status  Data Dir  Deploy Dir
-type ClusterInstance = Record<
+export type ClusterInstance = Record<
   | 'id'
   | 'role'
   | 'host'
@@ -41,8 +41,10 @@ export class ClusterCommand {
   }
 
   // display cluster
-  static async displayCluster(clusterName: string): Promise<ClusterInstance[]> {
-    const instances: ClusterInstance[] = []
+  static async displayCluster(
+    clusterName: string
+  ): Promise<Record<string, ClusterInstance[]>> {
+    const comps: Record<string, ClusterInstance[]> = {}
     const cr = await shell.exec(`tiup cluster display ${clusterName}`)
     if (cr?.code === 0) {
       const lines = cr.stdout.trim().split('\n')
@@ -60,7 +62,7 @@ export class ClusterCommand {
             deployDir,
           ] = line.split(/\s+/)
           if (deployDir !== undefined) {
-            instances.push({
+            comps[role] = (comps[role] || []).concat({
               id,
               role,
               host,
@@ -77,7 +79,7 @@ export class ClusterCommand {
         }
       })
     }
-    return instances
+    return comps
   }
 
   // start cluster

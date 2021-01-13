@@ -1,7 +1,7 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
-import { ClusterCommand } from './command'
+import { ClusterCommand, ClusterInstance } from './command'
 
 export class ClusterProvider implements vscode.TreeDataProvider<Item> {
   constructor(
@@ -51,13 +51,24 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
           items.push(item)
         })
       }
-
       if (element.contextValue === 'cluster-name') {
-        const instances = await ClusterCommand.displayCluster(element.label)
+        const comps = await ClusterCommand.displayCluster(element.label)
+        Object.keys(comps).forEach((comp) => {
+          const item = new Item(
+            `${comp} (${comps[comp].length})`,
+            vscode.TreeItemCollapsibleState.Expanded
+          )
+          item.extra = comps[comp]
+          item.contextValue = 'cluster-component'
+          items.push(item)
+        })
+      }
+      if (element.contextValue === 'cluster-component') {
+        const instances = element.extra as ClusterInstance[]
         instances.forEach((inst) => {
-          const item = new Item(inst.role, vscode.TreeItemCollapsibleState.None)
+          const item = new Item(inst.id, vscode.TreeItemCollapsibleState.None)
           item.extra = inst
-          item.description = `${inst.id} (${inst.status.toLocaleLowerCase()})`
+          item.description = inst.status
           item.contextValue = 'cluster-instance'
           items.push(item)
         })
