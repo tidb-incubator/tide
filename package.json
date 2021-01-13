@@ -71,6 +71,10 @@
       {
         "command": "ticode.cluster.display",
         "title": "Display cluster"
+      },
+      {
+        "command": "ticode.cluster.viewInstanceLog",
+        "title": "View cluster instance log"
       }
     ],
     "viewsContainers": {
@@ -160,6 +164,8 @@
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "shelljs": "^0.8.4"
+    "@types/tmp": "^0.2.0",
+    "shelljs": "^0.8.4",
+    "tmp": "^0.2.1"
   }
 }
