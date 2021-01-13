@@ -1,5 +1,7 @@
 import * as vscode from 'vscode'
 import * as config from './components/config/config'
+import * as tmp from 'tmp'
+
 import { fs } from './fs'
 import { host } from './host'
 import { PlaygroundCommand } from './playground/command'
@@ -7,11 +9,7 @@ import { PlaygroundProvider } from './playground/provider'
 import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
-import {
-  ClusterCommand,
-  ClusterInstance,
-  InstanceAndCluster,
-} from './cluster/command'
+import { ClusterCommand } from './cluster/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -33,7 +31,10 @@ export async function activate(context: vscode.ExtensionContext) {
   )
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
 
-  const subscriptions = [
+  // temp folder
+  const { name: tempFolder } = tmp.dirSync()
+
+  const commandsSubscriptions = [
     ////////////////
     registerCommand('ticode.help', tiupHelp),
 
@@ -62,13 +63,15 @@ export async function activate(context: vscode.ExtensionContext) {
     ////////////////
     // cluster
     registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
-    registerCommand('ticode.cluster.list', () => listClusters()),
+    registerCommand('ticode.cluster.list', listClusters),
     registerCommand('ticode.cluster.display', (treeItem) =>
       displayClusters(treeItem.label)
     ),
-    registerCommand('ticode.cluster.viewInstanceLog', viewClusterInstanceLog),
+    registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
+      ClusterCommand.scpFile(fileName, inst, tempFolder)
+    ),
   ]
-  subscriptions.forEach((x) => context.subscriptions.push(x))
+  commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
   // virtual document
   const myScheme = 'ticode'
@@ -82,7 +85,7 @@ export async function activate(context: vscode.ExtensionContext) {
       return cr?.stdout || ''
     }
   })()
-  subscriptions.push(
+  context.subscriptions.push(
     vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider)
   )
 }
@@ -145,13 +148,4 @@ async function displayClusters(clusterName?: string) {
   const uri = vscode.Uri.parse(`ticode:display ${clusterName}`)
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
   await vscode.window.showTextDocument(doc, { preview: false })
-}
-
-async function viewClusterInstanceLog(
-  fileName: string,
-  inst: InstanceAndCluster
-) {
-  console.log(fileName)
-  console.log(inst)
-  ClusterCommand.scpFile(fileName, inst)
 }

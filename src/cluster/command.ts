@@ -29,6 +29,9 @@ export type InstanceAndCluster = {
   instance: ClusterInstance
 }
 
+type LogFileScpStatus = Record<string, boolean>
+const logfileScpStatus: LogFileScpStatus = {}
+
 export class ClusterCommand {
   // list clusters
   static async listClusters(): Promise<Cluster[]> {
@@ -125,19 +128,32 @@ export class ClusterCommand {
   }
 
   // use a uuid to record whether it is copying
-  static async scpFile(fileName: string, inst: InstanceAndCluster) {
+  static async scpFile(
+    fileName: string,
+    inst: InstanceAndCluster,
+    tempFolder: string
+  ) {
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder)
+    }
+
     const { instance, cluster } = inst
-    const tmpFile = tmp.fileSync({
-      discardDescriptor: true,
-      prefix: cluster.name,
-      postfix: fileName,
-    })
-    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/log/${fileName} ${tmpFile.name}`
+    const localLogFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    if (logfileScpStatus[localLogFileName]) {
+      vscode.window.showInformationMessage(`${fileName} is loading`)
+      return
+    }
+
+    const localLogFileFullPath = path.join(tempFolder, localLogFileName)
+    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/log/${fileName} "${localLogFileFullPath}"`
+    logfileScpStatus[localLogFileName] = true
+    vscode.window.showInformationMessage(`${fileName} is loading`)
     const cr = await shell.exec(cmd)
+    logfileScpStatus[localLogFileName] = false
     if (cr?.code === 0) {
       vscode.commands.executeCommand(
         'vscode.open',
-        vscode.Uri.file(tmpFile.name)
+        vscode.Uri.file(localLogFileFullPath)
       )
     } else {
       vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
