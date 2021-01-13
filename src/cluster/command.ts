@@ -99,12 +99,13 @@ export class ClusterCommand {
     return comps
   }
 
-  // list instance logs
-  static async listInstanceLogs(
-    instAndCluster: InstanceAndCluster
+  // list instance files
+  static async listInstanceFiles(
+    instAndCluster: InstanceAndCluster,
+    folderName: string
   ): Promise<string[]> {
     const { cluster, instance } = instAndCluster
-    const cmd = `tiup cluster exec ${cluster.name} -N ${instance.host} --command "ls ${instance.deployDir}/log"`
+    const cmd = `tiup cluster exec ${cluster.name} -N ${instance.host} --command "ls ${instance.deployDir}/${folderName}"`
     const cr = await shell.exec(cmd)
 
     const files: string[] = []
@@ -127,8 +128,7 @@ export class ClusterCommand {
     return files
   }
 
-  // use a uuid to record whether it is copying
-  static async scpFile(
+  static async scpLogFile(
     fileName: string,
     inst: InstanceAndCluster,
     tempFolder: string
@@ -154,6 +154,46 @@ export class ClusterCommand {
       vscode.commands.executeCommand(
         'vscode.open',
         vscode.Uri.file(localLogFileFullPath)
+      )
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
+  }
+
+  static async scpConfFile(
+    fileName: string,
+    inst: InstanceAndCluster,
+    tempFolder: string
+  ) {
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder)
+    }
+
+    const { instance, cluster } = inst
+    const localFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    if (logfileScpStatus[localFileName]) {
+      vscode.window.showInformationMessage(`${fileName} is loading`)
+      return
+    }
+
+    const localOriFileName = 'ori-' + localFileName
+    const localOriFileFullPath = path.join(tempFolder, localOriFileName)
+    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName} "${localOriFileFullPath}"`
+    logfileScpStatus[localFileName] = true
+    vscode.window.showInformationMessage(`${fileName} is loading`)
+    const cr = await shell.exec(cmd)
+    logfileScpStatus[localFileName] = false
+
+    if (cr?.code === 0) {
+      const localFileFullPath = path.join(tempFolder, localFileName)
+      if (!fs.existsSync(localFileFullPath)) {
+        fs.copyFileSync(localOriFileFullPath, localFileFullPath)
+      }
+      vscode.commands.executeCommand(
+        'vscode.diff',
+        vscode.Uri.file(localOriFileFullPath),
+        vscode.Uri.file(localFileFullPath),
+        `${fileName} changes`
       )
     } else {
       vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)

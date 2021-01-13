@@ -75,6 +75,10 @@
       {
         "command": "ticode.cluster.viewInstanceLog",
         "title": "View cluster instance log"
+      },
+      {
+        "command": "ticode.cluster.viewInstanceConf",
+        "title": "View cluster instance conf"
       }
     ],
     "viewsContainers": {

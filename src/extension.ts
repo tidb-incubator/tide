@@ -68,7 +68,10 @@ export async function activate(context: vscode.ExtensionContext) {
       displayClusters(treeItem.label)
     ),
     registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
-      ClusterCommand.scpFile(fileName, inst, tempFolder)
+      ClusterCommand.scpLogFile(fileName, inst, tempFolder)
+    ),
+    registerCommand('ticode.cluster.viewInstanceConf', (fileName, inst) =>
+      ClusterCommand.scpConfFile(fileName, inst, tempFolder)
     ),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
