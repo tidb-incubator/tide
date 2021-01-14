@@ -99,6 +99,10 @@
       {
         "command": "ticode.cluster.destroy",
         "title": "Destroy cluster"
+      },
+      {
+        "command": "ticode.cluster.viewGlobalConfig",
+        "title": "View cluster global config"
       }
     ],
     "viewsContainers": {

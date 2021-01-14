@@ -231,6 +231,32 @@ export class ClusterCommand {
     }
   }
 
+  // copy global config file
+  static async copyGloalConfigFile(cluster: Cluster, tempFolder: string) {
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder)
+    }
+
+    const editFileName = `${cluster.name}-meta.yaml`
+    const bakFileName = 'ori-' + editFileName
+
+    // sync and bak
+    const bakFileFullPath = path.join(tempFolder, bakFileName)
+    const originalFileFullPath = path.join(cluster.path, 'meta.yaml')
+    fs.copyFileSync(originalFileFullPath, bakFileFullPath)
+
+    const editFileFullPath = path.join(tempFolder, editFileName)
+    if (!fs.existsSync(editFileFullPath)) {
+      fs.copyFileSync(bakFileFullPath, editFileFullPath)
+    }
+    vscode.commands.executeCommand(
+      'vscode.diff',
+      vscode.Uri.file(bakFileFullPath),
+      vscode.Uri.file(editFileFullPath),
+      `${cluster.name} global config changes`
+    )
+  }
+
   // start cluster
   static async startCluster(clusterName: string, tiup: TiUP) {
     await tiup.invokeInSharedTerminal(`cluster start ${clusterName}`)

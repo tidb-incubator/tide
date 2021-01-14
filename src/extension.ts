@@ -32,6 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
 
   // temp folder
+  // TODO: persist path to vscode configuration
   const { name: tempFolder } = tmp.dirSync()
 
   const commandsSubscriptions = [
@@ -95,6 +96,10 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.destroy', (treeItem) =>
       ClusterCommand.destroyCluster(treeItem.label, tiup)
     ),
+    // click
+    registerCommand('ticode.cluster.viewGlobalConfig', (cluster) => {
+      ClusterCommand.copyGloalConfigFile(cluster, tempFolder)
+    }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
