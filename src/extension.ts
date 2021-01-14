@@ -102,10 +102,24 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     // context menu
     registerCommand('ticode.cluster.applyClusterConfOnly', (treeItem) =>
-      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, false, tiup)
+      ClusterCommand.applyGlobalConfigFile(
+        treeItem.extra,
+        tempFolder,
+        false,
+        tiup
+      )
     ),
     registerCommand('ticode.cluster.applyClusterConfAndRestart', (treeItem) =>
-      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, true, tiup)
+      ClusterCommand.applyGlobalConfigFile(
+        treeItem.extra,
+        tempFolder,
+        true,
+        tiup
+      )
+    ),
+    // context menu
+    registerCommand('ticode.cluster.ssh', (treeItem) =>
+      ClusterCommand.ssh(treeItem.extra)
     ),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))

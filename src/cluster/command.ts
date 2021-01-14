@@ -309,6 +309,17 @@ export class ClusterCommand {
     }
   }
 
+  // ssh
+  static async ssh(inst: InstanceAndCluster) {
+    const { instance, cluster } = inst
+    const cmd = `ssh -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
+    const t = vscode.window.createTerminal(
+      `ssh ${instance.host} ${instance.role}`
+    )
+    t.sendText(cmd)
+    t.show()
+  }
+
   // deploy cluster
 
   // patch component

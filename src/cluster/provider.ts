@@ -103,7 +103,7 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
         'log',
         vscode.TreeItemCollapsibleState.Collapsed
       )
-      logsItem.extra = element.extra
+      logsItem.extra = element.extra // InstanceAndCluster
       logsItem.contextValue = 'cluster-instance-logs'
       items.push(logsItem)
 
