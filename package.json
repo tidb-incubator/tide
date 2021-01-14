@@ -111,6 +111,10 @@
       {
         "command": "ticode.cluster.applyClusterConfAndRestart",
         "title": "Apply and restart instances"
+      },
+      {
+        "command": "ticode.cluster.ssh",
+        "title": "SSH"
       }
     ],
     "viewsContainers": {
@@ -191,6 +195,10 @@
           "command": "ticode.cluster.destroy",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
           "group": "1@5"
+        },
+        {
+          "command": "ticode.cluster.ssh",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance"
         },
         {
           "command": "ticode.cluster.applyInstanceConf",
