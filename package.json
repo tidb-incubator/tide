@@ -103,6 +103,14 @@
       {
         "command": "ticode.cluster.viewGlobalConfig",
         "title": "View cluster global config"
+      },
+      {
+        "command": "ticode.cluster.applyClusterConfOnly",
+        "title": "Apply without restarting instances"
+      },
+      {
+        "command": "ticode.cluster.applyClusterConfAndRestart",
+        "title": "Apply and restart instances"
       }
     ],
     "viewsContainers": {
@@ -187,6 +195,16 @@
         {
           "command": "ticode.cluster.applyInstanceConf",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-instance-conf-file"
+        },
+        {
+          "command": "ticode.cluster.applyClusterConfOnly",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.cluster.applyClusterConfAndRestart",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
+          "group": "1@2"
         }
       ]
     }

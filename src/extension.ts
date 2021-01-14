@@ -100,6 +100,13 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.viewGlobalConfig', (cluster) => {
       ClusterCommand.copyGloalConfigFile(cluster, tempFolder)
     }),
+    // context menu
+    registerCommand('ticode.cluster.applyClusterConfOnly', (treeItem) =>
+      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, false, tiup)
+    ),
+    registerCommand('ticode.cluster.applyClusterConfAndRestart', (treeItem) =>
+      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, true, tiup)
+    ),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 

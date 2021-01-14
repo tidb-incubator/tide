@@ -58,6 +58,7 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     if (element.contextValue === 'cluster-name') {
       const cluster = element.extra as Cluster
 
+      // view cluste global config
       const globalConfigItem = new Item(
         'cluster config',
         vscode.TreeItemCollapsibleState.None,
@@ -67,6 +68,8 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
           arguments: [cluster],
         }
       )
+      globalConfigItem.extra = cluster
+      globalConfigItem.contextValue = 'cluster-global-config'
       items.push(globalConfigItem)
 
       const comps = await ClusterCommand.displayCluster(cluster.name)

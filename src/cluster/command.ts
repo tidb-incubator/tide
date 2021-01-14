@@ -5,6 +5,7 @@ import * as tmp from 'tmp'
 
 import { shell } from '../shell'
 import { TiUP } from '../tiup'
+import { resolveSoa } from 'dns'
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -254,6 +255,30 @@ export class ClusterCommand {
       vscode.Uri.file(bakFileFullPath),
       vscode.Uri.file(editFileFullPath),
       `${cluster.name} global config changes`
+    )
+  }
+
+  static async applyGlobalConfigFile(
+    cluster: Cluster,
+    tempFolder: string,
+    restart: boolean,
+    tiup: TiUP
+  ) {
+    const res = await vscode.window.showWarningMessage(
+      'Are you sure?',
+      'Let me check again',
+      'Apply anyway'
+    )
+    if (res !== 'Apply anyway') {
+      return
+    }
+
+    const editFileName = `${cluster.name}-meta.yaml`
+    const editFileFullPath = path.join(tempFolder, editFileName)
+    const originalFileFullPath = path.join(cluster.path, 'meta.yaml')
+    fs.copyFileSync(editFileFullPath, originalFileFullPath)
+    tiup.invokeInSharedTerminal(
+      `cluster reload ${cluster.name} ${restart ? '' : '--skip-restart'}`
     )
   }
 
