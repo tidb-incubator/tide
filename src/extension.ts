@@ -82,6 +82,19 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.applyInstanceConf', (treeItem) => {
       ClusterCommand.applyConfFile(treeItem.label, treeItem.extra, tempFolder)
     }),
+    // context menu
+    registerCommand('ticode.cluster.start', (treeItem) =>
+      ClusterCommand.startCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.stop', (treeItem) =>
+      ClusterCommand.stopCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.restart', (treeItem) =>
+      ClusterCommand.restartCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.destroy', (treeItem) =>
+      ClusterCommand.destroyCluster(treeItem.label, tiup)
+    ),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 

@@ -4,6 +4,7 @@ import * as path from 'path'
 import * as tmp from 'tmp'
 
 import { shell } from '../shell'
+import { TiUP } from '../tiup'
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -231,10 +232,31 @@ export class ClusterCommand {
   }
 
   // start cluster
+  static async startCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster start ${clusterName}`)
+  }
 
   // stop cluster
+  static async stopCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster stop ${clusterName}`)
+  }
+
+  // restart cluster
+  static async restartCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster restart ${clusterName}`)
+  }
 
   // destroy cluster
+  static async destroyCluster(clusterName: string, tiup: TiUP) {
+    const res = await vscode.window.showWarningMessage(
+      'DANGER!!! Are you sure you want to destroy this cluster?',
+      'Let me think',
+      'Destroy anyway'
+    )
+    if (res === 'Destroy anyway') {
+      await tiup.invokeInSharedTerminal(`cluster destroy ${clusterName} -y`)
+    }
+  }
 
   // deploy cluster
 
