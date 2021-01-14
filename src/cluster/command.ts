@@ -200,6 +200,36 @@ export class ClusterCommand {
     }
   }
 
+  static async applyConfFile(
+    fileName: string,
+    inst: InstanceAndCluster,
+    tempFolder: string
+  ) {
+    const { instance, cluster } = inst
+
+    const localFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    const localFileFullPath = path.join(tempFolder, localFileName)
+    const newConf = fs.readFileSync(localFileFullPath, { encoding: 'utf-8' })
+
+    const localOriFileName = 'ori-' + localFileName
+    const localOriFileFullPath = path.join(tempFolder, localOriFileName)
+    const oriConf = fs.readFileSync(localOriFileFullPath, { encoding: 'utf-8' })
+
+    if (newConf === oriConf) {
+      vscode.window.showInformationMessage(`${fileName} has no changes!`)
+      return
+    }
+    const cmd = `scp -i ${cluster.privateKey} "${localFileFullPath}" ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName}`
+    vscode.window.showInformationMessage(`Applying new ${fileName}!`)
+    const cr = await shell.exec(cmd)
+    if (cr?.code === 0) {
+      vscode.window.showInformationMessage(`New ${fileName} is applied!`)
+      fs.copyFileSync(localFileFullPath, localOriFileFullPath)
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
+  }
+
   // start cluster
 
   // stop cluster

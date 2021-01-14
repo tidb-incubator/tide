@@ -62,17 +62,26 @@ export async function activate(context: vscode.ExtensionContext) {
 
     ////////////////
     // cluster
+    // navigation action
     registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
+    // context menu
     registerCommand('ticode.cluster.list', listClusters),
+    // context menu
     registerCommand('ticode.cluster.display', (treeItem) =>
       displayClusters(treeItem.label)
     ),
+    // directly click
     registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
       ClusterCommand.scpLogFile(fileName, inst, tempFolder)
     ),
+    // directly click
     registerCommand('ticode.cluster.viewInstanceConf', (fileName, inst) =>
       ClusterCommand.scpConfFile(fileName, inst, tempFolder)
     ),
+    // context menu
+    registerCommand('ticode.cluster.applyInstanceConf', (treeItem) => {
+      ClusterCommand.applyConfFile(treeItem.label, treeItem.extra, tempFolder)
+    }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
