@@ -4,6 +4,8 @@ import * as path from 'path'
 import * as tmp from 'tmp'
 
 import { shell } from '../shell'
+import { TiUP } from '../tiup'
+import { resolveSoa } from 'dns'
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -99,12 +101,13 @@ export class ClusterCommand {
     return comps
   }
 
-  // list instance logs
-  static async listInstanceLogs(
-    instAndCluster: InstanceAndCluster
+  // list instance files
+  static async listInstanceFiles(
+    instAndCluster: InstanceAndCluster,
+    folderName: string
   ): Promise<string[]> {
     const { cluster, instance } = instAndCluster
-    const cmd = `tiup cluster exec ${cluster.name} -N ${instance.host} --command "ls ${instance.deployDir}/log"`
+    const cmd = `tiup cluster exec ${cluster.name} -N ${instance.host} --command "ls ${instance.deployDir}/${folderName}"`
     const cr = await shell.exec(cmd)
 
     const files: string[] = []
@@ -127,8 +130,7 @@ export class ClusterCommand {
     return files
   }
 
-  // use a uuid to record whether it is copying
-  static async scpFile(
+  static async scpLogFile(
     fileName: string,
     inst: InstanceAndCluster,
     tempFolder: string
@@ -160,11 +162,152 @@ export class ClusterCommand {
     }
   }
 
+  static async scpConfFile(
+    fileName: string,
+    inst: InstanceAndCluster,
+    tempFolder: string
+  ) {
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder)
+    }
+
+    const { instance, cluster } = inst
+    const localFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    if (logfileScpStatus[localFileName]) {
+      vscode.window.showInformationMessage(`${fileName} is loading`)
+      return
+    }
+
+    const localOriFileName = 'ori-' + localFileName
+    const localOriFileFullPath = path.join(tempFolder, localOriFileName)
+    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName} "${localOriFileFullPath}"`
+    logfileScpStatus[localFileName] = true
+    vscode.window.showInformationMessage(`${fileName} is loading`)
+    const cr = await shell.exec(cmd)
+    logfileScpStatus[localFileName] = false
+
+    if (cr?.code === 0) {
+      const localFileFullPath = path.join(tempFolder, localFileName)
+      if (!fs.existsSync(localFileFullPath)) {
+        fs.copyFileSync(localOriFileFullPath, localFileFullPath)
+      }
+      vscode.commands.executeCommand(
+        'vscode.diff',
+        vscode.Uri.file(localOriFileFullPath),
+        vscode.Uri.file(localFileFullPath),
+        `${fileName} changes`
+      )
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
+  }
+
+  static async applyConfFile(
+    fileName: string,
+    inst: InstanceAndCluster,
+    tempFolder: string
+  ) {
+    const { instance, cluster } = inst
+
+    const localFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    const localFileFullPath = path.join(tempFolder, localFileName)
+    const newConf = fs.readFileSync(localFileFullPath, { encoding: 'utf-8' })
+
+    const localOriFileName = 'ori-' + localFileName
+    const localOriFileFullPath = path.join(tempFolder, localOriFileName)
+    const oriConf = fs.readFileSync(localOriFileFullPath, { encoding: 'utf-8' })
+
+    if (newConf === oriConf) {
+      vscode.window.showInformationMessage(`${fileName} has no changes!`)
+      return
+    }
+    const cmd = `scp -i ${cluster.privateKey} "${localFileFullPath}" ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName}`
+    vscode.window.showInformationMessage(`Applying new ${fileName}!`)
+    const cr = await shell.exec(cmd)
+    if (cr?.code === 0) {
+      vscode.window.showInformationMessage(`New ${fileName} is applied!`)
+      fs.copyFileSync(localFileFullPath, localOriFileFullPath)
+    } else {
+      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    }
+  }
+
+  // copy global config file
+  static async copyGloalConfigFile(cluster: Cluster, tempFolder: string) {
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder)
+    }
+
+    const editFileName = `${cluster.name}-meta.yaml`
+    const bakFileName = 'ori-' + editFileName
+
+    // sync and bak
+    const bakFileFullPath = path.join(tempFolder, bakFileName)
+    const originalFileFullPath = path.join(cluster.path, 'meta.yaml')
+    fs.copyFileSync(originalFileFullPath, bakFileFullPath)
+
+    const editFileFullPath = path.join(tempFolder, editFileName)
+    if (!fs.existsSync(editFileFullPath)) {
+      fs.copyFileSync(bakFileFullPath, editFileFullPath)
+    }
+    vscode.commands.executeCommand(
+      'vscode.diff',
+      vscode.Uri.file(bakFileFullPath),
+      vscode.Uri.file(editFileFullPath),
+      `${cluster.name} global config changes`
+    )
+  }
+
+  static async applyGlobalConfigFile(
+    cluster: Cluster,
+    tempFolder: string,
+    restart: boolean,
+    tiup: TiUP
+  ) {
+    const res = await vscode.window.showWarningMessage(
+      'Are you sure?',
+      'Let me check again',
+      'Apply anyway'
+    )
+    if (res !== 'Apply anyway') {
+      return
+    }
+
+    const editFileName = `${cluster.name}-meta.yaml`
+    const editFileFullPath = path.join(tempFolder, editFileName)
+    const originalFileFullPath = path.join(cluster.path, 'meta.yaml')
+    fs.copyFileSync(editFileFullPath, originalFileFullPath)
+    tiup.invokeInSharedTerminal(
+      `cluster reload ${cluster.name} ${restart ? '' : '--skip-restart'}`
+    )
+  }
+
   // start cluster
+  static async startCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster start ${clusterName}`)
+  }
 
   // stop cluster
+  static async stopCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster stop ${clusterName}`)
+  }
+
+  // restart cluster
+  static async restartCluster(clusterName: string, tiup: TiUP) {
+    await tiup.invokeInSharedTerminal(`cluster restart ${clusterName}`)
+  }
 
   // destroy cluster
+  static async destroyCluster(clusterName: string, tiup: TiUP) {
+    const res = await vscode.window.showWarningMessage(
+      'DANGER!!! Are you sure you want to destroy this cluster?',
+      'Let me think',
+      'Destroy anyway'
+    )
+    if (res === 'Destroy anyway') {
+      await tiup.invokeInSharedTerminal(`cluster destroy ${clusterName} -y`)
+    }
+  }
 
   // deploy cluster
 

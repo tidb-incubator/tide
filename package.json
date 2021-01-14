@@ -75,6 +75,42 @@
       {
         "command": "ticode.cluster.viewInstanceLog",
         "title": "View cluster instance log"
+      },
+      {
+        "command": "ticode.cluster.viewInstanceConf",
+        "title": "View cluster instance conf"
+      },
+      {
+        "command": "ticode.cluster.applyInstanceConf",
+        "title": "Apply this conf"
+      },
+      {
+        "command": "ticode.cluster.start",
+        "title": "Start cluster"
+      },
+      {
+        "command": "ticode.cluster.stop",
+        "title": "Stop cluster"
+      },
+      {
+        "command": "ticode.cluster.restart",
+        "title": "Restart cluster"
+      },
+      {
+        "command": "ticode.cluster.destroy",
+        "title": "Destroy cluster"
+      },
+      {
+        "command": "ticode.cluster.viewGlobalConfig",
+        "title": "View cluster global config"
+      },
+      {
+        "command": "ticode.cluster.applyClusterConfOnly",
+        "title": "Apply without restarting instances"
+      },
+      {
+        "command": "ticode.cluster.applyClusterConfAndRestart",
+        "title": "Apply and restart instances"
       }
     ],
     "viewsContainers": {
@@ -133,7 +169,42 @@
         },
         {
           "command": "ticode.cluster.display",
-          "when": "view == ticode-tiup-cluster && viewItem == cluster-name"
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.cluster.start",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "1@2"
+        },
+        {
+          "command": "ticode.cluster.stop",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "1@3"
+        },
+        {
+          "command": "ticode.cluster.restart",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "1@4"
+        },
+        {
+          "command": "ticode.cluster.destroy",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "1@5"
+        },
+        {
+          "command": "ticode.cluster.applyInstanceConf",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance-conf-file"
+        },
+        {
+          "command": "ticode.cluster.applyClusterConfOnly",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.cluster.applyClusterConfAndRestart",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
+          "group": "1@2"
         }
       ]
     }

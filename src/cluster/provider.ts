@@ -25,7 +25,7 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     this._onDidChangeTreeData.fire()
   }
 
-  // the returned value will pass to other commands
+  // the returned value will pass to other commands in the context menu
   getTreeItem(element: Item): vscode.TreeItem {
     return element
   }
@@ -57,6 +57,20 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     }
     if (element.contextValue === 'cluster-name') {
       const cluster = element.extra as Cluster
+
+      // view cluste global config
+      const globalConfigItem = new Item(
+        'cluster config',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'ticode.cluster.viewGlobalConfig',
+          title: 'View cluster global config',
+          arguments: [cluster],
+        }
+      )
+      globalConfigItem.extra = cluster
+      globalConfigItem.contextValue = 'cluster-global-config'
+      items.push(globalConfigItem)
 
       const comps = await ClusterCommand.displayCluster(cluster.name)
       Object.keys(comps).forEach((comp) => {
@@ -97,13 +111,16 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
         'conf',
         vscode.TreeItemCollapsibleState.Collapsed
       )
-      configItem.extra = element.extra
+      configItem.extra = element.extra // InstanceAndCluster
       configItem.contextValue = 'cluster-instance-confs'
       items.push(configItem)
     }
     if (element.contextValue === 'cluster-instance-logs') {
       const instAndCluster = element.extra as InstanceAndCluster
-      const logFiles = await ClusterCommand.listInstanceLogs(instAndCluster)
+      const logFiles = await ClusterCommand.listInstanceFiles(
+        instAndCluster,
+        'log'
+      )
       logFiles.forEach((logFile) => {
         const logItem = new Item(
           logFile,
@@ -124,6 +141,28 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     //   const a = element.label
     //   console.log('click log fiel:', a)
     // }
+
+    if (element.contextValue === 'cluster-instance-confs') {
+      const instAndCluster = element.extra as InstanceAndCluster
+      const confFiles = await ClusterCommand.listInstanceFiles(
+        instAndCluster,
+        'conf'
+      )
+      confFiles.forEach((confFile) => {
+        const confItem = new Item(
+          confFile,
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: 'ticode.cluster.viewInstanceConf',
+            title: 'View instance conf',
+            arguments: [confFile, instAndCluster],
+          }
+        )
+        confItem.extra = instAndCluster
+        confItem.contextValue = 'cluster-instance-conf-file'
+        items.push(confItem)
+      })
+    }
 
     return Promise.resolve(items)
   }

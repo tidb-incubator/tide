@@ -32,6 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
 
   // temp folder
+  // TODO: persist path to vscode configuration
   const { name: tempFolder } = tmp.dirSync()
 
   const commandsSubscriptions = [
@@ -62,13 +63,49 @@ export async function activate(context: vscode.ExtensionContext) {
 
     ////////////////
     // cluster
+    // navigation action
     registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
+    // context menu
     registerCommand('ticode.cluster.list', listClusters),
+    // context menu
     registerCommand('ticode.cluster.display', (treeItem) =>
       displayClusters(treeItem.label)
     ),
+    // directly click
     registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
-      ClusterCommand.scpFile(fileName, inst, tempFolder)
+      ClusterCommand.scpLogFile(fileName, inst, tempFolder)
+    ),
+    // directly click
+    registerCommand('ticode.cluster.viewInstanceConf', (fileName, inst) =>
+      ClusterCommand.scpConfFile(fileName, inst, tempFolder)
+    ),
+    // context menu
+    registerCommand('ticode.cluster.applyInstanceConf', (treeItem) => {
+      ClusterCommand.applyConfFile(treeItem.label, treeItem.extra, tempFolder)
+    }),
+    // context menu
+    registerCommand('ticode.cluster.start', (treeItem) =>
+      ClusterCommand.startCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.stop', (treeItem) =>
+      ClusterCommand.stopCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.restart', (treeItem) =>
+      ClusterCommand.restartCluster(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.destroy', (treeItem) =>
+      ClusterCommand.destroyCluster(treeItem.label, tiup)
+    ),
+    // click
+    registerCommand('ticode.cluster.viewGlobalConfig', (cluster) => {
+      ClusterCommand.copyGloalConfigFile(cluster, tempFolder)
+    }),
+    // context menu
+    registerCommand('ticode.cluster.applyClusterConfOnly', (treeItem) =>
+      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, false, tiup)
+    ),
+    registerCommand('ticode.cluster.applyClusterConfAndRestart', (treeItem) =>
+      ClusterCommand.applyGlobalConfigFile(treeItem.extra, tempFolder, true, tiup)
     ),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
