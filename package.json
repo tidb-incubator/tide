@@ -115,6 +115,14 @@
       {
         "command": "ticode.cluster.ssh",
         "title": "SSH"
+      },
+      {
+        "command": "ticode.cluster.patchByCurrent",
+        "title": "Patch by current repo"
+      },
+      {
+        "command": "ticode.cluster.patchByOther",
+        "title": "Patch by other binary"
       }
     ],
     "viewsContainers": {
@@ -197,8 +205,19 @@
           "group": "1@5"
         },
         {
+          "command": "ticode.cluster.patchByCurrent",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component$|^cluster-instance$/",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.cluster.patchByOther",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component$|^cluster-instance$/",
+          "group": "1@2"
+        },
+        {
           "command": "ticode.cluster.ssh",
-          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance"
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
+          "group": "2@1"
         },
         {
           "command": "ticode.cluster.applyInstanceConf",

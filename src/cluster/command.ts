@@ -1,11 +1,9 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as tmp from 'tmp'
 
-import { shell } from '../shell'
+import { shell, ShellResult } from '../shell'
 import { TiUP } from '../tiup'
-import { resolveSoa } from 'dns'
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -25,6 +23,12 @@ export type ClusterInstance = Record<
   | 'deployDir',
   string
 >
+
+export type ClusterComponent = {
+  cluster: Cluster
+  role: string
+  instances: ClusterInstance[]
+}
 
 export type InstanceAndCluster = {
   cluster: Cluster
@@ -320,9 +324,56 @@ export class ClusterCommand {
     t.show()
   }
 
-  // deploy cluster
-
   // patch component
+  static async patchByCurrent(
+    treeItemExtra: ClusterComponent | InstanceAndCluster,
+    treeItemContextValue: string,
+    workspaceRoot: string,
+    tiup: TiUP
+  ) {
+    let compRole = 'unknown'
+    let patchTarget = ''
+    if (treeItemContextValue === 'cluster-component') {
+      const { cluster, role, instances } = treeItemExtra as ClusterComponent
+      compRole = role
+      patchTarget = `-R ${role}`
+    }
+    if (treeItemContextValue === 'cluster-instance') {
+      const { instance, cluster } = treeItemExtra as InstanceAndCluster
+      compRole = instance.role
+      patchTarget = `-N ${instance.id}`
+    }
 
-  // edit config
+    // check repo
+    if (!workspaceRoot.endsWith(compRole)) {
+      vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+      return
+    }
+
+    // // build
+    // let cr = await shell.exec('GOOS=linux GOARCH=amd64 make')
+    // if (cr?.code !== 0) {
+    //   handleError(cr)
+    //   return
+    // }
+    // // tar
+    // cr = await shell.exec(`cd bin && tar cvzf ${tar} *`)
+    // if (cr?.code !== 0) {
+    //   handleError(cr)
+    //   return
+    // }
+    // const cmd = `cluster patch ${treeItemExtra.cluster.name} ${tar}`
+
+    const tar = `/tmp/${compRole}.tar.gz`
+    const cmd = `GOOS=linux GOARCH=amd64 make && cd bin && tar cvzf ${tar} * && cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget}`
+    const t = vscode.window.createTerminal(`patch ${compRole}`)
+    t.sendText(cmd)
+    t.show()
+  }
+}
+
+/////////////////////////
+// util
+function handleError(cr?: ShellResult) {
+  vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
 }
