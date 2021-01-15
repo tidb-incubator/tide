@@ -96,15 +96,14 @@ Do all the things just in your favorite Visual Studio Code:
 
 Cluster:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fxflwr_lFvE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+- Youtube: https://youtu.be/fxflwr_lFvE
+- Bilibili: in review
 
-https://youtu.be/fxflwr_lFvE
 
 Playground:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/57pU6Jhc5C0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-https://youtu.be/57pU6Jhc5C0
+- Youtube: https://youtu.be/57pU6Jhc5C0
+- Bilibili: in review
 
 Debug:
 
