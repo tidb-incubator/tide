@@ -19,6 +19,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] List all clusters
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
+  - [ ] Show a cluster topo very cool
   - Restart
     - [x] Restart a cluster
     - [ ] restart all instances of a component
