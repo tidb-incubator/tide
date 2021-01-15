@@ -154,6 +154,10 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.restartInstance', (treeItem) => {
       ClusterCommand.restartInstance(treeItem.extra as InstanceAndCluster, tiup)
     }),
+    // click
+    registerCommand('ticode.cluster.viewTopo', (cluster) => {
+      ClusterCommand.viewClusterTopo(cluster, tempFolder)
+    }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 

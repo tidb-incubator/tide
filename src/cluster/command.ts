@@ -140,7 +140,7 @@ export class ClusterCommand {
     tempFolder: string
   ) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const { instance, cluster } = inst
@@ -172,7 +172,7 @@ export class ClusterCommand {
     tempFolder: string
   ) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const { instance, cluster } = inst
@@ -239,7 +239,7 @@ export class ClusterCommand {
   // copy global config file
   static async copyGloalConfigFile(cluster: Cluster, tempFolder: string) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const editFileName = `${cluster.name}-meta.yaml`
@@ -473,6 +473,50 @@ export class ClusterCommand {
     const { cluster, instance } = treeItemExtra
     const cmd = `cluster restart ${cluster.name} -N ${instance.id}`
     await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async viewClusterTopo(cluster: Cluster, tempFolder: string) {
+    const comps = await ClusterCommand.displayCluster(cluster.name)
+    let instances: ClusterInstance[] = []
+    Object.values(comps).forEach((arr) => (instances = instances.concat(arr)))
+    const hostInstances: Record<string, ClusterInstance[]> = {}
+    instances.forEach((inst) => {
+      hostInstances[inst.host] = hostInstances[inst.host] || []
+      hostInstances[inst.host].push(inst)
+    })
+    console.log('host instances:', hostInstances)
+    let content = ''
+    Object.keys(hostInstances).forEach((host, idx) => {
+      const instances = hostInstances[host]
+      const instsStr = instances
+        .map((inst) => `${inst.role}_${inst.ports.replace(/\//g, '_')};`)
+        .join(' ')
+      content += `
+  subgraph cluster${idx} {
+    node [style=filled];
+    label = "${host}";
+    ${instsStr}
+  }
+`
+    })
+    content = `
+digraph G {
+  rankdir=LR
+  ${content}
+}
+`
+    console.log(content)
+
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder, { recursive: true })
+    }
+    const dotFilePath = path.join(tempFolder, `${cluster.name}.dot`)
+    fs.writeFileSync(dotFilePath, content)
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.file(dotFilePath))
+    // vscode.commands.executeCommand(
+    //   'graphviz.preview',
+    //   vscode.Uri.parse(dotFilePath)
+    // )
   }
 }
 

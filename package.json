@@ -143,6 +143,10 @@
       {
         "command": "ticode.cluster.openGrafana",
         "title": "Open grafana"
+      },
+      {
+        "command": "ticode.cluster.viewTopo",
+        "title": "View cluster topo"
       }
     ],
     "viewsContainers": {

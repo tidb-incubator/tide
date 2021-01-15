@@ -13,6 +13,8 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     private context: vscode.ExtensionContext
   ) {}
 
+  // TODO: save cluster and instances in memory
+
   private _onDidChangeTreeData: vscode.EventEmitter<
     Item | undefined | null | void
   > = new vscode.EventEmitter<Item | undefined | null | void>()
@@ -56,6 +58,17 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
     }
     if (element.contextValue === 'cluster-name') {
       const cluster = element.extra as Cluster
+
+      const topoItem = new Item(
+        'cluster topo',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'ticode.cluster.viewTopo',
+          title: 'View cluster topo',
+          arguments: [cluster],
+        }
+      )
+      items.push(topoItem)
 
       // view cluste global config
       const globalConfigItem = new Item(
