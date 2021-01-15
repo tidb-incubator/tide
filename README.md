@@ -2,7 +2,9 @@
 
 TiCode is a Visual Studio Code extension that makes developing TiDB a breeze.
 
-Still in the loop of coding, compiling, distributing binary to different servers, restarting every process and pulling information from logs everywhere? Try and see how TiCode makes TiDB development experience great again!
+Still in the loop of coding, compiling, copying binary to servers, restarting every process and pulling information from logs everywhere?
+
+**Try and see how TiCode makes TiDB development experience great again!**
 
 ## Features
 
@@ -11,8 +13,16 @@ Do all the things just in your favorite Visual Studio Code:
 - Start TiUP Playground/Cluster and start debugging instantly
 - Debug TiDB Cluster on Kubernetes
 - Run Chaos Mesh experiments
+- And mooooooooore!
 
-### TODO
+## Quick Start
+
+1. Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
+2. Start TiUP Playground
+3. Coding and Debugging
+
+
+## TODO
 
 - Cluster
 
@@ -83,13 +93,11 @@ Do all the things just in your favorite Visual Studio Code:
 
 ## Requirements
 
-TBD
+- TiUP
 
 ## Extension Settings
 
 ## Known Issues
-
-TBD
 
 ## Release Notes
 
