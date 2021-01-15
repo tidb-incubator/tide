@@ -76,9 +76,23 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Install TiUP
   - [ ] Upgrade TiUP
 
-Video:
+## Demo:
+
+Cluster:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/fxflwr_lFvE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+https://youtu.be/fxflwr_lFvE
+
+Playground:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/57pU6Jhc5C0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+https://youtu.be/57pU6Jhc5C0
+
+Debug:
+
+![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
 
 ## Requirements
 
