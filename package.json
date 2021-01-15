@@ -171,6 +171,10 @@
         {
           "id": "ticode-topo-manager",
           "name": "Topo Manager"
+        },
+        {
+          "id": "ticode-machine-manager",
+          "name": "Machine Manager"
         }
       ]
     },
