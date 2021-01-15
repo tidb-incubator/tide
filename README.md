@@ -21,7 +21,6 @@ Do all the things just in your favorite Visual Studio Code:
 2. Start TiUP Playground
 3. Coding and Debugging
 
-
 ## TODO
 
 - Cluster
@@ -29,13 +28,12 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] List all clusters
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
-  - [ ] Show a cluster topo
-  - [ ] Open dashboard / grafana link in browser
-  - [ ] Show dashboard / grafana inside vscode
+  - [x] Show a cluster topo (currently by graphviz)
+  - [x] Open dashboard / grafana
   - Restart
     - [x] Restart a cluster
-    - [ ] restart all instances of a component
-    - [ ] restart a single instance
+    - [x] restart all instances of a component
+    - [x] restart a single instance
   - Config
     - [x] View a cluster configuration
     - [x] View a single instance configuration
@@ -65,10 +63,12 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Attach to Debug @Aylei
 
 - Bench
+
   - [ ] Config bench
   - [ ] Start bench
 
 - Kubernetes
+
   - [ ] TreeView
   - [ ] Attach to Debug
   - [ ] Restart on local compile (Rsync)
@@ -84,12 +84,31 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Start virtual machines, ready for deploy a cluster
 
 - Scaffold for adding new feature
+
   - [ ] Scaffold for tidb-dashboard repo
   - [ ] Scaffold for coprocess
 
 - TiUP Manager
   - [ ] Install TiUP
   - [ ] Upgrade TiUP
+
+## Demo:
+
+Cluster:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/fxflwr_lFvE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+https://youtu.be/fxflwr_lFvE
+
+Playground:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/57pU6Jhc5C0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+https://youtu.be/57pU6Jhc5C0
+
+Debug:
+
+![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
 
 ## Requirements
 
