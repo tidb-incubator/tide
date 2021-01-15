@@ -42,6 +42,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] SSH to a single instance and enter the folder
   - [ ] Follow logs of all instances @Aylei
   - [ ] Attach to Debug @Aylei
+  - [ ] Restart on local compile (Rsync)
 
 - Playground
 
@@ -57,7 +58,10 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Config bench
   - [ ] Start bench
 
-- Kubernetes @Aylei TODO
+- Kubernetes
+  - [ ] TreeView
+  - [ ] Attach to Debug
+  - [ ] Restart on local compile (Rsync)
 
 - Cluster Topo Manager
 
