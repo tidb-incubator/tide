@@ -3,29 +3,29 @@
 
 ## general
 # host = ""
-# monitor = true
+# monitor = false
 
 ## db
 # db = 1
-# "db.binpath" = ""
-# "db.config" = "" # example: "components-config/db.config"
+# "db.binpath" = "current" # current means to use the current repo binary, will fallback to default binary if it doesn't exist
+# "db.config" = "components-config/tidb.config"
 # "db.host" = ""
 
 ## kv
 # kv = 1
-# "kv.binpath" = ""
-# "kv.config" = ""
+# "kv.binpath" = "current"
+# "kv.config" = "components-config/tikv.config"
 
 ## pd
 # pd = 1
-# "pd.binpath" = ""
-# "pd.config" = ""
+# "pd.binpath" = "current"
+# "pd.config" = "components-config/pd.config"
 # "pd.host" = ""
 
 ## tiflash
-# tiflash = 1 # set to 0 to not deploy it
+# tiflash = 0 # set to 0 to not deploy it
 # "tiflash.binpath" = ""
-# "tiflash.config" = ""
+# "tiflash.config" = "components-config/tiflash.config"
 
 ## drainer
 # drainer = 0

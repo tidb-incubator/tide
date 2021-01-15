@@ -42,7 +42,7 @@
       },
       {
         "command": "ticode.playground.reloadConfig",
-        "title": "Reload playground config"
+        "title": "Reset playground config"
       },
       {
         "command": "ticode.playground.refresh",
@@ -137,12 +137,12 @@
     "views": {
       "ticode-explorer": [
         {
-          "id": "ticode-tiup-playground",
-          "name": "TiUP Playground"
-        },
-        {
           "id": "ticode-tiup-cluster",
           "name": "TiUP Cluster"
+        },
+        {
+          "id": "ticode-tiup-playground",
+          "name": "TiUP Playground"
         }
       ]
     },
