@@ -167,6 +167,10 @@
         {
           "id": "ticode-tiup-playground",
           "name": "TiUP Playground"
+        },
+        {
+          "id": "ticode-topo-manager",
+          "name": "Topo Manager"
         }
       ]
     },

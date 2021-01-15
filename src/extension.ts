@@ -14,6 +14,7 @@ import {
   ClusterComponent,
   InstanceAndCluster,
 } from './cluster/command'
+import { TopoProvider } from './topo-manager/provider'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -34,6 +35,10 @@ export async function activate(context: vscode.ExtensionContext) {
     context
   )
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
+
+  // topo tree view
+  const topoProvider = new TopoProvider()
+  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
 
   // temp folder
   // TODO: persist path to vscode configuration

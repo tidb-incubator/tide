@@ -476,6 +476,8 @@ export class ClusterCommand {
   }
 
   static async viewClusterTopo(cluster: Cluster, tempFolder: string) {
+    vscode.window.showInformationMessage('Generating... please be patient')
+
     const comps = await ClusterCommand.displayCluster(cluster.name)
     let instances: ClusterInstance[] = []
     Object.values(comps).forEach((arr) => (instances = instances.concat(arr)))
