@@ -97,13 +97,13 @@ Do all the things just in your favorite Visual Studio Code:
 Cluster:
 
 - Youtube: https://youtu.be/fxflwr_lFvE
-- Bilibili: in review
+- Bilibili: https://www.bilibili.com/video/BV1oz4y1U7ec/ (currently in review)
 
 
 Playground:
 
 - Youtube: https://youtu.be/57pU6Jhc5C0
-- Bilibili: in review
+- Bilibili: https://www.bilibili.com/video/BV1pK411u7S4/ (currently in review)
 
 Debug:
 
