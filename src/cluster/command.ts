@@ -144,7 +144,7 @@ export class ClusterCommand {
     }
 
     const { instance, cluster } = inst
-    const localLogFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}`
+    const localLogFileName = `${cluster.name}-${instance.role}-${instance.id}-${fileName}.log`
     if (logfileScpStatus[localLogFileName]) {
       vscode.window.showInformationMessage(`${fileName} is loading`)
       return

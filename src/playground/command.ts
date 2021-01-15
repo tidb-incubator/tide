@@ -35,7 +35,11 @@ export class PlaygroundCommand {
     return undefined
   }
 
-  static async startPlayground(tiup: TiUP, configPath?: string) {
+  static async startPlayground(
+    tiup: TiUP,
+    workspaceRoot: string,
+    configPath?: string
+  ) {
     const running = await PlaygroundCommand.checkPlaygroundRun()
     if (running) {
       vscode.window.showInformationMessage('TiUP Playground is running')
@@ -55,6 +59,7 @@ export class PlaygroundCommand {
     // build command
     const folder = path.dirname(configPath)
     const args: string[] = []
+    let preCmd = ''
     Object.keys(obj).forEach((k) => {
       if (k !== 'tidb.version' && obj[k] !== '') {
         if (typeof obj[k] === 'boolean') {
@@ -65,14 +70,35 @@ export class PlaygroundCommand {
         ) {
           const fullPath = path.join(folder, obj[k] as string)
           args.push(`--${k} "${fullPath}"`)
+        } else if (k.endsWith('.binpath') && (obj[k] as string) === 'current') {
+          //
+          const pre = k.split('.')[0]
+          let comp = pre
+          // case by case
+          if (pre === 'db') {
+            comp = 'tidb'
+          } else if (pre === 'kv') {
+            comp = 'tikv'
+          }
+          if (workspaceRoot.endsWith(`/${comp}`)) {
+            args.push(`--${k} bin/${comp}-server`)
+            preCmd = 'make'
+          }
         } else {
           args.push(`--${k} ${obj[k]}`)
         }
       }
     })
     const tidbVersion = obj['tidb.version'] || ''
-    const cmd = `playground ${tidbVersion} ${args.join(' ')}`
-    await tiup.invokeInSharedTerminal(cmd)
+    const cmd = `tiup playground ${tidbVersion} ${args.join(' ')}`
+    let fullCmd = `${cmd} && exit`
+    if (preCmd) {
+      fullCmd = `${preCmd} && ${fullCmd}`
+    }
+    const t = await vscode.window.createTerminal('tiup playground')
+    t.sendText(fullCmd)
+    t.show()
+    // await tiup.invokeInSharedTerminal(cmd)
     PlaygroundCommand.loopCheckPlayground()
   }
 
