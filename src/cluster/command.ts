@@ -333,7 +333,7 @@ export class ClusterCommand {
   ) {
     // warn
     const res = await vscode.window.showInformationMessage(
-      'If you need to modify the cluster or instance config, please do it before patching to save your time',
+      'If you need to modify the cluster or instance config at the same time, please do it before patching to save your time',
       'Let me check',
       'Patch anyway'
     )
@@ -378,6 +378,50 @@ export class ClusterCommand {
       t.sendText(cmd)
       t.show()
     }
+  }
+
+  //
+  static async patchByOther(
+    treeItemExtra: ClusterComponent | InstanceAndCluster,
+    treeItemContextValue: string
+  ) {
+    // warn
+    const res = await vscode.window.showInformationMessage(
+      'If you need to modify the cluster or instance config at the same time, please do it before patching to save your time',
+      'Let me check',
+      'Patch anyway'
+    )
+    if (res === 'Let me check') {
+      return
+    }
+
+    //
+    let compRole = 'unknown'
+    let patchTarget = ''
+    if (treeItemContextValue === 'cluster-component') {
+      const { cluster, role, instances } = treeItemExtra as ClusterComponent
+      compRole = role
+      patchTarget = `-R ${role}`
+    }
+    if (treeItemContextValue === 'cluster-instance') {
+      const { instance, cluster } = treeItemExtra as InstanceAndCluster
+      compRole = instance.role
+      patchTarget = `-N ${instance.id}`
+    }
+
+    // choose
+    const files = await vscode.window.showOpenDialog({
+      canSelectFolders: false,
+      filters: { tar: ['.tar.gz'] },
+      canSelectMany: false,
+    })
+    if (files === undefined) {
+      return
+    }
+    const cmd = `tiup cluster patch ${treeItemExtra.cluster.name} ${files[0].path} ${patchTarget} && exit`
+    const t = vscode.window.createTerminal(`patch ${compRole}`)
+    t.sendText(cmd)
+    t.show()
   }
 }
 

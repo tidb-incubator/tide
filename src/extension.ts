@@ -131,7 +131,7 @@ export async function activate(context: vscode.ExtensionContext) {
       )
     }),
     registerCommand('ticode.cluster.patchByOther', (treeItem) => {
-      console.log(treeItem)
+      ClusterCommand.patchByOther(treeItem.extra, treeItem.contextValue)
     }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
