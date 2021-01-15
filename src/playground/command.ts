@@ -72,7 +72,6 @@ export class PlaygroundCommand {
           const fullPath = path.join(folder, obj[k] as string)
           args.push(`--${k} "${fullPath}"`)
         } else if (k.endsWith('.binpath') && (obj[k] as string) === 'current') {
-          //
           const pre = k.split('.')[0]
           let comp = pre
           // case by case
@@ -86,14 +85,14 @@ export class PlaygroundCommand {
           workspaceFolders?.forEach(folder => {
             if (folder.name === comp) {
               if (comp === 'tidb') {
-                preCmds.push(`pushd ${folder.uri} && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go && popd`)
-                args.push(`--${k} ${folder.uri}/bin/tidb-server`)
+                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
+                args.push(`--${k} ${folder.uri.fsPath}/bin/tidb-server`)
               } else if (comp === 'tikv') {
-                preCmds.push(`pushd ${folder.uri} && make build && popd`)
-                args.push(`--${k} ${folder.uri}/target/debug/tikv-server`)
+                preCmds.push(`cd ${folder.uri.fsPath} && make build`)
+                args.push(`--${k} ${folder.uri.fsPath}/target/debug/tikv-server`)
               } else if (comp === 'pd') {
-                preCmds.push(`pushd ${folder.uri} && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go && popd`)
-                args.push(`--${k} ${folder.uri}/bin/pd-server`)
+                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go`)
+                args.push(`--${k} ${folder.uri.fsPath}/bin/pd-server`)
               }
             }
           })
@@ -106,6 +105,7 @@ export class PlaygroundCommand {
     const cmd = `tiup playground ${tidbVersion} ${args.join(' ')}`
     let fullCmd = `${cmd} && exit`
     if (preCmds.length > 0) {
+      preCmds.push('cd ~')
       fullCmd = `${preCmds.join(' && ')} && ${fullCmd}`
     }
     const t = await vscode.window.createTerminal('tiup playground')

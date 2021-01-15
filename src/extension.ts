@@ -42,13 +42,13 @@ export async function activate(context: vscode.ExtensionContext) {
     ////////////////
     // playground
     registerCommand('ticode.playground.start', () =>
-      PlaygroundCommand.startPlayground(tiup, vscode.workspace || '')
+      PlaygroundCommand.startPlayground(tiup, vscode.workspace.workspaceFolders)
     ),
     registerCommand('ticode.playground.stop', () => stopPlayground()),
     registerCommand('ticode.playground.startByConfig', () =>
       PlaygroundCommand.startPlayground(
         tiup,
-        vscode.workspace.rootPath || '',
+        vscode.workspace.workspaceFolders,
         playgroundProvider.playgroundConfigPath
       )
     ),
