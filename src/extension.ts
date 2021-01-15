@@ -16,6 +16,7 @@ import {
 } from './cluster/command'
 import { TopoProvider } from './topo-manager/provider'
 import { MachineProvider } from './machine-manager/provider'
+import { ScaffoldProvider } from './scaffold/provider'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -47,6 +48,10 @@ export async function activate(context: vscode.ExtensionContext) {
     'ticode-machine-manager',
     machineProvider
   )
+
+  // scaffold tree view
+  const scaffoldProvider = new ScaffoldProvider()
+  vscode.window.registerTreeDataProvider('ticode-scaffold', scaffoldProvider)
 
   // temp folder
   // TODO: persist path to vscode configuration

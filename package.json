@@ -175,6 +175,10 @@
         {
           "id": "ticode-machine-manager",
           "name": "Machine Manager"
+        },
+        {
+          "id": "ticode-scaffold",
+          "name": "Scaffold"
         }
       ]
     },
