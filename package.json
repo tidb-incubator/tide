@@ -135,6 +135,14 @@
       {
         "command": "ticode.cluster.restartInstance",
         "title": "Restart instance"
+      },
+      {
+        "command": "ticode.cluster.openDashboard",
+        "title": "Open dashboard"
+      },
+      {
+        "command": "ticode.cluster.openGrafana",
+        "title": "Open grafana"
       }
     ],
     "viewsContainers": {
@@ -220,6 +228,16 @@
           "command": "ticode.cluster.destroy",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
           "group": "1@5"
+        },
+        {
+          "command": "ticode.cluster.openDashboard",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.openGrafana",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "2@2"
         },
         {
           "command": "ticode.cluster.patchByCurrent",

@@ -20,7 +20,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
   - [ ] Show a cluster topo
-  - [ ] Open dashboard / grafana
+  - [x] Open dashboard / grafana
   - Restart
     - [x] Restart a cluster
     - [x] restart all instances of a component

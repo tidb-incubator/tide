@@ -43,21 +43,21 @@ export class ClusterCommand {
   static async listClusters(): Promise<Cluster[]> {
     const clusters: Cluster[] = []
     const cr = await shell.exec('tiup cluster list')
-    if (cr?.code === 0) {
-      const lines = cr.stdout.trim().split('\n')
-      let skip = true
-      lines.forEach((line) => {
-        if (!skip) {
-          const [name, user, version, path, privateKey] = line.split(/\s+/)
-          clusters.push({ name, user, version, path, privateKey })
-        }
-        if (line.startsWith('--')) {
-          skip = false
-        }
-      })
-    } else {
-      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return clusters
     }
+    const lines = cr.stdout.trim().split('\n')
+    let skip = true
+    lines.forEach((line) => {
+      if (!skip) {
+        const [name, user, version, path, privateKey] = line.split(/\s+/)
+        clusters.push({ name, user, version, path, privateKey })
+      }
+      if (line.startsWith('--')) {
+        skip = false
+      }
+    })
     return clusters
   }
 
@@ -311,6 +311,45 @@ export class ClusterCommand {
     if (res === 'Destroy anyway') {
       await tiup.invokeInSharedTerminal(`cluster destroy ${clusterName} -y`)
     }
+  }
+
+  // open dashboard
+  static async openDashboard(clusterName: string, tiup: TiUP) {
+    const cr = await shell.exec(`tiup cluster display ${clusterName}`)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return
+    }
+    const lines = cr.stdout.trim().split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/Dashboard URL:\s+(\S+)/)
+      if (m) {
+        const url = m[1]
+        vscode.env.openExternal(vscode.Uri.parse(url))
+        return
+      }
+    }
+  }
+
+  // open grafana
+  static async openGrafana(clusterName: string, tiup: TiUP) {
+    const cr = await shell.exec(`tiup cluster display ${clusterName}`)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return
+    }
+    const lines = cr.stdout.trim().split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/(\S+)\s+grafana/)
+      if (m) {
+        const url = m[1]
+        vscode.env.openExternal(vscode.Uri.parse(`http://${url}`))
+        return
+      }
+    }
+    vscode.window.showErrorMessage(
+      'Open grafana failed, you may not install it.'
+    )
   }
 
   // ssh

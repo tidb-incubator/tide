@@ -104,6 +104,12 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.destroy', (treeItem) =>
       ClusterCommand.destroyCluster(treeItem.label, tiup)
     ),
+    registerCommand('ticode.cluster.openDashboard', (treeItem) =>
+      ClusterCommand.openDashboard(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.openGrafana', (treeItem) =>
+      ClusterCommand.openGrafana(treeItem.label, tiup)
+    ),
     // click
     registerCommand('ticode.cluster.viewGlobalConfig', (cluster) => {
       ClusterCommand.copyGloalConfigFile(cluster, tempFolder)
