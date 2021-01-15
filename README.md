@@ -19,7 +19,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] List all clusters
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
-  - [ ] Show a cluster topo
+  - [x] Show a cluster topo (currently by graphviz)
   - [x] Open dashboard / grafana
   - Restart
     - [x] Restart a cluster
