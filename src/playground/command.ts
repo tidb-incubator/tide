@@ -38,7 +38,7 @@ export class PlaygroundCommand {
 
   static async startPlayground(
     tiup: TiUP,
-    workspaceRoot: string,
+    workspaceFolders: ReadonlyArray<vscode.WorkspaceFolder> | undefined,
     configPath?: string
   ) {
     const running = await PlaygroundCommand.checkPlaygroundRun()
@@ -60,7 +60,7 @@ export class PlaygroundCommand {
     // build command
     const folder = path.dirname(configPath)
     const args: string[] = []
-    let preCmd = ''
+    let preCmds: string[] = []
     Object.keys(obj).forEach((k) => {
       if (k !== 'tidb.version' && obj[k] !== '') {
         if (typeof obj[k] === 'boolean') {
@@ -80,11 +80,23 @@ export class PlaygroundCommand {
             comp = 'tidb'
           } else if (pre === 'kv') {
             comp = 'tikv'
+          } else if (pre === 'pd') {
+            comp = 'pd'
           }
-          if (workspaceRoot.endsWith(`/${comp}`)) {
-            args.push(`--${k} bin/${comp}-server`)
-            preCmd = 'make'
-          }
+          workspaceFolders?.forEach(folder => {
+            if (folder.name === comp) {
+              if (comp === 'tidb') {
+                preCmds.push(`pushd ${folder.uri} && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go && popd`)
+                args.push(`--${k} ${folder.uri}/bin/tidb-server`)
+              } else if (comp === 'tikv') {
+                preCmds.push(`pushd ${folder.uri} && make build && popd`)
+                args.push(`--${k} ${folder.uri}/target/debug/tikv-server`)
+              } else if (comp === 'pd') {
+                preCmds.push(`pushd ${folder.uri} && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go && popd`)
+                args.push(`--${k} ${folder.uri}/bin/pd-server`)
+              }
+            }
+          })
         } else {
           args.push(`--${k} ${obj[k]}`)
         }
@@ -93,8 +105,8 @@ export class PlaygroundCommand {
     const tidbVersion = obj['tidb.version'] || ''
     const cmd = `tiup playground ${tidbVersion} ${args.join(' ')}`
     let fullCmd = `${cmd} && exit`
-    if (preCmd) {
-      fullCmd = `${preCmd} && ${fullCmd}`
+    if (preCmds.length > 0) {
+      fullCmd = `${preCmds.join(' && ')} && ${fullCmd}`
     }
     const t = await vscode.window.createTerminal('tiup playground')
     t.sendText(fullCmd)
