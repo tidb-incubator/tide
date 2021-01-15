@@ -423,6 +423,18 @@ export class ClusterCommand {
     t.sendText(cmd)
     t.show()
   }
+
+  static async restartComponent(treeItemExtra: ClusterComponent, tiup: TiUP) {
+    const { cluster, role } = treeItemExtra
+    const cmd = `cluster restart ${cluster.name} -R ${role}`
+    await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async restartInstance(treeItemExtra: InstanceAndCluster, tiup: TiUP) {
+    const { cluster, instance } = treeItemExtra
+    const cmd = `cluster restart ${cluster.name} -N ${instance.id}`
+    await tiup.invokeInSharedTerminal(cmd)
+  }
 }
 
 /////////////////////////

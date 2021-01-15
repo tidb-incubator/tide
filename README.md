@@ -20,12 +20,11 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
   - [ ] Show a cluster topo
-  - [ ] Open dashboard / grafana link in browser
-  - [ ] Show dashboard / grafana inside vscode
+  - [ ] Open dashboard / grafana
   - Restart
     - [x] Restart a cluster
-    - [ ] restart all instances of a component
-    - [ ] restart a single instance
+    - [x] restart all instances of a component
+    - [x] restart a single instance
   - Config
     - [x] View a cluster configuration
     - [x] View a single instance configuration

@@ -9,7 +9,11 @@ import { PlaygroundProvider } from './playground/provider'
 import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
-import { ClusterCommand } from './cluster/command'
+import {
+  ClusterCommand,
+  ClusterComponent,
+  InstanceAndCluster,
+} from './cluster/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -136,6 +140,13 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     registerCommand('ticode.cluster.patchByOther', (treeItem) => {
       ClusterCommand.patchByOther(treeItem.extra, treeItem.contextValue)
+    }),
+    // context menu
+    registerCommand('ticode.cluster.restartComponent', (treeItem) => {
+      ClusterCommand.restartComponent(treeItem.extra as ClusterComponent, tiup)
+    }),
+    registerCommand('ticode.cluster.restartInstance', (treeItem) => {
+      ClusterCommand.restartInstance(treeItem.extra as InstanceAndCluster, tiup)
     }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))

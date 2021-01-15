@@ -127,6 +127,14 @@
       {
         "command": "ticode.cluster.patchByOther",
         "title": "Patch by other binary"
+      },
+      {
+        "command": "ticode.cluster.restartComponent",
+        "title": "Restart component"
+      },
+      {
+        "command": "ticode.cluster.restartInstance",
+        "title": "Restart instance"
       }
     ],
     "viewsContainers": {
@@ -224,9 +232,19 @@
           "group": "1@2"
         },
         {
+          "command": "ticode.cluster.restartComponent",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-component",
+          "group": "2@1"
+        },
+        {
           "command": "ticode.cluster.ssh",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
           "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.restartInstance",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
+          "group": "3@1"
         },
         {
           "command": "ticode.cluster.applyInstanceConf",
