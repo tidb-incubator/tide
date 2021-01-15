@@ -19,7 +19,9 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] List all clusters
   - [x] Display a cluster detail inforamtion
   - [x] Start / Stop / Destroy a cluster
-  - [ ] Show a cluster topo very cool
+  - [ ] Show a cluster topo
+  - [ ] Open dashboard / grafana link in browser
+  - [ ] Show dashboard / grafana inside vscode
   - Restart
     - [x] Restart a cluster
     - [ ] restart all instances of a component
@@ -51,6 +53,10 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] Follow logs of all instances
   - [ ] Attach to Debug @Aylei
 
+- Bench
+  - [ ] Config bench
+  - [ ] Start bench
+
 - Kubernetes @Aylei TODO
 
 - Cluster Topo Manager
@@ -66,6 +72,10 @@ Do all the things just in your favorite Visual Studio Code:
 - Scaffold for adding new feature
   - [ ] Scaffold for tidb-dashboard repo
   - [ ] Scaffold for coprocess
+
+- TiUP Manager
+  - [ ] Install TiUP
+  - [ ] Upgrade TiUP
 
 ## Requirements
 
