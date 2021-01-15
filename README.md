@@ -38,7 +38,8 @@ Do all the things just in your favorite Visual Studio Code:
       - [x] Patch for all instance of a component
       - [x] Patch for a single instance
   - [x] SSH to a single instance and enter the folder
-  - [ ] Debug
+  - [ ] Follow logs of all instances @Aylei
+  - [ ] Attach to Debug @Aylei
 
 - Playground
 
@@ -47,7 +48,10 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] Use current repo's binary
   - [x] List playground cluster instances
   - [x] View logs of all instances
-  - [ ] Debug
+  - [x] Follow logs of all instances
+  - [ ] Attach to Debug @Aylei
+
+- Kubernetes @Aylei TODO
 
 - Cluster Topo Manager
 

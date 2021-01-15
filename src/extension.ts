@@ -59,7 +59,10 @@ export async function activate(context: vscode.ExtensionContext) {
       playgroundProvider.refresh()
     ),
     registerCommand('ticode.playground.viewInstanceLog', (treeItem) => {
-      PlaygroundCommand.viewIntanceLogs(treeItem.extra.pids)
+      PlaygroundCommand.viewInstanceLogs(treeItem.extra.pids)
+    }),
+    registerCommand('ticode.playground.followInstanceLog', (treeItem) => {
+      PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
 
     ////////////////

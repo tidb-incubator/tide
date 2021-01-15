@@ -5,6 +5,7 @@ import * as TOML from '@iarna/toml'
 
 import { shell } from '../shell'
 import { TiUP } from '../tiup'
+import { TiUPVersioning } from '../components/config/config'
 
 export class PlaygroundCommand {
   checkTiUP() {}
@@ -119,7 +120,7 @@ export class PlaygroundCommand {
     setTimeout(check, intervals)
   }
 
-  static viewIntanceLogs(pids: string[]) {
+  static viewInstanceLogs(pids: string[]) {
     pids.forEach(this.openInstanceLog)
   }
 
@@ -133,6 +134,24 @@ export class PlaygroundCommand {
         'vscode.open',
         vscode.Uri.file(logFilePath)
       )
+    } else {
+      vscode.window.showErrorMessage('open log file failed!')
+      vscode.commands.executeCommand('ticode.playground.refresh')
+    }
+  }
+
+  static followInstanceLogs(tiup: TiUP, pids: string[]) {
+    pids.forEach(pid => this.followInstanceLog(tiup, pid))
+  }
+
+  static async followInstanceLog(tiup: TiUP, pid: string) {
+    const res = await shell.exec(`ps -p ${pid} | grep tiup`)
+    console.log('ps result:', res)
+    const m = res?.stdout.match(/log-file=(.+)\.log/)
+    if (m) {
+      const logFilePath = m[1] + '.log'
+      await tiup.invokeAnyInNewTerminal(`tail -f ${logFilePath}`, `log-${pid}`)
+      return
     } else {
       vscode.window.showErrorMessage('open log file failed!')
       vscode.commands.executeCommand('ticode.playground.refresh')

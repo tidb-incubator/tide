@@ -7,6 +7,9 @@ import { Shell } from './shell'
 
 export interface TiUP {
   invokeInSharedTerminal(command: string): Promise<void>
+   
+  // FIXME: should be abstracted in Shell interface
+  invokeAnyInNewTerminal(command: string, terminalName: string): Promise<void>
 }
 
 interface Context {
@@ -37,6 +40,11 @@ class TiUPImpl implements TiUP {
   invokeInSharedTerminal(command: string): Promise<void> {
     const terminal = this.getSharedTerminal()
     return invokeInTerminal(this.context, command, undefined, terminal)
+  }
+
+  invokeAnyInNewTerminal(command: string, terminalName: string): Promise<void> {
+    const terminal = this.context.host.createTerminal(terminalName)
+    return invokeAnyInTerminal(this.context, command, undefined, terminal)
   }
 
   private readonly context: Context
@@ -90,6 +98,20 @@ async function invokeInTerminal(
     // existing preference, so it's not necessary.
     // But a user does need to default VS code to use WSL in the settings.json
     const tiupCommand = `tiup ${command}`
+    const fullCommand = pipeTo ? `${tiupCommand} | ${pipeTo}` : tiupCommand
+    terminal.sendText(fullCommand)
+    terminal.show()
+  }
+}
+
+async function invokeAnyInTerminal(
+  context: Context,
+  command: string,
+  pipeTo: string | undefined,
+  terminal: Terminal
+): Promise<void> {
+  if (await checkPresent(context, CheckPresentMessageMode.Command)) {
+    const tiupCommand = `${command}`
     const fullCommand = pipeTo ? `${tiupCommand} | ${pipeTo}` : tiupCommand
     terminal.sendText(fullCommand)
     terminal.show()
