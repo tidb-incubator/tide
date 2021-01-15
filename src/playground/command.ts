@@ -170,6 +170,58 @@ export class PlaygroundCommand {
     }
   }
 
+  static debugInstances(tiup: TiUP, label: string, pids: string[]) {
+    pids.forEach(pid => this.debugInstance(tiup, label, pid))
+  }
+  
+  static async debugInstance(tiup: TiUP, label: string, pid: string) {
+    const m = label.match(/(\w+).*\(\d+\)/)
+    if (!m) {
+      vscode.window.showErrorMessage(`${label} is not a valid instance`);
+      return
+    } 
+    const instanceName = m[1]
+    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
+    if (!wd) {
+      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
+      return
+    }
+    switch (instanceName) {
+      case "tidb" :{
+        const debugConfiguration = {
+          type: "go",
+          request: "attach",
+          name: "Attach TiDB",
+          mode: "local",
+          processId: Number(pid),
+        };
+        vscode.debug.startDebugging(wd, debugConfiguration)
+        break
+      }
+      case "pd" :{
+        const debugConfiguration = {
+          type: "go",
+          request: "attach",
+          name: "Attach PD",
+          mode: "local",
+          processId: Number(pid),
+        };
+        vscode.debug.startDebugging(wd, debugConfiguration)
+        break
+      }
+      case "tikv" :{
+        const debugConfiguration = {
+          type: "lldb",
+          request: "attach",
+          name: "Attach TiKV",
+          pid: Number(pid),
+        };
+        vscode.debug.startDebugging(wd, debugConfiguration)
+        break
+      }
+    }
+  }
+
   static async stopPlayground() {
     // use "ps ax" instead of "ps aux" make the PID first column
     let cr = await shell.exec('ps ax | grep tiup-playground | grep -v grep')
