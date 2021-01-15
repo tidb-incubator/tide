@@ -1,11 +1,10 @@
 import * as vscode from 'vscode'
-import * as fs from 'fs'
-import * as path from 'path'
 import {
   ClusterCommand,
   ClusterInstance,
   Cluster,
   InstanceAndCluster,
+  ClusterComponent,
 } from './command'
 
 export class ClusterProvider implements vscode.TreeDataProvider<Item> {
@@ -78,7 +77,11 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
           `${comp} (${comps[comp].length})`,
           vscode.TreeItemCollapsibleState.Collapsed
         )
-        item.extra = { cluster, instances: comps[comp] }
+        item.extra = {
+          cluster,
+          role: comp,
+          instances: comps[comp],
+        } as ClusterComponent
         item.contextValue = 'cluster-component'
         items.push(item)
       })

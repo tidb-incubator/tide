@@ -1,11 +1,9 @@
 import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
-import * as tmp from 'tmp'
 
-import { shell } from '../shell'
+import { shell, ShellResult, Platform } from '../shell'
 import { TiUP } from '../tiup'
-import { resolveSoa } from 'dns'
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -25,6 +23,12 @@ export type ClusterInstance = Record<
   | 'deployDir',
   string
 >
+
+export type ClusterComponent = {
+  cluster: Cluster
+  role: string
+  instances: ClusterInstance[]
+}
 
 export type InstanceAndCluster = {
   cluster: Cluster
@@ -320,9 +324,109 @@ export class ClusterCommand {
     t.show()
   }
 
-  // deploy cluster
-
   // patch component
+  static async patchByCurrent(
+    treeItemExtra: ClusterComponent | InstanceAndCluster,
+    treeItemContextValue: string,
+    workspaceRoot: string
+    // tiup: TiUP
+  ) {
+    // warn
+    const res = await vscode.window.showInformationMessage(
+      'If you need to modify the cluster or instance config at the same time, please do it before patching to save your time',
+      'Let me check',
+      'Patch anyway'
+    )
+    if (res === 'Let me check') {
+      return
+    }
 
-  // edit config
+    let compRole = 'unknown'
+    let patchTarget = ''
+    if (treeItemContextValue === 'cluster-component') {
+      const { cluster, role, instances } = treeItemExtra as ClusterComponent
+      compRole = role
+      patchTarget = `-R ${role}`
+    }
+    if (treeItemContextValue === 'cluster-instance') {
+      const { instance, cluster } = treeItemExtra as InstanceAndCluster
+      compRole = instance.role
+      patchTarget = `-N ${instance.id}`
+    }
+
+    // check repo
+    if (!workspaceRoot.endsWith(compRole)) {
+      vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+      return
+    }
+
+    const tar = `/tmp/${compRole}.tar.gz`
+    let cmd = ''
+    // case by case
+    // TODO: use tasks provider to replace
+    if (compRole === 'tidb') {
+      if (shell.platform() !== Platform.Linux) {
+        cmd = `make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+      } else {
+        cmd = `make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+      }
+    }
+    // TODO: tikv, pd
+
+    if (cmd) {
+      const t = vscode.window.createTerminal(`patch ${compRole}`)
+      t.sendText(cmd)
+      t.show()
+    }
+  }
+
+  //
+  static async patchByOther(
+    treeItemExtra: ClusterComponent | InstanceAndCluster,
+    treeItemContextValue: string
+  ) {
+    // warn
+    const res = await vscode.window.showInformationMessage(
+      'If you need to modify the cluster or instance config at the same time, please do it before patching to save your time',
+      'Let me check',
+      'Patch anyway'
+    )
+    if (res === 'Let me check') {
+      return
+    }
+
+    //
+    let compRole = 'unknown'
+    let patchTarget = ''
+    if (treeItemContextValue === 'cluster-component') {
+      const { cluster, role, instances } = treeItemExtra as ClusterComponent
+      compRole = role
+      patchTarget = `-R ${role}`
+    }
+    if (treeItemContextValue === 'cluster-instance') {
+      const { instance, cluster } = treeItemExtra as InstanceAndCluster
+      compRole = instance.role
+      patchTarget = `-N ${instance.id}`
+    }
+
+    // choose
+    const files = await vscode.window.showOpenDialog({
+      canSelectFolders: false,
+      filters: { tar: ['.tar.gz'] },
+      canSelectMany: false,
+    })
+    if (files === undefined) {
+      return
+    }
+    const cmd = `tiup cluster patch ${treeItemExtra.cluster.name} ${files[0].path} ${patchTarget} && exit`
+    const t = vscode.window.createTerminal(`patch ${compRole}`)
+    t.sendText(cmd)
+    t.show()
+  }
+}
+
+/////////////////////////
+// util
+function handleError(cr?: ShellResult) {
+  vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
 }

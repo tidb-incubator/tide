@@ -121,6 +121,18 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.ssh', (treeItem) =>
       ClusterCommand.ssh(treeItem.extra)
     ),
+    // context menu
+    registerCommand('ticode.cluster.patchByCurrent', (treeItem) => {
+      ClusterCommand.patchByCurrent(
+        treeItem.extra,
+        treeItem.contextValue,
+        vscode.workspace.rootPath || ''
+        // tiup
+      )
+    }),
+    registerCommand('ticode.cluster.patchByOther', (treeItem) => {
+      ClusterCommand.patchByOther(treeItem.extra, treeItem.contextValue)
+    }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
