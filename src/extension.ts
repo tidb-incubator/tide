@@ -126,8 +126,8 @@ export async function activate(context: vscode.ExtensionContext) {
       ClusterCommand.patchByCurrent(
         treeItem.extra,
         treeItem.contextValue,
-        vscode.workspace.rootPath || '',
-        tiup
+        vscode.workspace.rootPath || ''
+        // tiup
       )
     }),
     registerCommand('ticode.cluster.patchByOther', (treeItem) => {

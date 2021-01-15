@@ -2,7 +2,7 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
 
-import { shell, ShellResult } from '../shell'
+import { shell, ShellResult, Platform } from '../shell'
 import { TiUP } from '../tiup'
 
 // Name User Version Path PrivateKey
@@ -328,9 +328,19 @@ export class ClusterCommand {
   static async patchByCurrent(
     treeItemExtra: ClusterComponent | InstanceAndCluster,
     treeItemContextValue: string,
-    workspaceRoot: string,
-    tiup: TiUP
+    workspaceRoot: string
+    // tiup: TiUP
   ) {
+    // warn
+    const res = await vscode.window.showInformationMessage(
+      'If you need to modify the cluster or instance config, please do it before patching to save your time',
+      'Let me check',
+      'Patch anyway'
+    )
+    if (res === 'Let me check') {
+      return
+    }
+
     let compRole = 'unknown'
     let patchTarget = ''
     if (treeItemContextValue === 'cluster-component') {
@@ -350,25 +360,24 @@ export class ClusterCommand {
       return
     }
 
-    // // build
-    // let cr = await shell.exec('GOOS=linux GOARCH=amd64 make')
-    // if (cr?.code !== 0) {
-    //   handleError(cr)
-    //   return
-    // }
-    // // tar
-    // cr = await shell.exec(`cd bin && tar cvzf ${tar} *`)
-    // if (cr?.code !== 0) {
-    //   handleError(cr)
-    //   return
-    // }
-    // const cmd = `cluster patch ${treeItemExtra.cluster.name} ${tar}`
-
     const tar = `/tmp/${compRole}.tar.gz`
-    const cmd = `GOOS=linux GOARCH=amd64 make && cd bin && tar cvzf ${tar} * && cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget}`
-    const t = vscode.window.createTerminal(`patch ${compRole}`)
-    t.sendText(cmd)
-    t.show()
+    let cmd = ''
+    // case by case
+    // TODO: use tasks provider to replace
+    if (compRole === 'tidb') {
+      if (shell.platform() !== Platform.Linux) {
+        cmd = `make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+      } else {
+        cmd = `make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+      }
+    }
+    // TODO: tikv, pd
+
+    if (cmd) {
+      const t = vscode.window.createTerminal(`patch ${compRole}`)
+      t.sendText(cmd)
+      t.show()
+    }
   }
 }
 
