@@ -1,4 +1,5 @@
 import * as vscode from 'vscode'
+
 export class MachineProvider implements vscode.TreeDataProvider<Item> {
   getTreeItem(element: Item): vscode.TreeItem {
     return element
@@ -8,7 +9,6 @@ export class MachineProvider implements vscode.TreeDataProvider<Item> {
     const items: Item[] = []
     if (element === undefined) {
       items.push(new Item('TODO', vscode.TreeItemCollapsibleState.None))
-
     }
     return items
   }

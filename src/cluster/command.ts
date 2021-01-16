@@ -1,10 +1,10 @@
-import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
-
-import { shell, Platform } from '../shell'
+import * as vscode from 'vscode'
+import { Platform, shell } from '../shell'
 import { TiUP } from '../tiup'
-import { handleError } from '../utils'
+import { handleError } from '../utils/window'
+
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -358,10 +358,23 @@ export class ClusterCommand {
     const { instance, cluster } = inst
     const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
     const t = vscode.window.createTerminal(
-      `ssh -oStrictHostKeyChecking=no ${instance.host} ${instance.role}`
+      `ssh ${instance.host} ${instance.role}`
     )
     t.sendText(cmd)
     t.show()
+  }
+
+  // debug
+  static async debug(inst: InstanceAndCluster) {
+    const { instance, cluster } = inst
+
+    if (instance.role === "") {
+    } else if (instance.role === "") {
+
+    } else if (instance.role === "") {
+
+    }
+    const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
   }
 
   // patch component
