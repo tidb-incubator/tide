@@ -35,6 +35,12 @@ Debug:
 
 ![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
 
+Bilibili: https://www.bilibili.com/video/BV12p4y1x7w8/
+
+Scaffold:
+
+- Bilibiili: https://www.bilibili.com/video/BV12A411H74T/
+
 ## Quick Start
 
 1. Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
@@ -69,7 +75,7 @@ Debug:
       - [x] Patch for a single instance
   - [x] SSH to a single instance and enter the folder
   - [ ] Follow logs of all instances @Aylei
-  - [ ] Attach to Debug @Aylei
+  - [x] Attach to Debug @Aylei
   - [ ] Restart on local compile (Rsync)
 
 - Playground
@@ -80,7 +86,7 @@ Debug:
   - [x] List playground cluster instances
   - [x] View logs of all instances
   - [x] Follow logs of all instances
-  - [ ] Attach to Debug @Aylei
+  - [x] Attach to Debug @Aylei
 
 - Bench
 
@@ -105,7 +111,7 @@ Debug:
 
 - Scaffold for adding new feature
 
-  - [ ] Scaffold for tidb-dashboard repo
+  - [x] Scaffold for tidb-dashboard repo
   - [ ] Scaffold for coprocess
 
 - TiUP Manager

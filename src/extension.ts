@@ -3,7 +3,7 @@ import * as vscode from 'vscode'
 import {
   ClusterCommand,
   ClusterComponent,
-  InstanceAndCluster
+  InstanceAndCluster,
 } from './cluster/command'
 import { ClusterProvider } from './cluster/provider'
 import * as config from './components/config/config'
@@ -11,17 +11,15 @@ import { fs } from './fs'
 import { host } from './host'
 import { KubeCommand } from './kubernetes/command'
 import { KubeProvider } from './kubernetes/provider'
-import { Pod } from './kubernetes/resources.objectmodel'
-import { MachineProvider } from './machine-manager/provider'
 import { PlaygroundCommand } from './playground/command'
 import { PlaygroundProvider } from './playground/provider'
-import { ScaffoldProvider } from './scaffold/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
 import { TopoProvider } from './topo-manager/provider'
 import { MachineProvider } from './machine-manager/provider'
 import { ScaffoldProvider } from './scaffold/provider'
 import { ScaffoldCommand } from './scaffold/command'
+import { DashboardCommand } from './dashboard/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -47,7 +45,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
   // machine tree view
   const machineProvider = new MachineProvider()
-  vscode.window.registerTreeDataProvider('ticode-machine-manager', machineProvider)
+  vscode.window.registerTreeDataProvider(
+    'ticode-machine-manager',
+    machineProvider
+  )
 
   // scaffold tree view
   const scaffoldProvider = new ScaffoldProvider()
@@ -99,15 +100,12 @@ export async function activate(context: vscode.ExtensionContext) {
       PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
     registerCommand('ticode.playground.debugCluster', (treeItem) => {
-      playgroundProvider.getChildren(treeItem).then(childs => {
-        PlaygroundCommand.debugCluster(
-          tiup,
-          childs,
-        )
+      playgroundProvider.getChildren(treeItem).then((childs) => {
+        PlaygroundCommand.debugCluster(tiup, childs)
       })
     }),
     registerCommand('ticode.playground.debugInstance', (treeItem) => {
-    PlaygroundCommand.debugInstances(
+      PlaygroundCommand.debugInstances(
         tiup,
         treeItem.extra.comp,
         treeItem.extra.pids
@@ -122,7 +120,9 @@ export async function activate(context: vscode.ExtensionContext) {
     // context menu
     registerCommand('ticode.cluster.list', listClusters),
     // context menu
-    registerCommand('ticode.cluster.display', (treeItem) => displayClusters(treeItem.label)),
+    registerCommand('ticode.cluster.display', (treeItem) =>
+      displayClusters(treeItem.label)
+    ),
     // directly click
     registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
       ClusterCommand.scpLogFile(fileName, inst, tempFolder)
@@ -205,8 +205,12 @@ export async function activate(context: vscode.ExtensionContext) {
     /**
      * Kubernetes Cluster
      */
-    registerCommand('ticode.kubernetes.listTidbCluster', () => KubeCommand.listTidbCluster()),
-    registerCommand('ticode.kubernetes.showPodInDocument', (podName) => showPodInDocument(podName)),
+    registerCommand('ticode.kubernetes.listTidbCluster', () =>
+      KubeCommand.listTidbCluster()
+    ),
+    registerCommand('ticode.kubernetes.showPodInDocument', (podName) =>
+      showPodInDocument(podName)
+    ),
 
     /**
      * Scaffold
@@ -215,13 +219,21 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.scaffold.addDashboardApp', () => {
       ScaffoldCommand.addDashboardApp()
     }),
+
+    /**
+     * Dashboard
+     */
+    registerCommand('ticode.dashboard.run', (treeItem) => {
+      DashboardCommand.start(treeItem)
+    }),
   ]
 
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
   // TODO: review implementation of virtual document
   const schemeTiUPCluster = 'tiup-cluster'
-  const tdcProviderTiUPCluster = new (class implements vscode.TextDocumentContentProvider {
+  const tdcProviderTiUPCluster = new (class
+    implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
     onDidChange = this.onDidChangeEmitter.event
     async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
@@ -230,11 +242,15 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   })()
   context.subscriptions.push(
-    vscode.workspace.registerTextDocumentContentProvider(schemeTiUPCluster, tdcProviderTiUPCluster)
+    vscode.workspace.registerTextDocumentContentProvider(
+      schemeTiUPCluster,
+      tdcProviderTiUPCluster
+    )
   )
 
   const schemeKubePod = 'kube-pod'
-  const tdcProviderKubePod = new (class implements vscode.TextDocumentContentProvider {
+  const tdcProviderKubePod = new (class
+    implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
     onDidChange = this.onDidChangeEmitter.event
     async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
@@ -244,12 +260,15 @@ export async function activate(context: vscode.ExtensionContext) {
     }
   })()
   context.subscriptions.push(
-    vscode.workspace.registerTextDocumentContentProvider(schemeKubePod, tdcProviderKubePod)
+    vscode.workspace.registerTextDocumentContentProvider(
+      schemeKubePod,
+      tdcProviderKubePod
+    )
   )
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {}
 
 function registerCommand(
   command: string,

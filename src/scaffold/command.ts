@@ -5,6 +5,7 @@ import * as replace from 'replace-in-file'
 
 import { shell } from '../shell'
 import { handleError } from '../utils'
+import { DashboardCommand } from '../dashboard/command'
 
 export class ScaffoldCommand {
   static async addDashboardApp() {
@@ -54,6 +55,8 @@ export class ScaffoldCommand {
       'index.tsx'
     )
     vscode.commands.executeCommand('vscode.open', vscode.Uri.file(feFile))
+
+    DashboardCommand.restartBackend(dashboardFolder)
   }
 }
 

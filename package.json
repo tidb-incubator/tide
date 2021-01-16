@@ -172,6 +172,10 @@
       {
         "command": "ticode.scaffold.addDashboardApp",
         "title": "Add new dashboard APP"
+      },
+      {
+        "command": "ticode.dashboard.run",
+        "title": "Start dashboard"
       }
     ],
     "viewsContainers": {
@@ -212,6 +216,12 @@
       ]
     },
     "menus": {
+      "explorer/context": [
+        {
+          "command": "ticode.dashboard.run",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
       "view/title": [
         {
           "command": "ticode.playground.refresh",
