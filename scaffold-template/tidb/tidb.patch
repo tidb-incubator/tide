@@ -1,0 +1,42 @@
+From 94adab56d3678842c8373e89d163cecefe443252 Mon Sep 17 00:00:00 2001
+From: Aylei <rayingecho@gmail.com>
+Date: Sat, 16 Jan 2021 21:01:48 +0800
+Subject: [PATCH] Scaffold
+
+Signed-off-by: Aylei <rayingecho@gmail.com>
+---
+ server/app_handler.go | 8 ++++++++
+ server/http_status.go | 2 ++
+ 2 files changed, 10 insertions(+)
+ create mode 100644 server/app_handler.go
+
+diff --git a/server/app_handler.go b/server/app_handler.go
+new file mode 100644
+index 000000000..56d35e285
+--- /dev/null
++++ b/server/app_handler.go
+@@ -0,0 +1,8 @@
++package server
++
++import "net/http"
++
++func MyHandler(w http.ResponseWriter, _ *http.Request) {
++	msg := "TODO"
++	_, _ = w.Write([]byte(msg))
++}
+diff --git a/server/http_status.go b/server/http_status.go
+index e18b0423a..5f6ee5973 100644
+--- a/server/http_status.go
++++ b/server/http_status.go
+@@ -289,6 +289,8 @@ func (s *Server) startHTTPServer() {
+ 	fetcher := sqlInfoFetcher{store: tikvHandlerTool.Store}
+ 	serverMux.HandleFunc("/debug/sub-optimal-plan", fetcher.zipInfoForSQL)
+ 
++	serverMux.HandleFunc("/hack", MyHandler)
++
+ 	// failpoint is enabled only for tests so we can add some http APIs here for tests.
+ 	failpoint.Inject("enableTestAPI", func() {
+ 		serverMux.HandleFunc("/fail/", func(w http.ResponseWriter, r *http.Request) {
+-- 
+2.27.0
+
