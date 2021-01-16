@@ -14,6 +14,7 @@ export class ScaffoldCommand {
     if (!appName || appName.trim() === '') {
       return
     }
+    const folderName = appName[0].toUpperCase() + appName.substr(1)
     appName = appName.trim().toLocaleLowerCase()
 
     // find dashboard folder
@@ -30,8 +31,7 @@ export class ScaffoldCommand {
       return
     }
 
-    // copy files
-    let folderName = appName[0].toUpperCase() + appName.substr(1)
+    // copy template files
     const targetAppFolder = path.join(
       dashboardFolder,
       'ui',
@@ -57,14 +57,13 @@ export class ScaffoldCommand {
     )
     const cmd = `cp -r ${templateFolder}/* ${targetAppFolder}`
     console.log('cmd:', cmd)
-
     const cr = await shell.exec(cmd)
     if (cr?.code !== 0) {
       handleError(cr)
       return
     }
 
-    // replace
+    // replace placeholders
     const options = {
       files: [
         `${targetAppFolder}/**/*.ts`,
@@ -74,7 +73,43 @@ export class ScaffoldCommand {
       from: /__APP_NAME__/g,
       to: appName,
     }
-    const result = replace.sync(options)
-    console.log('replace result:', result)
+    replace.sync(options)
+
+    // replace ui/dashboardApp/index.ts
+    // register app
+    const appIndexFile = path.join(
+      dashboardFolder,
+      'ui',
+      'dashboardApp',
+      'index.ts'
+    )
+    replace.sync({
+      files: appIndexFile,
+      from: `// import __APP_NAME__ from '@lib/apps/__APP_NAME__/index.meta'`,
+      to: `import ${folderName} from '@lib/apps/${folderName}/index.meta'\n// import __APP_NAME__ from '@lib/apps/__APP_NAME__/index.meta'`,
+    })
+    replace.sync({
+      files: appIndexFile,
+      from: `// .register(__APP_NAME__)`,
+      to: `.register(${folderName})\n// .register(__APP_NAME__)`,
+    })
+
+    // replace ui/dashboardApp/layout/main/Sider/index.tsx
+    // add menu
+    const menuEntryFile = path.join(
+      dashboardFolder,
+      'ui',
+      'dashboardApp',
+      'layout',
+      'main',
+      'Sider',
+      'index.tsx'
+    )
+    replace.sync({
+      files: menuEntryFile,
+      from: `// useAppMenuItem(registry, '__APP_NAME__'),`,
+      to: `useAppMenuItem(registry, '${appName}'),\n// useAppMenuItem(registry, '__APP_NAME__'),`,
+    })
+    vscode.window.showInformationMessage(`Add ${appName} successfully!`)
   }
 }
