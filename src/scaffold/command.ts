@@ -40,10 +40,7 @@ export class ScaffoldCommand {
       folderName
     )
     console.log('target app folder:', targetAppFolder)
-    if (fs.existsSync(targetAppFolder)) {
-      vscode.window.showErrorMessage('App alreday exists!')
-      return
-    } else {
+    if (!fs.existsSync(targetAppFolder)) {
       fs.mkdirSync(targetAppFolder, { recursive: true })
     }
     const templateFolder = path.join(
