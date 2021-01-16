@@ -3,10 +3,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as TOML from '@iarna/toml'
 
-import { shell } from '../shell'
+import { shell, shellEnvironment } from '../shell'
 import { TiUP } from '../tiup'
 import { TiUPVersioning } from '../components/config/config'
 import { PlaygroundProvider, Item } from './provider'
+import { TIMEOUT } from 'dns'
 
 export class PlaygroundCommand {
   checkTiUP() {}
@@ -114,6 +115,16 @@ export class PlaygroundCommand {
     t.show()
     // await tiup.invokeInSharedTerminal(cmd)
     PlaygroundCommand.loopCheckPlayground()
+  }
+
+  static async reloadPlayground(
+    tiup: TiUP,
+    workspaceFolders: ReadonlyArray<vscode.WorkspaceFolder> | undefined,
+    configPath?: string
+  ) {
+    await this.stopPlayground()
+    await this.waitPlaygroundStop()
+    await this.startPlayground(tiup, workspaceFolders, configPath)
   }
 
   static loopCheckPlayground(times: number = 30, intervals: number = 3 * 1000) {
@@ -265,5 +276,26 @@ export class PlaygroundCommand {
       setTimeout(check, intervals)
     }
     setTimeout(check, intervals)
+  }
+
+  static async waitPlaygroundStop(
+    times: number = 10,
+    intervals: number = 3 * 1000
+  ) {
+    let tried = 0
+    async function check() {
+      const running = await PlaygroundCommand.checkPlaygroundRun()
+      if (!running) {
+        vscode.commands.executeCommand('ticode.playground.refresh')
+        return
+      }
+      tried++
+      if (tried > times) {
+        return
+      }
+      await new Promise(resolve => setTimeout(resolve, intervals));
+      await check()
+    }
+    await check()
   }
 }

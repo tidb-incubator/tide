@@ -72,6 +72,13 @@ export async function activate(context: vscode.ExtensionContext) {
         playgroundProvider.playgroundConfigPath
       )
     ),
+    registerCommand('ticode.playground.restart', (treeItem) => {
+      PlaygroundCommand.reloadPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
+    }),
     registerCommand('ticode.playground.reloadConfig', () =>
       reloadPlaygroundConfig(playgroundProvider)
     ),

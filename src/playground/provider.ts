@@ -126,6 +126,12 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
             title: 'stop playground',
           })
         )
+        items.push(
+          new Item('restart playground', vscode.TreeItemCollapsibleState.None, {
+            command: 'ticode.playground.restart',
+            title: 'restart playground',
+          })
+        )
       }
 
       // config
