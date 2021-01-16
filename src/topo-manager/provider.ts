@@ -8,7 +8,6 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
     const items: Item[] = []
     if (element === undefined) {
       items.push(new Item('TODO', vscode.TreeItemCollapsibleState.None))
-
     }
     return items
   }
