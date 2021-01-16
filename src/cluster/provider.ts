@@ -8,10 +8,7 @@ import {
 } from './command'
 
 export class ClusterProvider implements vscode.TreeDataProvider<Item> {
-  constructor(
-    private workspaceRoot: string | undefined,
-    private context: vscode.ExtensionContext
-  ) {}
+  constructor() {}
 
   // TODO: save cluster and instances in memory
 

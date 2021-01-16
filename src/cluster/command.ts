@@ -366,9 +366,7 @@ export class ClusterCommand {
   // patch component
   static async patchByCurrent(
     treeItemExtra: ClusterComponent | InstanceAndCluster,
-    treeItemContextValue: string,
-    workspaceRoot: string
-    // tiup: TiUP
+    treeItemContextValue: string
   ) {
     // warn
     const res = await vscode.window.showInformationMessage(
@@ -394,8 +392,26 @@ export class ClusterCommand {
     }
 
     // check repo
-    if (!workspaceRoot.endsWith(compRole)) {
+    let targetFolder = vscode.workspace.rootPath
+    if (targetFolder && !targetFolder.endsWith(compRole)) {
       vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+      return
+    } else {
+      let workspaceFolders = vscode.workspace.workspaceFolders
+      if (!workspaceFolders) {
+        vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+        return
+      }
+      for (let i = 0; i < workspaceFolders.length; i++) {
+        const folder = workspaceFolders[i]
+        if (folder.uri.path.endsWith(compRole)) {
+          targetFolder = folder.uri.path
+          break
+        }
+      }
+    }
+    if (!targetFolder) {
+      vscode.window.showErrorMessage(`There is no ${compRole} repo`)
       return
     }
 
@@ -405,9 +421,9 @@ export class ClusterCommand {
     // TODO: use tasks provider to replace
     if (compRole === 'tidb') {
       if (shell.platform() !== Platform.Linux) {
-        cmd = `make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+        cmd = `cd ${targetFolder} && make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
       } else {
-        cmd = `make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+        cmd = `cd ${targetFolder} && make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
       }
     }
     // TODO: tikv, pd

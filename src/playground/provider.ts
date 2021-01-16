@@ -8,7 +8,6 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   public playgroundConfigPath: string = ''
 
   constructor(
-    private workspaceRoot: string | undefined,
     private context: vscode.ExtensionContext
   ) {
     // initial config files
