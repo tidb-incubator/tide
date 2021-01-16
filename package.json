@@ -165,6 +165,7 @@
         "command": "ticode.kubernetes.listTidbCluster",
         "title": "TiDE: List TidbCluster (Kubernetes)"
       },
+      {
         "command": "ticode.scaffold.addDashboardApp",
         "title": "Add new dashboard APP"
       }
