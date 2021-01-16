@@ -149,9 +149,9 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
 
       // instances
       if (running) {
-        items.push(
-          new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
-        )
+        let clusterItem = new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
+        clusterItem.contextValue = 'playground-cluster'
+        items.push(clusterItem)
       }
 
       return Promise.resolve(items)
@@ -191,7 +191,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   }
 }
 
-class Item extends vscode.TreeItem {
+export class Item extends vscode.TreeItem {
   public extra: any
   constructor(
     public readonly label: string,

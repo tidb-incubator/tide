@@ -84,10 +84,18 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.followInstanceLog', (treeItem) => {
       PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
+    registerCommand('ticode.playground.debugCluster', (treeItem) => {
+      playgroundProvider.getChildren(treeItem).then(childs => {
+        PlaygroundCommand.debugCluster(
+          tiup,
+          childs,
+        )
+      })
+    }),
     registerCommand('ticode.playground.debugInstance', (treeItem) => {
-      PlaygroundCommand.debugInstances(
+    PlaygroundCommand.debugInstances(
         tiup,
-        treeItem.label,
+        treeItem.extra.comp,
         treeItem.extra.pids
       )
     }),

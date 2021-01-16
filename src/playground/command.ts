@@ -6,6 +6,7 @@ import * as TOML from '@iarna/toml'
 import { shell } from '../shell'
 import { TiUP } from '../tiup'
 import { TiUPVersioning } from '../components/config/config'
+import { PlaygroundProvider, Item } from './provider'
 
 export class PlaygroundCommand {
   checkTiUP() {}
@@ -170,17 +171,23 @@ export class PlaygroundCommand {
     }
   }
 
-  static debugInstances(tiup: TiUP, label: string, pids: string[]) {
-    pids.forEach(pid => this.debugInstance(tiup, label, pid))
+  static debugCluster(tiup: TiUP, childs: Item[]) {
+    childs.forEach(child => {
+      if (['pd', 'tikv', 'tidb'].indexOf(child.extra.comp) > -1) {
+        this.debugInstance(tiup, child.extra.comp, child.extra.pids)
+      }
+    })
+  }
+
+  static debugInstances(tiup: TiUP, comp: string, pids: string[]) {
+    pids.forEach(pid => this.debugInstance(tiup, comp, pid))
   }
   
-  static async debugInstance(tiup: TiUP, label: string, pid: string) {
-    const m = label.match(/(\w+).*\(\d+\)/)
-    if (!m) {
-      vscode.window.showErrorMessage(`${label} is not a valid instance`);
+  static async debugInstance(tiup: TiUP, instanceName: string, pid: string) {
+    if (['pd', 'tikv', 'tidb'].indexOf(instanceName) < 0) {
+      vscode.window.showErrorMessage(`debug ${instanceName} is not supported yet `);
       return
-    } 
-    const instanceName = m[1]
+    }
     const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
     if (!wd) {
       vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
