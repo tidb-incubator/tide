@@ -8,8 +8,13 @@ import { handleError } from '../utils'
 
 export class ScaffoldCommand {
   static async addDashboardApp() {
-    // TODO, input app name
-    const appName = 'tide'
+    let appName = await vscode.window.showInputBox({
+      prompt: 'Your app name',
+    })
+    if (!appName || appName.trim() === '') {
+      return
+    }
+    appName = appName.trim().toLocaleLowerCase()
 
     // find dashboard folder
     const folders = vscode.workspace.workspaceFolders || []
