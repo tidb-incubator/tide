@@ -6,6 +6,7 @@ import * as path from 'path'
 export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   public playgroundConfigFolder: string = ''
   public playgroundConfigPath: string = ''
+  public playgroundDefaultConfigPath: string = ''
 
   constructor(
     private context: vscode.ExtensionContext
@@ -23,8 +24,15 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       this.playgroundConfigFolder,
       'playground.toml'
     )
+    this.playgroundDefaultConfigPath = path.join(
+      this.playgroundConfigFolder,
+      'default.toml'
+    )
     if (!fs.existsSync(this.playgroundConfigPath)) {
       this.reloadConfig()
+    }
+    if (!fs.existsSync(this.playgroundDefaultConfigPath)) {
+      this.reloadDefaultConfig()
     }
 
     // init component configs
@@ -71,9 +79,21 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       '..',
       'config-template',
       'playground',
-      'playground.toml'
+      'playground.toml',
     )
     fs.copyFileSync(templateFile, this.playgroundConfigPath)
+  }
+
+  reloadDefaultConfig() {
+    const templateFile = path.join(
+      __dirname,
+      '..',
+      '..',
+      'config-template',
+      'playground',
+      'default.toml',
+    )
+    fs.copyFileSync(templateFile, this.playgroundDefaultConfigPath)
   }
 
   getTreeItem(element: Item): vscode.TreeItem {

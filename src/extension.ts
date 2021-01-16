@@ -58,7 +58,11 @@ export async function activate(context: vscode.ExtensionContext) {
     ////////////////
     // playground
     registerCommand('ticode.playground.start', () =>
-      PlaygroundCommand.startPlayground(tiup, vscode.workspace.workspaceFolders)
+      PlaygroundCommand.startPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
     ),
     registerCommand('ticode.playground.stop', () => stopPlayground()),
     registerCommand('ticode.playground.startByConfig', () =>
