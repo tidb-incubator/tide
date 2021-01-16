@@ -10,7 +10,11 @@ export class ScaffoldProvider implements vscode.TreeDataProvider<Item> {
       items.push(
         new Item(
           'Add new app to dashboard',
-          vscode.TreeItemCollapsibleState.None
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: 'ticode.scaffold.addDashboardApp',
+            title: 'Add new dashboard APP',
+          }
         )
       )
     }
