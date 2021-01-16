@@ -17,6 +17,10 @@ export class ScaffoldProvider implements vscode.TreeDataProvider<Item> {
           }
         )
       )
+
+      items.push(
+        new Item('Add coprocessor (todo)', vscode.TreeItemCollapsibleState.None)
+      )
     }
     return items
   }
