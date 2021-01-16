@@ -66,6 +66,14 @@
         "title": "Debug"
       },
       {
+        "command": "ticode.playground.debugCluster",
+        "title": "Debug"
+      },
+      {
+        "command": "ticode.playground.restart",
+        "title": "Restart"
+      },
+      {
         "command": "ticode.cluster.refresh",
         "title": "TiCode: Refresh Cluters",
         "icon": {
@@ -156,6 +164,9 @@
       {
         "command": "ticode.kubernetes.listTidbCluster",
         "title": "TiDE: List TidbCluster (Kubernetes)"
+      },
+        "command": "ticode.scaffold.addDashboardApp",
+        "title": "Add new dashboard APP"
       }
     ],
     "viewsContainers": {
@@ -233,6 +244,11 @@
           "command": "ticode.playground.debugInstance",
           "when": "view == ticode-tiup-playground && viewItem == playground-instance",
           "group": "0@3"
+        },
+        {
+          "command": "ticode.playground.debugCluster",
+          "when": "view == ticode-tiup-playground && viewItem == playground-cluster",
+          "group": "0@1"
         },
         {
           "command": "ticode.cluster.list",
@@ -342,6 +358,7 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "@types/tmp": "^0.2.0",
+    "replace-in-file": "^6.1.0",
     "shelljs": "^0.8.4",
     "tmp": "^0.2.1"
   }

@@ -3,9 +3,11 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as TOML from '@iarna/toml'
 
-import { shell } from '../shell'
+import { shell, shellEnvironment } from '../shell'
 import { TiUP } from '../tiup'
 import { TiUPVersioning } from '../components/config/config'
+import { PlaygroundProvider, Item } from './provider'
+import { TIMEOUT } from 'dns'
 
 export class PlaygroundCommand {
   checkTiUP() {}
@@ -115,6 +117,16 @@ export class PlaygroundCommand {
     PlaygroundCommand.loopCheckPlayground()
   }
 
+  static async reloadPlayground(
+    tiup: TiUP,
+    workspaceFolders: ReadonlyArray<vscode.WorkspaceFolder> | undefined,
+    configPath?: string
+  ) {
+    await this.stopPlayground()
+    await this.waitPlaygroundStop()
+    await this.startPlayground(tiup, workspaceFolders, configPath)
+  }
+
   static loopCheckPlayground(times: number = 30, intervals: number = 3 * 1000) {
     let tried = 0
     async function check() {
@@ -170,17 +182,23 @@ export class PlaygroundCommand {
     }
   }
 
-  static debugInstances(tiup: TiUP, label: string, pids: string[]) {
-    pids.forEach(pid => this.debugInstance(tiup, label, pid))
+  static debugCluster(tiup: TiUP, childs: Item[]) {
+    childs.forEach(child => {
+      if (['pd', 'tikv', 'tidb'].indexOf(child.extra.comp) > -1) {
+        this.debugInstance(tiup, child.extra.comp, child.extra.pids)
+      }
+    })
+  }
+
+  static debugInstances(tiup: TiUP, comp: string, pids: string[]) {
+    pids.forEach(pid => this.debugInstance(tiup, comp, pid))
   }
   
-  static async debugInstance(tiup: TiUP, label: string, pid: string) {
-    const m = label.match(/(\w+).*\(\d+\)/)
-    if (!m) {
-      vscode.window.showErrorMessage(`${label} is not a valid instance`);
+  static async debugInstance(tiup: TiUP, instanceName: string, pid: string) {
+    if (['pd', 'tikv', 'tidb'].indexOf(instanceName) < 0) {
+      vscode.window.showErrorMessage(`debug ${instanceName} is not supported yet `);
       return
-    } 
-    const instanceName = m[1]
+    }
     const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
     if (!wd) {
       vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
@@ -258,5 +276,26 @@ export class PlaygroundCommand {
       setTimeout(check, intervals)
     }
     setTimeout(check, intervals)
+  }
+
+  static async waitPlaygroundStop(
+    times: number = 10,
+    intervals: number = 3 * 1000
+  ) {
+    let tried = 0
+    async function check() {
+      const running = await PlaygroundCommand.checkPlaygroundRun()
+      if (!running) {
+        vscode.commands.executeCommand('ticode.playground.refresh')
+        return
+      }
+      tried++
+      if (tried > times) {
+        return
+      }
+      await new Promise(resolve => setTimeout(resolve, intervals));
+      await check()
+    }
+    await check()
   }
 }

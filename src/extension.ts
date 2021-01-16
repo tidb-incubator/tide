@@ -19,7 +19,9 @@ import { ScaffoldProvider } from './scaffold/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
 import { TopoProvider } from './topo-manager/provider'
-
+import { MachineProvider } from './machine-manager/provider'
+import { ScaffoldProvider } from './scaffold/provider'
+import { ScaffoldCommand } from './scaffold/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -63,7 +65,11 @@ export async function activate(context: vscode.ExtensionContext) {
      * TiUP Playground
      */
     registerCommand('ticode.playground.start', () =>
-      PlaygroundCommand.startPlayground(tiup, vscode.workspace.workspaceFolders)
+      PlaygroundCommand.startPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
     ),
     registerCommand('ticode.playground.stop', () => stopPlayground()),
     registerCommand('ticode.playground.startByConfig', () =>
@@ -73,6 +79,13 @@ export async function activate(context: vscode.ExtensionContext) {
         playgroundProvider.playgroundConfigPath
       )
     ),
+    registerCommand('ticode.playground.restart', (treeItem) => {
+      PlaygroundCommand.reloadPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
+    }),
     registerCommand('ticode.playground.reloadConfig', () =>
       reloadPlaygroundConfig(playgroundProvider)
     ),
@@ -85,10 +98,18 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.followInstanceLog', (treeItem) => {
       PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
+    registerCommand('ticode.playground.debugCluster', (treeItem) => {
+      playgroundProvider.getChildren(treeItem).then(childs => {
+        PlaygroundCommand.debugCluster(
+          tiup,
+          childs,
+        )
+      })
+    }),
     registerCommand('ticode.playground.debugInstance', (treeItem) => {
-      PlaygroundCommand.debugInstances(
+    PlaygroundCommand.debugInstances(
         tiup,
-        treeItem.label,
+        treeItem.extra.comp,
         treeItem.extra.pids
       )
     }),
@@ -182,6 +203,14 @@ export async function activate(context: vscode.ExtensionContext) {
      */
     registerCommand('ticode.kubernetes.listTidbCluster', () => KubeCommand.listTidbCluster()),
     registerCommand('ticode.kubernetes.showPodInDocument', (podName) => showPodInDocument(podName)),
+
+    /**
+     * Scaffold
+     */
+    // click
+    registerCommand('ticode.scaffold.addDashboardApp', () => {
+      ScaffoldCommand.addDashboardApp()
+    }),
   ]
 
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
