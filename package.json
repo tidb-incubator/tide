@@ -151,6 +151,10 @@
       {
         "command": "ticode.cluster.viewTopo",
         "title": "View cluster topo"
+      },
+      {
+        "command": "ticode.kubernetes.display",
+        "title": "Display kubernetes cluster"
       }
     ],
     "viewsContainers": {
@@ -171,6 +175,10 @@
         {
           "id": "ticode-tiup-playground",
           "name": "TiUP Playground"
+        },
+        {
+          "id": "ticode-kube-cluster",
+          "name": "Kubernetes Cluster"
         },
         {
           "id": "ticode-topo-manager",

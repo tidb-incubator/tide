@@ -1,22 +1,23 @@
-import * as vscode from 'vscode'
-import * as config from './components/config/config'
 import * as tmp from 'tmp'
-
-import { fs } from './fs'
-import { host } from './host'
-import { PlaygroundCommand } from './playground/command'
-import { PlaygroundProvider } from './playground/provider'
-import { ClusterProvider } from './cluster/provider'
-import { shell } from './shell'
-import { create as createTiUP } from './tiup'
+import * as vscode from 'vscode'
 import {
   ClusterCommand,
   ClusterComponent,
-  InstanceAndCluster,
+  InstanceAndCluster
 } from './cluster/command'
-import { TopoProvider } from './topo-manager/provider'
+import { ClusterProvider } from './cluster/provider'
+import * as config from './components/config/config'
+import { fs } from './fs'
+import { host } from './host'
 import { MachineProvider } from './machine-manager/provider'
+import { PlaygroundCommand } from './playground/command'
+import { PlaygroundProvider } from './playground/provider'
 import { ScaffoldProvider } from './scaffold/provider'
+import { shell } from './shell'
+import { create as createTiUP } from './tiup'
+import { TopoProvider } from './topo-manager/provider'
+import { KubernetesProvider } from './kubernetes/provider'
+
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -32,16 +33,17 @@ export async function activate(context: vscode.ExtensionContext) {
   const clusterProvider = new ClusterProvider()
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
 
+  // kubernetes tree view
+  const kubeProvider = new KubernetesProvider()
+  vscode.window.registerTreeDataProvider('ticode-kube-cluster', kubeProvider)
+
   // topo tree view
   const topoProvider = new TopoProvider()
   vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
 
   // machine tree view
   const machineProvider = new MachineProvider()
-  vscode.window.registerTreeDataProvider(
-    'ticode-machine-manager',
-    machineProvider
-  )
+  vscode.window.registerTreeDataProvider('ticode-machine-manager', machineProvider)
 
   // scaffold tree view
   const scaffoldProvider = new ScaffoldProvider()
@@ -52,11 +54,12 @@ export async function activate(context: vscode.ExtensionContext) {
   const { name: tempFolder } = tmp.dirSync()
 
   const commandsSubscriptions = [
-    ////////////////
+    // help
     registerCommand('ticode.help', tiupHelp),
 
-    ////////////////
-    // playground
+    /**
+     * TiUP Playground
+     */
     registerCommand('ticode.playground.start', () =>
       PlaygroundCommand.startPlayground(tiup, vscode.workspace.workspaceFolders)
     ),
@@ -88,16 +91,15 @@ export async function activate(context: vscode.ExtensionContext) {
       )
     }),
 
-    ////////////////
-    // cluster
+    /**
+     * TiUP Cluster
+     */
     // navigation action
     registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
     // context menu
     registerCommand('ticode.cluster.list', listClusters),
     // context menu
-    registerCommand('ticode.cluster.display', (treeItem) =>
-      displayClusters(treeItem.label)
-    ),
+    registerCommand('ticode.cluster.display', (treeItem) => displayClusters(treeItem.label)),
     // directly click
     registerCommand('ticode.cluster.viewInstanceLog', (fileName, inst) =>
       ClusterCommand.scpLogFile(fileName, inst, tempFolder)
@@ -172,6 +174,11 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.viewTopo', (cluster) => {
       ClusterCommand.viewClusterTopo(cluster, tempFolder)
     }),
+
+    /**
+     * Kubernetes Cluster
+     */
+    registerCommand('ticode.kubernetes.display', (treeItem) => )
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
@@ -193,7 +200,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
 
 function registerCommand(
   command: string,

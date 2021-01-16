@@ -1,6 +1,6 @@
 import * as vscode from 'vscode'
 
-export class MachineProvider implements vscode.TreeDataProvider<Item> {
+export class KubernetesProvider implements vscode.TreeDataProvider<Item> {
   getTreeItem(element: Item): vscode.TreeItem {
     return element
   }
