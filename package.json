@@ -61,6 +61,10 @@
         "title": "Follow log"
       },
       {
+        "command": "ticode.playground.debugInstance",
+        "title": "Debug"
+      },
+      {
         "command": "ticode.cluster.refresh",
         "title": "TiCode: Refresh Cluters",
         "icon": {
@@ -215,6 +219,11 @@
           "command": "ticode.playground.followInstanceLog",
           "when": "view == ticode-tiup-playground && viewItem == playground-instance",
           "group": "0@2"
+        },
+        {
+          "command": "ticode.playground.debugInstance",
+          "when": "view == ticode-tiup-playground && viewItem == playground-instance",
+          "group": "0@3"
         },
         {
           "command": "ticode.cluster.list",

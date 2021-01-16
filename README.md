@@ -2,7 +2,9 @@
 
 TiCode is a Visual Studio Code extension that makes developing TiDB a breeze.
 
-Still in the loop of coding, compiling, distributing binary to different servers, restarting every process and pulling information from logs everywhere? Try and see how TiCode makes TiDB development experience great again!
+Still in the loop of coding, compiling, copying binary to servers, restarting every process and pulling information from logs everywhere?
+
+**Try and see how TiCode makes TiDB development experience great again!**
 
 ## Features
 
@@ -11,8 +13,15 @@ Do all the things just in your favorite Visual Studio Code:
 - Start TiUP Playground/Cluster and start debugging instantly
 - Debug TiDB Cluster on Kubernetes
 - Run Chaos Mesh experiments
+- And mooooooooore!
 
-### TODO
+## Quick Start
+
+1. Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
+2. Start TiUP Playground
+3. Coding and Debugging
+
+## TODO
 
 - Cluster
 
@@ -41,6 +50,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [x] SSH to a single instance and enter the folder
   - [ ] Follow logs of all instances @Aylei
   - [ ] Attach to Debug @Aylei
+  - [ ] Restart on local compile (Rsync)
 
 - Playground
 
@@ -53,10 +63,15 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Attach to Debug @Aylei
 
 - Bench
+
   - [ ] Config bench
   - [ ] Start bench
 
-- Kubernetes @Aylei TODO
+- Kubernetes
+
+  - [ ] TreeView
+  - [ ] Attach to Debug
+  - [ ] Restart on local compile (Rsync)
 
 - Cluster Topo Manager
 
@@ -69,6 +84,7 @@ Do all the things just in your favorite Visual Studio Code:
   - [ ] Start virtual machines, ready for deploy a cluster
 
 - Scaffold for adding new feature
+
   - [ ] Scaffold for tidb-dashboard repo
   - [ ] Scaffold for coprocess
 
@@ -80,15 +96,13 @@ Do all the things just in your favorite Visual Studio Code:
 
 Cluster:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/fxflwr_lFvE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-https://youtu.be/fxflwr_lFvE
+- Youtube: https://youtu.be/fxflwr_lFvE
+- Bilibili: https://www.bilibili.com/video/BV1oz4y1U7ec/
 
 Playground:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/57pU6Jhc5C0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-https://youtu.be/57pU6Jhc5C0
+- Youtube: https://youtu.be/57pU6Jhc5C0
+- Bilibili: https://www.bilibili.com/video/BV1pK411u7S4/
 
 Debug:
 
@@ -96,13 +110,11 @@ Debug:
 
 ## Requirements
 
-TBD
+- TiUP
 
 ## Extension Settings
 
 ## Known Issues
-
-TBD
 
 ## Release Notes
 
