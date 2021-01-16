@@ -1,13 +1,13 @@
 {
   "name": "ticode",
   "publisher": "dragonly",
-  "displayName": "TiCode",
+  "displayName": "TiDE",
   "repository": {
     "url": "https://github.com/dragonly/ticode"
   },
   "description": "make developing TiDB a breeze",
   "icon": "media/logo.png",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.52.0"
   },
