@@ -131,6 +131,26 @@
       {
         "command": "ticode.cluster.patchByOther",
         "title": "Patch by other binary"
+      },
+      {
+        "command": "ticode.cluster.restartComponent",
+        "title": "Restart component"
+      },
+      {
+        "command": "ticode.cluster.restartInstance",
+        "title": "Restart instance"
+      },
+      {
+        "command": "ticode.cluster.openDashboard",
+        "title": "Open dashboard"
+      },
+      {
+        "command": "ticode.cluster.openGrafana",
+        "title": "Open grafana"
+      },
+      {
+        "command": "ticode.cluster.viewTopo",
+        "title": "View cluster topo"
       }
     ],
     "viewsContainers": {
@@ -151,6 +171,18 @@
         {
           "id": "ticode-tiup-playground",
           "name": "TiUP Playground"
+        },
+        {
+          "id": "ticode-topo-manager",
+          "name": "Topo Manager"
+        },
+        {
+          "id": "ticode-machine-manager",
+          "name": "Machine Manager"
+        },
+        {
+          "id": "ticode-scaffold",
+          "name": "Scaffold"
         }
       ]
     },
@@ -223,6 +255,16 @@
           "group": "1@5"
         },
         {
+          "command": "ticode.cluster.openDashboard",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.openGrafana",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-name",
+          "group": "2@2"
+        },
+        {
           "command": "ticode.cluster.patchByCurrent",
           "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component$|^cluster-instance$/",
           "group": "1@1"
@@ -233,9 +275,19 @@
           "group": "1@2"
         },
         {
+          "command": "ticode.cluster.restartComponent",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-component",
+          "group": "2@1"
+        },
+        {
           "command": "ticode.cluster.ssh",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
           "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.restartInstance",
+          "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
+          "group": "3@1"
         },
         {
           "command": "ticode.cluster.applyInstanceConf",

@@ -9,27 +9,43 @@ import { PlaygroundProvider } from './playground/provider'
 import { ClusterProvider } from './cluster/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
-import { ClusterCommand } from './cluster/command'
+import {
+  ClusterCommand,
+  ClusterComponent,
+  InstanceAndCluster,
+} from './cluster/command'
+import { TopoProvider } from './topo-manager/provider'
+import { MachineProvider } from './machine-manager/provider'
+import { ScaffoldProvider } from './scaffold/provider'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
 export async function activate(context: vscode.ExtensionContext) {
   // playground tree view
-  const playgroundProvider = new PlaygroundProvider(
-    vscode.workspace.rootPath,
-    context
-  )
+  const playgroundProvider = new PlaygroundProvider(context)
   vscode.window.registerTreeDataProvider(
     'ticode-tiup-playground',
     playgroundProvider
   )
 
   // clsuter tree view
-  const clusterProvider = new ClusterProvider(
-    vscode.workspace.rootPath,
-    context
-  )
+  const clusterProvider = new ClusterProvider()
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
+
+  // topo tree view
+  const topoProvider = new TopoProvider()
+  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
+
+  // machine tree view
+  const machineProvider = new MachineProvider()
+  vscode.window.registerTreeDataProvider(
+    'ticode-machine-manager',
+    machineProvider
+  )
+
+  // scaffold tree view
+  const scaffoldProvider = new ScaffoldProvider()
+  vscode.window.registerTreeDataProvider('ticode-scaffold', scaffoldProvider)
 
   // temp folder
   // TODO: persist path to vscode configuration
@@ -65,7 +81,11 @@ export async function activate(context: vscode.ExtensionContext) {
       PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
     registerCommand('ticode.playground.debugInstance', (treeItem) => {
-      PlaygroundCommand.debugInstances(tiup, treeItem.label, treeItem.extra.pids)
+      PlaygroundCommand.debugInstances(
+        tiup,
+        treeItem.label,
+        treeItem.extra.pids
+      )
     }),
 
     ////////////////
@@ -103,6 +123,12 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.destroy', (treeItem) =>
       ClusterCommand.destroyCluster(treeItem.label, tiup)
     ),
+    registerCommand('ticode.cluster.openDashboard', (treeItem) =>
+      ClusterCommand.openDashboard(treeItem.label, tiup)
+    ),
+    registerCommand('ticode.cluster.openGrafana', (treeItem) =>
+      ClusterCommand.openGrafana(treeItem.label, tiup)
+    ),
     // click
     registerCommand('ticode.cluster.viewGlobalConfig', (cluster) => {
       ClusterCommand.copyGloalConfigFile(cluster, tempFolder)
@@ -130,15 +156,21 @@ export async function activate(context: vscode.ExtensionContext) {
     ),
     // context menu
     registerCommand('ticode.cluster.patchByCurrent', (treeItem) => {
-      ClusterCommand.patchByCurrent(
-        treeItem.extra,
-        treeItem.contextValue,
-        vscode.workspace.rootPath || ''
-        // tiup
-      )
+      ClusterCommand.patchByCurrent(treeItem.extra, treeItem.contextValue)
     }),
     registerCommand('ticode.cluster.patchByOther', (treeItem) => {
       ClusterCommand.patchByOther(treeItem.extra, treeItem.contextValue)
+    }),
+    // context menu
+    registerCommand('ticode.cluster.restartComponent', (treeItem) => {
+      ClusterCommand.restartComponent(treeItem.extra as ClusterComponent, tiup)
+    }),
+    registerCommand('ticode.cluster.restartInstance', (treeItem) => {
+      ClusterCommand.restartInstance(treeItem.extra as InstanceAndCluster, tiup)
+    }),
+    // click
+    registerCommand('ticode.cluster.viewTopo', (cluster) => {
+      ClusterCommand.viewClusterTopo(cluster, tempFolder)
     }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))

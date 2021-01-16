@@ -43,21 +43,21 @@ export class ClusterCommand {
   static async listClusters(): Promise<Cluster[]> {
     const clusters: Cluster[] = []
     const cr = await shell.exec('tiup cluster list')
-    if (cr?.code === 0) {
-      const lines = cr.stdout.trim().split('\n')
-      let skip = true
-      lines.forEach((line) => {
-        if (!skip) {
-          const [name, user, version, path, privateKey] = line.split(/\s+/)
-          clusters.push({ name, user, version, path, privateKey })
-        }
-        if (line.startsWith('--')) {
-          skip = false
-        }
-      })
-    } else {
-      vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return clusters
     }
+    const lines = cr.stdout.trim().split('\n')
+    let skip = true
+    lines.forEach((line) => {
+      if (!skip) {
+        const [name, user, version, path, privateKey] = line.split(/\s+/)
+        clusters.push({ name, user, version, path, privateKey })
+      }
+      if (line.startsWith('--')) {
+        skip = false
+      }
+    })
     return clusters
   }
 
@@ -140,7 +140,7 @@ export class ClusterCommand {
     tempFolder: string
   ) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const { instance, cluster } = inst
@@ -172,7 +172,7 @@ export class ClusterCommand {
     tempFolder: string
   ) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const { instance, cluster } = inst
@@ -239,7 +239,7 @@ export class ClusterCommand {
   // copy global config file
   static async copyGloalConfigFile(cluster: Cluster, tempFolder: string) {
     if (!fs.existsSync(tempFolder)) {
-      fs.mkdirSync(tempFolder)
+      fs.mkdirSync(tempFolder, { recursive: true })
     }
 
     const editFileName = `${cluster.name}-meta.yaml`
@@ -313,6 +313,45 @@ export class ClusterCommand {
     }
   }
 
+  // open dashboard
+  static async openDashboard(clusterName: string, tiup: TiUP) {
+    const cr = await shell.exec(`tiup cluster display ${clusterName}`)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return
+    }
+    const lines = cr.stdout.trim().split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/Dashboard URL:\s+(\S+)/)
+      if (m) {
+        const url = m[1]
+        vscode.env.openExternal(vscode.Uri.parse(url))
+        return
+      }
+    }
+  }
+
+  // open grafana
+  static async openGrafana(clusterName: string, tiup: TiUP) {
+    const cr = await shell.exec(`tiup cluster display ${clusterName}`)
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return
+    }
+    const lines = cr.stdout.trim().split('\n')
+    for (let i = 0; i < lines.length; i++) {
+      const m = lines[i].match(/(\S+)\s+grafana/)
+      if (m) {
+        const url = m[1]
+        vscode.env.openExternal(vscode.Uri.parse(`http://${url}`))
+        return
+      }
+    }
+    vscode.window.showErrorMessage(
+      'Open grafana failed, you may not install it.'
+    )
+  }
+
   // ssh
   static async ssh(inst: InstanceAndCluster) {
     const { instance, cluster } = inst
@@ -327,9 +366,7 @@ export class ClusterCommand {
   // patch component
   static async patchByCurrent(
     treeItemExtra: ClusterComponent | InstanceAndCluster,
-    treeItemContextValue: string,
-    workspaceRoot: string
-    // tiup: TiUP
+    treeItemContextValue: string
   ) {
     // warn
     const res = await vscode.window.showInformationMessage(
@@ -355,8 +392,26 @@ export class ClusterCommand {
     }
 
     // check repo
-    if (!workspaceRoot.endsWith(compRole)) {
+    let targetFolder = vscode.workspace.rootPath
+    if (targetFolder && !targetFolder.endsWith(compRole)) {
       vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+      return
+    } else {
+      let workspaceFolders = vscode.workspace.workspaceFolders
+      if (!workspaceFolders) {
+        vscode.window.showErrorMessage(`This is not ${compRole} repo`)
+        return
+      }
+      for (let i = 0; i < workspaceFolders.length; i++) {
+        const folder = workspaceFolders[i]
+        if (folder.uri.path.endsWith(compRole)) {
+          targetFolder = folder.uri.path
+          break
+        }
+      }
+    }
+    if (!targetFolder) {
+      vscode.window.showErrorMessage(`There is no ${compRole} repo`)
       return
     }
 
@@ -366,9 +421,9 @@ export class ClusterCommand {
     // TODO: use tasks provider to replace
     if (compRole === 'tidb') {
       if (shell.platform() !== Platform.Linux) {
-        cmd = `make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+        cmd = `cd ${targetFolder} && make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
       } else {
-        cmd = `make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+        cmd = `cd ${targetFolder} && make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
       }
     }
     // TODO: tikv, pd
@@ -422,6 +477,64 @@ export class ClusterCommand {
     const t = vscode.window.createTerminal(`patch ${compRole}`)
     t.sendText(cmd)
     t.show()
+  }
+
+  static async restartComponent(treeItemExtra: ClusterComponent, tiup: TiUP) {
+    const { cluster, role } = treeItemExtra
+    const cmd = `cluster restart ${cluster.name} -R ${role}`
+    await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async restartInstance(treeItemExtra: InstanceAndCluster, tiup: TiUP) {
+    const { cluster, instance } = treeItemExtra
+    const cmd = `cluster restart ${cluster.name} -N ${instance.id}`
+    await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async viewClusterTopo(cluster: Cluster, tempFolder: string) {
+    vscode.window.showInformationMessage('Generating... please be patient')
+
+    const comps = await ClusterCommand.displayCluster(cluster.name)
+    let instances: ClusterInstance[] = []
+    Object.values(comps).forEach((arr) => (instances = instances.concat(arr)))
+    const hostInstances: Record<string, ClusterInstance[]> = {}
+    instances.forEach((inst) => {
+      hostInstances[inst.host] = hostInstances[inst.host] || []
+      hostInstances[inst.host].push(inst)
+    })
+    console.log('host instances:', hostInstances)
+    let content = ''
+    Object.keys(hostInstances).forEach((host, idx) => {
+      const instances = hostInstances[host]
+      const instsStr = instances
+        .map((inst) => `${inst.role}_${inst.ports.replace(/\//g, '_')};`)
+        .join(' ')
+      content += `
+  subgraph cluster${idx} {
+    node [style=filled];
+    label = "${host}";
+    ${instsStr}
+  }
+`
+    })
+    content = `
+digraph G {
+  rankdir=LR
+  ${content}
+}
+`
+    console.log(content)
+
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder, { recursive: true })
+    }
+    const dotFilePath = path.join(tempFolder, `${cluster.name}.dot`)
+    fs.writeFileSync(dotFilePath, content)
+    vscode.commands.executeCommand('vscode.open', vscode.Uri.file(dotFilePath))
+    // vscode.commands.executeCommand(
+    //   'graphviz.preview',
+    //   vscode.Uri.parse(dotFilePath)
+    // )
   }
 }
 

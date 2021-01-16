@@ -115,7 +115,7 @@ export class PlaygroundCommand {
     PlaygroundCommand.loopCheckPlayground()
   }
 
-  static loopCheckPlayground(times: number = 10, intervals: number = 3 * 1000) {
+  static loopCheckPlayground(times: number = 30, intervals: number = 3 * 1000) {
     let tried = 0
     async function check() {
       const instances = await PlaygroundCommand.displayPlayground()
