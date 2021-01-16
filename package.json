@@ -134,6 +134,10 @@
         "title": "SSH"
       },
       {
+        "command": "ticode.cluster.debug",
+        "title": "Debug"
+      },
+      {
         "command": "ticode.cluster.patchByCurrent",
         "title": "Patch by current repo"
       },
@@ -319,6 +323,11 @@
           "command": "ticode.cluster.ssh",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-instance",
           "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.debug",
+          "when": "viewItem == cluster-instance",
+          "group": "2@2"
         },
         {
           "command": "ticode.cluster.restartInstance",

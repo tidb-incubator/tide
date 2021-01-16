@@ -367,14 +367,53 @@ export class ClusterCommand {
   // debug
   static async debug(inst: InstanceAndCluster) {
     const { instance, cluster } = inst
-
-    if (instance.role === "") {
-    } else if (instance.role === "") {
-
-    } else if (instance.role === "") {
-
+    const instanceName = instance.role
+    // TODO: pd, tikv
+    if (['tidb'].indexOf(instanceName) < 0) {
+      vscode.window.showErrorMessage(`debug ${instanceName} is not supported yet `);
+      return
     }
-    const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
+    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
+    if (!wd) {
+      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
+      return
+    }
+    switch (instanceName) {
+      case "tidb" :{
+        const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; ./bin/dlv --headless --listen=:45678 --api-version 2 attach \\$(pidof tidb-server)"`
+        const remote = vscode.window.createTerminal(`debug ${instanceName}`)
+        remote.sendText(cmd)
+        remote.show()
+        const debugConfiguration = {
+          type: "go",
+          request: "attach",
+          name: "Attach Remote TiDB",
+          mode: "remote",
+          remotePath: wd.uri.fsPath,
+          port: "45678",
+          host: instance.host,
+        };
+        setTimeout(() => vscode.debug.startDebugging(wd, debugConfiguration), 3 * 1000)
+        break
+      }
+      case "pd" :{
+        const debugConfiguration = {
+          type: "go",
+          request: "attach",
+          name: "Attach Remote PD",
+          mode: "remote",
+          remotePath: `${instance.deployDir}/bin/pd-server`,
+          port: "45678",
+          host: instance.host,
+        };
+        vscode.debug.startDebugging(wd, debugConfiguration)
+        break
+      }
+      // TODO
+      case "tikv" :{
+        // unreachable
+      }
+    }
   }
 
   // patch component
@@ -394,15 +433,19 @@ export class ClusterCommand {
 
     let compRole = 'unknown'
     let patchTarget = ''
+    let deployDir = ''
     if (treeItemContextValue === 'cluster-component') {
       const { cluster, role, instances } = treeItemExtra as ClusterComponent
       compRole = role
       patchTarget = `-R ${role}`
+      // FIXME: hack, we think all instance has same deploy dir
+      deployDir = instances[0].deployDir
     }
     if (treeItemContextValue === 'cluster-instance') {
       const { instance, cluster } = treeItemExtra as InstanceAndCluster
       compRole = instance.role
       patchTarget = `-N ${instance.id}`
+      deployDir = instance.deployDir
     }
 
     // check repo
@@ -430,21 +473,25 @@ export class ClusterCommand {
     }
 
     const tar = `/tmp/${compRole}.tar.gz`
-    let cmd = ''
+    let cmds: string[] = []
     // case by case
     // TODO: use tasks provider to replace
     if (compRole === 'tidb') {
-      if (shell.platform() !== Platform.Linux) {
-        cmd = `cd ${targetFolder} && make linux && cd bin && mv tidb-server-linux tidb-server && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
-      } else {
-        cmd = `cd ${targetFolder} && make && cd bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
-      }
+      // compile
+      cmds.push(`cd ${targetFolder} && GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
+      // hack to weave in dlv
+      // hard-code dlv path...
+      cmds.push(`cd ${targetFolder}/bin && mv ~/dlv ./`)
+      // replace
+      cmds.push(`cd ${targetFolder}/bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`)
     }
     // TODO: tikv, pd
 
-    if (cmd) {
+    if (cmds.length > 0) {
       const t = vscode.window.createTerminal(`patch ${compRole}`)
-      t.sendText(cmd)
+      for (const cmd of cmds) {
+        t.sendText(cmd)
+      }
       t.show()
     }
   }

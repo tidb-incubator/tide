@@ -180,6 +180,10 @@ export async function activate(context: vscode.ExtensionContext) {
       ClusterCommand.ssh(treeItem.extra)
     ),
     // context menu
+    registerCommand('ticode.cluster.debug', (treeItem) =>
+      ClusterCommand.debug(treeItem.extra)
+    ),
+    // context menu
     registerCommand('ticode.cluster.patchByCurrent', (treeItem) => {
       ClusterCommand.patchByCurrent(treeItem.extra, treeItem.contextValue)
     }),
