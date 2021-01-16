@@ -59,7 +59,11 @@ export async function activate(context: vscode.ExtensionContext) {
     ////////////////
     // playground
     registerCommand('ticode.playground.start', () =>
-      PlaygroundCommand.startPlayground(tiup, vscode.workspace.workspaceFolders)
+      PlaygroundCommand.startPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
     ),
     registerCommand('ticode.playground.stop', () => stopPlayground()),
     registerCommand('ticode.playground.startByConfig', () =>
@@ -69,6 +73,13 @@ export async function activate(context: vscode.ExtensionContext) {
         playgroundProvider.playgroundConfigPath
       )
     ),
+    registerCommand('ticode.playground.restart', (treeItem) => {
+      PlaygroundCommand.reloadPlayground(
+        tiup,
+        vscode.workspace.workspaceFolders,
+        playgroundProvider.playgroundDefaultConfigPath
+      )
+    }),
     registerCommand('ticode.playground.reloadConfig', () =>
       reloadPlaygroundConfig(playgroundProvider)
     ),
@@ -81,10 +92,18 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.followInstanceLog', (treeItem) => {
       PlaygroundCommand.followInstanceLogs(tiup, treeItem.extra.pids)
     }),
+    registerCommand('ticode.playground.debugCluster', (treeItem) => {
+      playgroundProvider.getChildren(treeItem).then(childs => {
+        PlaygroundCommand.debugCluster(
+          tiup,
+          childs,
+        )
+      })
+    }),
     registerCommand('ticode.playground.debugInstance', (treeItem) => {
-      PlaygroundCommand.debugInstances(
+    PlaygroundCommand.debugInstances(
         tiup,
-        treeItem.label,
+        treeItem.extra.comp,
         treeItem.extra.pids
       )
     }),

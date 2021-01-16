@@ -6,6 +6,7 @@ import * as path from 'path'
 export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   public playgroundConfigFolder: string = ''
   public playgroundConfigPath: string = ''
+  public playgroundDefaultConfigPath: string = ''
 
   constructor(
     private context: vscode.ExtensionContext
@@ -23,8 +24,15 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       this.playgroundConfigFolder,
       'playground.toml'
     )
+    this.playgroundDefaultConfigPath = path.join(
+      this.playgroundConfigFolder,
+      'default.toml'
+    )
     if (!fs.existsSync(this.playgroundConfigPath)) {
       this.reloadConfig()
+    }
+    if (!fs.existsSync(this.playgroundDefaultConfigPath)) {
+      this.reloadDefaultConfig()
     }
 
     // init component configs
@@ -71,9 +79,21 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       '..',
       'config-template',
       'playground',
-      'playground.toml'
+      'playground.toml',
     )
     fs.copyFileSync(templateFile, this.playgroundConfigPath)
+  }
+
+  reloadDefaultConfig() {
+    const templateFile = path.join(
+      __dirname,
+      '..',
+      '..',
+      'config-template',
+      'playground',
+      'default.toml',
+    )
+    fs.copyFileSync(templateFile, this.playgroundDefaultConfigPath)
   }
 
   getTreeItem(element: Item): vscode.TreeItem {
@@ -106,6 +126,12 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
             title: 'stop playground',
           })
         )
+        items.push(
+          new Item('restart playground', vscode.TreeItemCollapsibleState.None, {
+            command: 'ticode.playground.restart',
+            title: 'restart playground',
+          })
+        )
       }
 
       // config
@@ -129,9 +155,9 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
 
       // instances
       if (running) {
-        items.push(
-          new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
-        )
+        let clusterItem = new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
+        clusterItem.contextValue = 'playground-cluster'
+        items.push(clusterItem)
       }
 
       return Promise.resolve(items)
@@ -171,7 +197,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   }
 }
 
-class Item extends vscode.TreeItem {
+export class Item extends vscode.TreeItem {
   public extra: any
   constructor(
     public readonly label: string,
