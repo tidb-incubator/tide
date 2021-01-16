@@ -19,7 +19,8 @@
     "onCommand:ticode.help",
     "onCommand:ticode.playground.start",
     "onView:ticode-tiup-playground",
-    "onView:ticode-tiup-cluster"
+    "onView:ticode-tiup-cluster",
+    "onView:ticode-kube-cluster"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -153,8 +154,8 @@
         "title": "View cluster topo"
       },
       {
-        "command": "ticode.kubernetes.display",
-        "title": "Display kubernetes cluster"
+        "command": "ticode.kubernetes.listTidbCluster",
+        "title": "TiDE: List TidbCluster (Kubernetes)"
       }
     ],
     "viewsContainers": {

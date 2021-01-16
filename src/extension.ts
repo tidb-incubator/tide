@@ -9,6 +9,9 @@ import { ClusterProvider } from './cluster/provider'
 import * as config from './components/config/config'
 import { fs } from './fs'
 import { host } from './host'
+import { KubeCommand } from './kubernetes/command'
+import { KubeProvider } from './kubernetes/provider'
+import { Pod } from './kubernetes/resources.objectmodel'
 import { MachineProvider } from './machine-manager/provider'
 import { PlaygroundCommand } from './playground/command'
 import { PlaygroundProvider } from './playground/provider'
@@ -16,7 +19,6 @@ import { ScaffoldProvider } from './scaffold/provider'
 import { shell } from './shell'
 import { create as createTiUP } from './tiup'
 import { TopoProvider } from './topo-manager/provider'
-import { KubernetesProvider } from './kubernetes/provider'
 
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
@@ -34,7 +36,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
 
   // kubernetes tree view
-  const kubeProvider = new KubernetesProvider()
+  const kubeProvider = new KubeProvider()
   vscode.window.registerTreeDataProvider('ticode-kube-cluster', kubeProvider)
 
   // topo tree view
@@ -178,24 +180,38 @@ export async function activate(context: vscode.ExtensionContext) {
     /**
      * Kubernetes Cluster
      */
-    registerCommand('ticode.kubernetes.display', (treeItem) => )
+    registerCommand('ticode.kubernetes.listTidbCluster', () => KubeCommand.listTidbCluster()),
+    registerCommand('ticode.kubernetes.showPodInDocument', (podName) => showPodInDocument(podName)),
   ]
+
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
 
-  // virtual document
-  const myScheme = 'ticode'
-  const myProvider = new (class implements vscode.TextDocumentContentProvider {
-    // emitter and its event
+  // TODO: review implementation of virtual document
+  const schemeTiUPCluster = 'tiup-cluster'
+  const tdcProviderTiUPCluster = new (class implements vscode.TextDocumentContentProvider {
     onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
     onDidChange = this.onDidChangeEmitter.event
-
     async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
       const cr = await shell.exec(`tiup cluster ${uri.path}`)
       return cr?.stdout || ''
     }
   })()
   context.subscriptions.push(
-    vscode.workspace.registerTextDocumentContentProvider(myScheme, myProvider)
+    vscode.workspace.registerTextDocumentContentProvider(schemeTiUPCluster, tdcProviderTiUPCluster)
+  )
+
+  const schemeKubePod = 'kube-pod'
+  const tdcProviderKubePod = new (class implements vscode.TextDocumentContentProvider {
+    onDidChangeEmitter = new vscode.EventEmitter<vscode.Uri>()
+    onDidChange = this.onDidChangeEmitter.event
+    async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+      const podName = uri.path.split('.')[0]
+      const cr = await shell.exec(`kubectl get pod ${podName} -o yaml`)
+      return cr?.stdout || ''
+    }
+  })()
+  context.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(schemeKubePod, tdcProviderKubePod)
   )
 }
 
@@ -217,9 +233,7 @@ async function tiupHelp() {
   await tiup.invokeInSharedTerminal('help')
 }
 
-///////////////////////////////////////////
-// playground
-
+// TiUp Playground
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
     'Are you sure reload the config? Your current config will be overrided',
@@ -240,8 +254,7 @@ async function stopPlayground() {
   }
 }
 
-///////////////////////////////////////////
-// cluster
+// TiUp Cluster
 async function listClusters() {
   const uri = vscode.Uri.parse('ticode:list')
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
@@ -254,7 +267,13 @@ async function displayClusters(clusterName?: string) {
     return
   }
 
-  const uri = vscode.Uri.parse(`ticode:display ${clusterName}`)
+  const uri = vscode.Uri.parse(`tiup-cluster:display ${clusterName}`)
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
+  await vscode.window.showTextDocument(doc, { preview: false })
+}
+
+async function showPodInDocument(podName: string) {
+  const uri = vscode.Uri.parse(`kube-pod:${podName}.yaml`)
+  const doc = await vscode.workspace.openTextDocument(uri)
   await vscode.window.showTextDocument(doc, { preview: false })
 }

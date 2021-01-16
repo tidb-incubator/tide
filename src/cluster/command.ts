@@ -1,9 +1,10 @@
-import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
-
-import { shell, ShellResult, Platform } from '../shell'
+import * as vscode from 'vscode'
+import { Platform, shell } from '../shell'
 import { TiUP } from '../tiup'
+import { handleError } from '../utils/window'
+
 
 // Name User Version Path PrivateKey
 export type Cluster = Record<
@@ -536,10 +537,4 @@ digraph G {
     //   vscode.Uri.parse(dotFilePath)
     // )
   }
-}
-
-/////////////////////////
-// util
-function handleError(cr?: ShellResult) {
-  vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
 }
