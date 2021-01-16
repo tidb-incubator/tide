@@ -151,7 +151,7 @@ export class ClusterCommand {
     }
 
     const localLogFileFullPath = path.join(tempFolder, localLogFileName)
-    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/log/${fileName} "${localLogFileFullPath}"`
+    const cmd = `scp -oStrictHostKeyChecking=no -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/log/${fileName} "${localLogFileFullPath}"`
     logfileScpStatus[localLogFileName] = true
     vscode.window.showInformationMessage(`${fileName} is loading`)
     const cr = await shell.exec(cmd)
@@ -184,7 +184,7 @@ export class ClusterCommand {
 
     const localOriFileName = 'ori-' + localFileName
     const localOriFileFullPath = path.join(tempFolder, localOriFileName)
-    const cmd = `scp -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName} "${localOriFileFullPath}"`
+    const cmd = `scp -oStrictHostKeyChecking=no -i ${cluster.privateKey} ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName} "${localOriFileFullPath}"`
     logfileScpStatus[localFileName] = true
     vscode.window.showInformationMessage(`${fileName} is loading`)
     const cr = await shell.exec(cmd)
@@ -225,7 +225,7 @@ export class ClusterCommand {
       vscode.window.showInformationMessage(`${fileName} has no changes!`)
       return
     }
-    const cmd = `scp -i ${cluster.privateKey} "${localFileFullPath}" ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName}`
+    const cmd = `scp -oStrictHostKeyChecking=no -i ${cluster.privateKey} "${localFileFullPath}" ${cluster.user}@${instance.host}:${instance.deployDir}/conf/${fileName}`
     vscode.window.showInformationMessage(`Applying new ${fileName}!`)
     const cr = await shell.exec(cmd)
     if (cr?.code === 0) {
@@ -355,9 +355,9 @@ export class ClusterCommand {
   // ssh
   static async ssh(inst: InstanceAndCluster) {
     const { instance, cluster } = inst
-    const cmd = `ssh -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
+    const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; bash"`
     const t = vscode.window.createTerminal(
-      `ssh ${instance.host} ${instance.role}`
+      `ssh -oStrictHostKeyChecking=no ${instance.host} ${instance.role}`
     )
     t.sendText(cmd)
     t.show()
