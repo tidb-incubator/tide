@@ -151,6 +151,10 @@
       {
         "command": "ticode.cluster.viewTopo",
         "title": "View cluster topo"
+      },
+      {
+        "command": "ticode.scaffold.addDashboardApp",
+        "title": "Add new dashboard APP"
       }
     ],
     "viewsContainers": {
@@ -333,6 +337,7 @@
   "dependencies": {
     "@iarna/toml": "^2.2.5",
     "@types/tmp": "^0.2.0",
+    "replace-in-file": "^6.1.0",
     "shelljs": "^0.8.4",
     "tmp": "^0.2.1"
   }

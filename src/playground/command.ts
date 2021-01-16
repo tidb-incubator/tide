@@ -181,7 +181,7 @@ export class PlaygroundCommand {
       return
     } 
     const instanceName = m[1]
-    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
+    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name === instanceName);
     if (!wd) {
       vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
       return

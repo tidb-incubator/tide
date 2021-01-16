@@ -17,6 +17,7 @@ import {
 import { TopoProvider } from './topo-manager/provider'
 import { MachineProvider } from './machine-manager/provider'
 import { ScaffoldProvider } from './scaffold/provider'
+import { ScaffoldCommand } from './scaffold/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -171,6 +172,12 @@ export async function activate(context: vscode.ExtensionContext) {
     // click
     registerCommand('ticode.cluster.viewTopo', (cluster) => {
       ClusterCommand.viewClusterTopo(cluster, tempFolder)
+    }),
+    /////////////////////////////////////////
+    // scaffold
+    // click
+    registerCommand('ticode.scaffold.addDashboardApp', () => {
+      ScaffoldCommand.addDashboardApp()
     }),
   ]
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
