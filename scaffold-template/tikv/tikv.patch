@@ -17,7 +17,7 @@ index 52391ff07..84fe9f8f2 100644
      }
  
 +    pub async fn my_handler(_req: Request<Body>) -> hyper::Result<Response<Body>> {
-+        let msg = "TODO";
++        let msg = "TODO SCAFFOLD";
 +        Ok(Response::new(Body::from(format!("{}", msg))))
 +    }
 +
