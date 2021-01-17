@@ -111,7 +111,7 @@ Scaffold:
 
 - Scaffold for adding new feature
 
-  - [x] Scaffold for tidb-dashboard repo
+  - [x] Scaffold for tidb-dashboard repo (add a new app in 10 seconds)
   - [ ] Scaffold for coprocess
 
 - TiUP Manager
