@@ -6,6 +6,38 @@ Still in the loop of coding, compiling, copying binary to servers, restarting ev
 
 **Try and see how TiCode makes TiDB development experience great again!**
 
+## Quick start
+
+```bash
+$ git clone https://github.com/pingcap/tidb.git
+$ git clone https://github.com/pingcap/tikv.git
+$ git clone https://github.com/pingcap/pd.git
+$ git clone https://github.com/pingcap/tidb-dashboard.git
+$ cat>tidb.code-workspace<<EOF
+{
+	"folders": [
+		{
+			"path": "$PWD/tidb"
+		},
+		{
+			"path": "$PWD/pd"
+		},
+		{
+			"path": "$PWD/tikv"
+		},
+		{
+			"path": "$PWD/tidb-dashboard"
+		}
+	],
+	"settings": {}
+}
+EOF 
+$ code-insiders --install-extension dragonly.ticode
+$ code-insiders tidb.code-workspace
+```
+
+Navigate to the TiDE panel in VS Code, and click `start default playground` to get started.
+
 ## Features
 
 Do all the things just in your favorite Visual Studio Code:
