@@ -47,7 +47,17 @@ Do all the things just in your favorite Visual Studio Code:
 - Run Chaos Mesh experiments
 - And mooooooooore!
 
-## Demo:
+## Demo
+
+Scaffold:
+
+- Bilibiili: https://www.bilibili.com/video/BV12A411H74T/
+
+Debug:
+
+![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
+
+Bilibili: https://www.bilibili.com/video/BV12p4y1x7w8/
 
 Cluster:
 
@@ -63,16 +73,6 @@ Playground:
 
 ![image](https://user-images.githubusercontent.com/1284531/104793321-f7fe6c80-57dc-11eb-8b51-a25a6690d87a.png)
 
-Debug:
-
-![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
-
-Bilibili: https://www.bilibili.com/video/BV12p4y1x7w8/
-
-Scaffold:
-
-- Bilibiili: https://www.bilibili.com/video/BV12A411H74T/
-
 ## Quick Start
 
 1. Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
@@ -80,6 +80,11 @@ Scaffold:
 3. Coding and Debugging
 
 ## TODO
+
+- Scaffold for adding new feature
+
+  - [x] Scaffold for tidb-dashboard repo (add a new app in 10 seconds)
+  - [ ] Scaffold for coprocess
 
 - Cluster
 
@@ -140,11 +145,6 @@ Scaffold:
 
   - [ ] Manager vagrant virtual machines
   - [ ] Start virtual machines, ready for deploy a cluster
-
-- Scaffold for adding new feature
-
-  - [x] Scaffold for tidb-dashboard repo (add a new app in 10 seconds)
-  - [ ] Scaffold for coprocess
 
 - TiUP Manager
   - [ ] Install TiUP
