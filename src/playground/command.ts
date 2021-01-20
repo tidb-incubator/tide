@@ -87,13 +87,13 @@ export class PlaygroundCommand {
           workspaceFolders?.forEach(folder => {
             if (folder.name === comp) {
               if (comp === 'tidb') {
-                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
+                preCmds.push(`cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
                 args.push(`--${k} ${folder.uri.fsPath}/bin/tidb-server`)
               } else if (comp === 'tikv') {
                 preCmds.push(`cd ${folder.uri.fsPath} && make build`)
                 args.push(`--${k} ${folder.uri.fsPath}/target/debug/tikv-server`)
               } else if (comp === 'pd') {
-                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go`)
+                preCmds.push(`cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go`)
                 args.push(`--${k} ${folder.uri.fsPath}/bin/pd-server`)
               }
             }
