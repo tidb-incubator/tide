@@ -31,9 +31,9 @@ $ cat>tidb.code-workspace<<EOF
 	],
 	"settings": {}
 }
-EOF 
-$ code-insiders --install-extension dragonly.ticode
-$ code-insiders tidb.code-workspace
+EOF
+$ code --install-extension dragonly.ticode
+$ code tidb.code-workspace
 ```
 
 Navigate to the TiDE panel in VS Code, and click `start default playground` to get started.

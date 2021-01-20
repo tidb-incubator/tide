@@ -24,6 +24,9 @@ import { DashboardCommand } from './dashboard/command'
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
 export async function activate(context: vscode.ExtensionContext) {
+  // check environments
+  checkEnvs()
+
   // playground tree view
   const playgroundProvider = new PlaygroundProvider(context)
   vscode.window.registerTreeDataProvider(
@@ -328,4 +331,8 @@ async function showPodInDocument(podName: string) {
   const uri = vscode.Uri.parse(`kube-pod:${podName}.yaml`)
   const doc = await vscode.workspace.openTextDocument(uri)
   await vscode.window.showTextDocument(doc, { preview: false })
+}
+
+async function checkEnvs() {
+  const workFolders = vscode.workspace.workspaceFolders
 }
