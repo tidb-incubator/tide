@@ -1,5 +1,7 @@
 # TiDE
 
+![ci](https://github.com/dragonly/ticode/workflows/ci/badge.svg)
+
 TiDE is a Visual Studio Code extension that makes developing TiDB a breeze.
 
 Still in the loop of coding, compiling, copying binary to servers, restarting every process and pulling information from logs everywhere?

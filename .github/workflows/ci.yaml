@@ -7,8 +7,18 @@ on:
   pull_request:
     branches:
       - master
+  release:
+    types:
+      - created
 jobs:
-  build:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print context
+        run: |
+          echo "github.ref: ${{ github.ref }}"
+          echo "github.event_name : ${{ github.event_name }}"
+  test:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -18,17 +28,35 @@ jobs:
             node: 10
     runs-on: ${{ matrix.os }}
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Install Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node }}
-    - name: Install dependencies
-      run: npm install
-    - name: Test (Linux)
-      if: runner.os == 'Linux'
-      run: xvfb-run -a npm test
-    - name: Test (macOS, Windows)
-      if: runner.os != 'Linux'
-      run: npm test
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Install dependencies
+        run: npm install
+      - name: Test on Linux
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm test
+      - name: Test on macOS, Windows
+        if: runner.os != 'Linux'
+        run: npm test
+  publish:
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14
+      - name: Install dependencies
+        run: npm install
+      - name: Publish
+        if: github.event_name == 'release' && startsWith(github.ref, 'refs/tags/v')
+        run: npm run deploy
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
