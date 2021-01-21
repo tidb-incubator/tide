@@ -340,4 +340,8 @@ async function checkEnvs() {
 
   // open guide
   const guideFile = path.join(__dirname, '..', 'doc', 'guide.md')
+  vscode.commands.executeCommand(
+    'markdown.showPreview',
+    vscode.Uri.file(guideFile)
+  )
 }

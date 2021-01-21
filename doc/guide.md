@@ -1,11 +1,11 @@
-# Step By Step Guide
+# TiDE Step By Step Guide
 
 ## 1. Clone and import repos
 
 At frist you need to clone repos (tidb/tikv/pd/tidb-dashboard) to local if you don't have them.
 
 ```shell
-$ mkdir tidb-repos
+$ mkdir tidb-repos && cd tidb-repos
 $ git clone https://github.com/pingcap/tidb.git
 $ git clone https://github.com/pingcap/tikv.git
 $ git clone https://github.com/pingcap/pd.git
@@ -28,7 +28,15 @@ Save the workspace by the menu "File / Save Workspace as ..." to any path, for e
 
 ![final-workspace](./final-workspace.jpg)
 
-## 2. Setup build tools
+## 2. Install TiUP
+
+(Will automate this step later.)
+
+```
+$ curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
+```
+
+## 3. Setup build tools
 
 (Currently, we need to manually setup them, we try to automate some of them later.)
 
@@ -62,13 +70,7 @@ Required tools for building:
    - [`Yarn 1.21+`](https://classic.yarnpkg.com/en/docs/install) - To manage front-end dependencies
    - [`Java 8+`](https://www.java.com/en/download/) - To generate JavaScript API client by OpenAPI specification (so pity, but it's true we need it)
 
-1. TiUP
-
-   ```
-   $ curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-   ```
-
-## 3. Use playground
+## 4. Use playground
 
 ### Start
 
@@ -118,7 +120,7 @@ Start the playground by clicking the menu item "Start playground by config":
 
 ![start-configured-playground](./start-configured-playground.jpg)
 
-## 4. Use clusters
+## 5. Use clusters
 
 Assume you have deployed some clusters by `tiup cluster` command manually. (We will support it later.) You can manage the clusters in this extension.
 
@@ -146,7 +148,7 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
 
   ![cluster-instance-config](./cluster-instance-config.jpg)
 
-## 5. Use scaffold
+## 6. Use scaffold
 
 (currently we only support add new app to dashboard, we will add more later.)
 
