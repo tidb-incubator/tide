@@ -56,6 +56,7 @@ Required tools for building:
    - `cmake` - Build tool (required for gRPC)
    - `awk` - Pattern scanning/processing language
    - `lldb`
+   - [LLDB VSCode](https://marketplace.visualstudio.com/items?itemName=lanza.lldb-vscode)
 
 1. PD
 
