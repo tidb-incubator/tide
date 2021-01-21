@@ -3,11 +3,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as TOML from '@iarna/toml'
 
-import { shell, shellEnvironment } from '../shell'
+import { shell } from '../shell'
 import { TiUP } from '../tiup'
-import { TiUPVersioning } from '../components/config/config'
-import { PlaygroundProvider, Item } from './provider'
-import { TIMEOUT } from 'dns'
+import { Item } from './provider'
 
 export class PlaygroundCommand {
   checkTiUP() {}
@@ -84,16 +82,22 @@ export class PlaygroundCommand {
           } else if (pre === 'pd') {
             comp = 'pd'
           }
-          workspaceFolders?.forEach(folder => {
+          workspaceFolders?.forEach((folder) => {
             if (folder.name === comp) {
               if (comp === 'tidb') {
-                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
+                preCmds.push(
+                  `cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`
+                )
                 args.push(`--${k} ${folder.uri.fsPath}/bin/tidb-server`)
               } else if (comp === 'tikv') {
                 preCmds.push(`cd ${folder.uri.fsPath} && make build`)
-                args.push(`--${k} ${folder.uri.fsPath}/target/debug/tikv-server`)
+                args.push(
+                  `--${k} ${folder.uri.fsPath}/target/debug/tikv-server`
+                )
               } else if (comp === 'pd') {
-                preCmds.push(`cd ${folder.uri.fsPath} && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go`)
+                preCmds.push(
+                  `cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/pd-server cmd/pd-server/main.go`
+                )
                 args.push(`--${k} ${folder.uri.fsPath}/bin/pd-server`)
               }
             }
@@ -165,7 +169,7 @@ export class PlaygroundCommand {
   }
 
   static followInstanceLogs(tiup: TiUP, pids: string[]) {
-    pids.forEach(pid => this.followInstanceLog(tiup, pid))
+    pids.forEach((pid) => this.followInstanceLog(tiup, pid))
   }
 
   static async followInstanceLog(tiup: TiUP, pid: string) {
@@ -183,7 +187,7 @@ export class PlaygroundCommand {
   }
 
   static debugCluster(tiup: TiUP, childs: Item[]) {
-    childs.forEach(child => {
+    childs.forEach((child) => {
       if (['pd', 'tikv', 'tidb'].indexOf(child.extra.comp) > -1) {
         this.debugInstance(tiup, child.extra.comp, child.extra.pids)
       }
@@ -191,49 +195,55 @@ export class PlaygroundCommand {
   }
 
   static debugInstances(tiup: TiUP, comp: string, pids: string[]) {
-    pids.forEach(pid => this.debugInstance(tiup, comp, pid))
+    pids.forEach((pid) => this.debugInstance(tiup, comp, pid))
   }
-  
+
   static async debugInstance(tiup: TiUP, instanceName: string, pid: string) {
     if (['pd', 'tikv', 'tidb'].indexOf(instanceName) < 0) {
-      vscode.window.showErrorMessage(`debug ${instanceName} is not supported yet `);
+      vscode.window.showErrorMessage(
+        `debug ${instanceName} is not supported yet `
+      )
       return
     }
-    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name == instanceName);
+    const wd = (vscode.workspace.workspaceFolders || []).find(
+      (folder) => folder.name === instanceName
+    )
     if (!wd) {
-      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
+      vscode.window.showErrorMessage(
+        `${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`
+      )
       return
     }
     switch (instanceName) {
-      case "tidb" :{
+      case 'tidb': {
         const debugConfiguration = {
-          type: "go",
-          request: "attach",
-          name: "Attach TiDB",
-          mode: "local",
+          type: 'go',
+          request: 'attach',
+          name: 'Attach TiDB',
+          mode: 'local',
           processId: Number(pid),
-        };
+        }
         vscode.debug.startDebugging(wd, debugConfiguration)
         break
       }
-      case "pd" :{
+      case 'pd': {
         const debugConfiguration = {
-          type: "go",
-          request: "attach",
-          name: "Attach PD",
-          mode: "local",
+          type: 'go',
+          request: 'attach',
+          name: 'Attach PD',
+          mode: 'local',
           processId: Number(pid),
-        };
+        }
         vscode.debug.startDebugging(wd, debugConfiguration)
         break
       }
-      case "tikv" :{
+      case 'tikv': {
         const debugConfiguration = {
-          type: "lldb",
-          request: "attach",
-          name: "Attach TiKV",
+          type: 'lldb',
+          request: 'attach',
+          name: 'Attach TiKV',
           pid: Number(pid),
-        };
+        }
         vscode.debug.startDebugging(wd, debugConfiguration)
         break
       }
@@ -293,7 +303,7 @@ export class PlaygroundCommand {
       if (tried > times) {
         return
       }
-      await new Promise(resolve => setTimeout(resolve, intervals));
+      await new Promise((resolve) => setTimeout(resolve, intervals))
       await check()
     }
     await check()
