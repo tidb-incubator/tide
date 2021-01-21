@@ -44,11 +44,11 @@ function osOverrideKey(os: Platform, baseKey: string): string {
 
 function osKeyString(os: Platform): string | null {
   switch (os) {
-    case Platform.Windows:
+    case Platform.windows:
       return 'windows'
-    case Platform.MacOS:
+    case Platform.macOS:
       return 'mac'
-    case Platform.Linux:
+    case Platform.linux:
       return 'linux'
     default:
       return null
