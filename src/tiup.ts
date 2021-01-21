@@ -92,7 +92,7 @@ async function invokeInTerminal(
   pipeTo: string | undefined,
   terminal: Terminal
 ): Promise<void> {
-  if (await checkPresent(context, CheckPresentMessageMode.Command)) {
+  if (await checkPresent(context, CheckPresentMessageMode.command)) {
     // You might be tempted to think we needed to add 'wsl' here if user is using wsl
     // but this runs in the context of a vanilla terminal, which is controlled by the
     // existing preference, so it's not necessary.
@@ -110,7 +110,7 @@ async function invokeAnyInTerminal(
   pipeTo: string | undefined,
   terminal: Terminal
 ): Promise<void> {
-  if (await checkPresent(context, CheckPresentMessageMode.Command)) {
+  if (await checkPresent(context, CheckPresentMessageMode.command)) {
     const tiupCommand = `${command}`
     const fullCommand = pipeTo ? `${tiupCommand} | ${pipeTo}` : tiupCommand
     terminal.sendText(fullCommand)
@@ -119,8 +119,8 @@ async function invokeAnyInTerminal(
 }
 
 export enum CheckPresentMessageMode {
-  Command,
-  Silent,
+  command,
+  silent,
 }
 
 // TODO: complete binary finding mechanism as in kubernetes plugin

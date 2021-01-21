@@ -7,11 +7,11 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
-    "@typescript-eslint/naming-convention": "warn",
+    "@typescript-eslint/naming-convention": "error",
     "@typescript-eslint/semi": "off",
-    "curly": "warn",
-    "eqeqeq": "warn",
-    "no-throw-literal": "warn",
+    "curly": "error",
+    "eqeqeq": "error",
+    "no-throw-literal": "error",
     "semi": "off"
   }
 }
