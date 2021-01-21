@@ -1,42 +1,19 @@
-# TiCode
+# TiDE
 
-TiCode is a Visual Studio Code extension that makes developing TiDB a breeze.
+TiDE is a Visual Studio Code extension that makes developing TiDB a breeze.
 
 Still in the loop of coding, compiling, copying binary to servers, restarting every process and pulling information from logs everywhere?
 
-**Try and see how TiCode makes TiDB development experience great again!**
+**Try and see how TiDE makes TiDB development experience great again!**
 
 ## Quick start
 
-```bash
-$ git clone https://github.com/pingcap/tidb.git
-$ git clone https://github.com/pingcap/tikv.git
-$ git clone https://github.com/pingcap/pd.git
-$ git clone https://github.com/pingcap/tidb-dashboard.git
-$ cat>tidb.code-workspace<<EOF
-{
-	"folders": [
-		{
-			"path": "$PWD/tidb"
-		},
-		{
-			"path": "$PWD/pd"
-		},
-		{
-			"path": "$PWD/tikv"
-		},
-		{
-			"path": "$PWD/tidb-dashboard"
-		}
-	],
-	"settings": {}
-}
-EOF
-$ code --install-extension dragonly.ticode
-$ code tidb.code-workspace
-```
+1. Install the extension
 
-Navigate to the TiDE panel in VS Code, and click `start default playground` to get started.
+   - Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
+   - Or run command `code --install-extension dragonly.ticode`
+
+1. Navigate to the TiDE panel in VSCode, follow the [`Step by Step Guide`](./doc/guide.md)
 
 ## Features
 
@@ -44,7 +21,6 @@ Do all the things just in your favorite Visual Studio Code:
 
 - Start TiUP Playground/Cluster and start debugging instantly
 - Debug TiDB Cluster on Kubernetes
-- Run Chaos Mesh experiments
 - And mooooooooore!
 
 ## Demo
@@ -72,12 +48,6 @@ Playground:
 - Bilibili: https://www.bilibili.com/video/BV1pK411u7S4/
 
 ![image](https://user-images.githubusercontent.com/1284531/104793321-f7fe6c80-57dc-11eb-8b51-a25a6690d87a.png)
-
-## Quick Start
-
-1. Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
-2. Start TiUP Playground
-3. Coding and Debugging
 
 ## TODO
 
