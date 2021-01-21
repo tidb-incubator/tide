@@ -159,3 +159,9 @@ It will do three things:
 1. Start a playground if there is no a playground running
 1. Start the dashboard backend
 1. Start the dashboard frontend
+
+Assume you want to add a new individual feature (aka an "app") to dashboard, click the "Add new app to dashboard", input the app name, it will auto generate the template code for you, and auto restart the dashboard as well.
+
+![add new app to dashboard](./dashboard-add-app.jpg)
+
+![dashboard new page](./dashboard-new-page.jpg)

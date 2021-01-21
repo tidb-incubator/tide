@@ -1,8 +1,7 @@
-import { downloadAndUnzipVSCode } from 'vscode-test'
-
 import * as vscode from 'vscode'
 import { shell } from '../shell'
 import { handleError } from '../utils/window'
+import { PlaygroundCommand } from '../playground/command'
 
 export class DashboardCommand {
   static async start(treeItem: any) {
@@ -12,6 +11,14 @@ export class DashboardCommand {
     if (!folder.endsWith('/tidb-dashboard')) {
       vscode.window.showErrorMessage('This is not the tidb-dashboard folder')
       return
+    }
+
+    // start a playground
+    const playgroundRunning = await PlaygroundCommand.checkPlaygroundRun()
+    if (!playgroundRunning) {
+      let t = vscode.window.createTerminal(`tiup playground`)
+      t.sendText(`tiup playground`)
+      t.show()
     }
 
     // TODO: check whether they are running

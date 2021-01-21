@@ -18,6 +18,7 @@
   "activationEvents": [
     "onCommand:ticode.help",
     "onCommand:ticode.playground.start",
+    "onCommand:ticode.dashboard.run",
     "onView:ticode-tiup-playground",
     "onView:ticode-tiup-cluster",
     "onView:ticode-kube-cluster"
