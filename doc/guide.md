@@ -16,6 +16,8 @@ $ git clone https://github.com/pingcap/tidb-dashboard.git
 
 Open any repo in VSCode, for example tidb, then choose menu "File / Add Folder to Workspace...", add other repo folders to VSCode. The VSCode will automatically organize them as a untitled workspace.
 
+> Note: again, you don't need to add all repos, just the repos you want to develop.
+
 ![add-folder-to-workspace](./add-folder-to-workspace.jpg)
 
 ![untitled-workspace](./untitled-workspace.jpg)
