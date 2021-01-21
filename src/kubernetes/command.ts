@@ -42,12 +42,12 @@ async function kubectlJson(command: string): Promise<string | undefined> {
 
 async function listJson<T>(command: string): Promise<T[] | undefined> {
   let listJson = await kubectlJson(command)
-  if (listJson === undefined) return
+  if (listJson === undefined) { return }
   return JSON.parse(listJson).items as T[]
 }
 
 async function getJson<T>(command: string): Promise<T | undefined> {
   let json = await kubectlJson(command)
-  if (json === undefined) return
+  if (json === undefined) { return }
   return JSON.parse(json) as T
 }

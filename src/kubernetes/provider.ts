@@ -5,10 +5,10 @@ import {KubeCommand} from './command'
 export const KUBERNETES_EXPLORER_NODE_CATEGORY = 'kubernetes-explorer-node';
 
 enum NodeType{
-  TC = 'tidbcluster',
-  PD = 'pd',
-  TIDB = 'tidb',
-  TIKV = 'tikv',
+  tc = 'tidbcluster',
+  pd = 'pd',
+  tidb = 'tidb',
+  tikv = 'tikv',
 }
 
 export class KubeProvider implements vscode.TreeDataProvider<ClusterExplorerNode> {
@@ -21,28 +21,28 @@ export class KubeProvider implements vscode.TreeDataProvider<ClusterExplorerNode
     if (node === undefined) {
       console.log('TreeView: root')
       let tcs = await KubeCommand.listTidbCluster()
-      let nodes = tcs.map(tc => new ClusterExplorerNode(tc.metadata.name, NodeType.TC, vscode.TreeItemCollapsibleState.Collapsed))
+      let nodes = tcs.map(tc => new ClusterExplorerNode(tc.metadata.name, NodeType.tc, vscode.TreeItemCollapsibleState.Collapsed))
       return nodes
     }
 
     // TidbCluster -> TiDB Components
-    if (node.type === NodeType.TC) {
-      console.log('TreeView: TC')
+    if (node.type === NodeType.tc) {
+      console.log('TreeView: tc')
       return [
-        new ClusterExplorerNode('PD', NodeType.PD, vscode.TreeItemCollapsibleState.Collapsed),
-        new ClusterExplorerNode('TiDB', NodeType.TIDB, vscode.TreeItemCollapsibleState.Collapsed),
-        new ClusterExplorerNode('TiKV', NodeType.TIKV, vscode.TreeItemCollapsibleState.Collapsed),
+        new ClusterExplorerNode('pd', NodeType.pd, vscode.TreeItemCollapsibleState.Collapsed),
+        new ClusterExplorerNode('TiDB', NodeType.tidb, vscode.TreeItemCollapsibleState.Collapsed),
+        new ClusterExplorerNode('TiKV', NodeType.tikv, vscode.TreeItemCollapsibleState.Collapsed),
       ]
     }
 
     // TiDB Components -> Pods
-    if (node.type === NodeType.PD) {
-      console.log('TreeView: PD')
+    if (node.type === NodeType.pd) {
+      console.log('TreeView: pd')
       let pods = await KubeCommand.listPDPods()
       console.log('pods:', pods)
       let nodes: ClusterExplorerNode[] = []
       pods?.forEach(pod => {
-        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.PD, vscode.TreeItemCollapsibleState.None, {
+        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.pd, vscode.TreeItemCollapsibleState.None, {
           command: 'ticode.kubernetes.showPodInDocument',
           title: 'View Pod',
           arguments: [pod.metadata.name],
@@ -52,13 +52,13 @@ export class KubeProvider implements vscode.TreeDataProvider<ClusterExplorerNode
       return nodes
     }
 
-    if (node.type === NodeType.TIDB) {
+    if (node.type === NodeType.tidb) {
       console.log('TreeView: TiDB')
       let pods = await KubeCommand.listTiDBPods()
       console.log('pods:', pods)
       let nodes: ClusterExplorerNode[] = []
       pods?.forEach(pod => {
-        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.TIDB, vscode.TreeItemCollapsibleState.None, {
+        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.tidb, vscode.TreeItemCollapsibleState.None, {
           command: 'ticode.kubernetes.showPodInDocument',
           title: 'View Pod',
           arguments: [pod.metadata.name],
@@ -68,13 +68,13 @@ export class KubeProvider implements vscode.TreeDataProvider<ClusterExplorerNode
       return nodes
     }
     
-    if (node.type === NodeType.TIKV) {
+    if (node.type === NodeType.tikv) {
       console.log('TreeView: TiKV')
       let pods = await KubeCommand.listTiKVPods()
       console.log('pods:', pods)
       let nodes: ClusterExplorerNode[] = []
       pods?.forEach(pod => {
-        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.TIKV, vscode.TreeItemCollapsibleState.None, {
+        let node = new ClusterExplorerNode(pod.metadata.name, NodeType.tikv, vscode.TreeItemCollapsibleState.None, {
           command: 'ticode.kubernetes.showPodInDocument',
           title: 'View Pod',
           arguments: [pod.metadata.name],

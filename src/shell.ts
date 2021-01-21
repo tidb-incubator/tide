@@ -6,10 +6,10 @@ import { host } from './host'
 import { ChildProcess } from 'child_process'
 
 export enum Platform {
-  Windows,
-  MacOS,
-  Linux,
-  Unsupported, // shouldn't happen!
+  windows,
+  macOS,
+  linux,
+  unsupported, // shouldn't happen!
 }
 
 export interface ExecCallback extends shelljs.ExecCallback {}
@@ -80,17 +80,17 @@ function isUnix(): boolean {
 
 function platform(): Platform {
   if (getUseWsl()) {
-    return Platform.Linux
+    return Platform.linux
   }
   switch (process.platform) {
     case 'win32':
-      return Platform.Windows
+      return Platform.windows
     case 'darwin':
-      return Platform.MacOS
+      return Platform.macOS
     case 'linux':
-      return Platform.Linux
+      return Platform.linux
     default:
-      return Platform.Unsupported
+      return Platform.unsupported
   }
 }
 
@@ -143,6 +143,7 @@ function fileUri(filePath: string): vscode.Uri {
 function execOpts(): any {
   let env = process.env
   if (isWindows()) {
+    // eslint-disable-next-line
     env = Object.assign({}, env, { HOME: home() })
   }
   env = shellEnvironment(env)

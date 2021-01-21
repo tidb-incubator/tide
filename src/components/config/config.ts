@@ -6,8 +6,8 @@ const EXTENSION_CONFIG_KEY = 'ticode'
 const TIUP_VERSIONING_KEY = 'ticode.tiupVersioning'
 
 export enum TiUPVersioning {
-  UserProvided = 1,
-  Infer = 2,
+  userProvided = 1,
+  infer = 2,
 }
 
 // Functions for working with tool paths
@@ -64,9 +64,9 @@ export function getTiUPVersioning(): TiUPVersioning {
     TIUP_VERSIONING_KEY
   ]
   if (configValue === 'infer') {
-    return TiUPVersioning.Infer
+    return TiUPVersioning.infer
   }
-  return TiUPVersioning.UserProvided
+  return TiUPVersioning.userProvided
 }
 
 // Use WSL on Windows
