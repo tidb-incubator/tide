@@ -46,6 +46,7 @@ Required tools for building:
 
    - See https://github.com/pingcap/community/blob/master/contributors/README.md for details
    - [`Go 1.13+`](https://golang.org/doc/install)
+   - [Go for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=golang.Go)
 
 1. TiKV
 
