@@ -1,18 +1,20 @@
 # Step By Step Guide
 
-## Clone and import repos
+## 1. Clone and import repos
 
-At frist you need to clone all repos (tidb/tikv/pd/tidb-dashboard) to local if you don't have them.
+At frist you need to clone repos (tidb/tikv/pd/tidb-dashboard) to local if you don't have them.
 
 ```shell
-$ mkdir repos
+$ mkdir tidb-repos
 $ git clone https://github.com/pingcap/tidb.git
 $ git clone https://github.com/pingcap/tikv.git
 $ git clone https://github.com/pingcap/pd.git
 $ git clone https://github.com/pingcap/tidb-dashboard.git
 ```
 
-Open any repo in VSCode, for example tidb, then choose menu "File / Add Folder to Workspace...", add all other repo folders to VSCode. The VSCode will automatically organize them as a untitled workspace.
+> Note: you don't need to clone all repos, just the repos you want to develop.
+
+Open any repo in VSCode, for example tidb, then choose menu "File / Add Folder to Workspace...", add other repo folders to VSCode. The VSCode will automatically organize them as a untitled workspace.
 
 ![add-folder-to-workspace](./add-folder-to-workspace.jpg)
 
@@ -24,7 +26,7 @@ Save the workspace by the menu "File / Save Workspace as ..." to any path, for e
 
 ![final-workspace](./final-workspace.jpg)
 
-## Setup build tools
+## 2. Setup build tools
 
 (Currently, we need to manually setup them, we try to automate some of them later.)
 
@@ -42,6 +44,7 @@ Required tools for building:
    - `make` - Build tool (run common workflows)
    - `cmake` - Build tool (required for gRPC)
    - `awk` - Pattern scanning/processing language
+   - `lldb`
 
 1. PD
 
@@ -52,7 +55,7 @@ Required tools for building:
 
    - See tidb-dashboard/CONTRIBUTING.md for details
    - `make` - Build tool (run common workflows)
-   - [`Golang 1.13+`](https://golang.org/) - To compile the server
+   - [`Go 1.13+`](https://golang.org/) - To compile the server
    - [`Node.js 12+`](https://nodejs.org/) - To compile the front-end
    - [`Yarn 1.21+`](https://classic.yarnpkg.com/en/docs/install) - To manage front-end dependencies
    - [`Java 8+`](https://www.java.com/en/download/) - To generate JavaScript API client by OpenAPI specification (so pity, but it's true we need it)
@@ -63,7 +66,7 @@ Required tools for building:
    $ curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
    ```
 
-## Start playground with modified code
+## 3. Use playground
 
 ### Start
 
@@ -95,7 +98,7 @@ You can debug the whole playground cluster or a single component, just click the
 
 ### Start configured playground
 
-If you just want to test certain binaries instead of all, you need to start a configured playground.
+If you just want to test certain binaries instead of all, or you need more than 1 instances for the component, you need to start a configured playground.
 
 Click "playground.toml", modify the content. To say I just want to test tidb repo, just uncomment the following line:
 
@@ -112,3 +115,47 @@ You can also assign the tidb with a special configuration, modify the `component
 Start the playground by clicking the menu item "Start playground by config":
 
 ![start-configured-playground](./start-configured-playground.jpg)
+
+## 4. Use clusters
+
+Assume you have deployed some clusters by `tiup cluster` command manually. (We will support it later.) You can manage the clusters in this extension.
+
+- Start/Stop/Restart/Destory cluster, Open dashboard/grafa
+
+  ![cluster](./cluster.jpg)
+
+- Modify and apply cluster configuration
+
+  ![cluster-config](./cluster-config.jpg)
+
+- Restart/Patch component
+
+  ![cluster-component](./cluster-component.jpg)
+
+- Restart/Patch/Debug/SSH instance
+
+  ![cluster-instance](./cluster-instance.jpg)
+
+- View instance log
+
+  ![cluster-instance-log](./cluster-instance-log.jpg)
+
+- Modify and apply instance configuration
+
+  ![cluster-instance-config](./cluster-instance-config.jpg)
+
+## 5. Use scaffold
+
+(currently we only support add new app to dashboard, we will add more later.)
+
+### Add new app to dashboard
+
+At first, we need to start the dashboard in development mode, just one click:
+
+![start dashboard](./dashboard-start.jpg)
+
+It will do three things:
+
+1. Start a playground if there is no a playground running
+1. Start the dashboard backend
+1. Start the dashboard frontend

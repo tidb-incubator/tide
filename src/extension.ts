@@ -1,5 +1,7 @@
 import * as tmp from 'tmp'
 import * as vscode from 'vscode'
+import * as path from 'path'
+
 import {
   ClusterCommand,
   ClusterComponent,
@@ -335,4 +337,7 @@ async function showPodInDocument(podName: string) {
 
 async function checkEnvs() {
   const workFolders = vscode.workspace.workspaceFolders
+
+  // open guide
+  const guideFile = path.join(__dirname, '..', 'doc', 'guide.md')
 }
