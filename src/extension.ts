@@ -344,4 +344,19 @@ async function checkEnvs() {
     'markdown.showPreview',
     vscode.Uri.file(guideFile)
   )
+
+  // check tiup
+  const cr = await shell.exec('tiup --version')
+  if (cr?.code !== 0) {
+    const res = await vscode.window.showWarningMessage(
+      "TiUP doesn't install, you need to install it before continuing",
+      'Install'
+    )
+    if (res === 'Install') {
+      await tiup.invokeAnyInNewTerminal(
+        `curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh && tiup install cluster && tiup install playground && exit`,
+        'install tiup'
+      )
+    }
+  }
 }

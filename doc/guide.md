@@ -1,8 +1,14 @@
 # TiDE Step By Step Guide
 
-## 1. Clone and import repos
+## 1. Install TiUP
 
-At frist you need to clone repos (tidb/tikv/pd/tidb-dashboard) to local if you don't have them.
+If you don't install TiUP, the extension will prompt you to install it:
+
+![install tiup](./install-tiup.jpg)
+
+## 2. Clone and import repos
+
+Then you need to clone repos (tidb/tikv/pd/tidb-dashboard) to local if you don't have them.
 
 ```shell
 $ mkdir tidb-repos && cd tidb-repos
@@ -27,14 +33,6 @@ Save the workspace by the menu "File / Save Workspace as ..." to any path, for e
 ![save-workspace](./save-workspace.jpg)
 
 ![final-workspace](./final-workspace.jpg)
-
-## 2. Install TiUP
-
-(Will automate this step later.)
-
-```
-$ curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh
-```
 
 ## 3. Setup build tools
 
