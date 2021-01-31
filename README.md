@@ -119,10 +119,14 @@ Playground:
   - [ ] Start virtual machines, ready for deploy a cluster
 
 - TiUP Manager
-  - [ ] Install TiUP
+  - [x] Install TiUP
   - [ ] Upgrade TiUP
 
 ## Release Notes
+
+### 0.2.3
+
+- Auto install TiUP if it doesn't install
 
 ### 0.0.1
 
