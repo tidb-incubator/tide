@@ -7,7 +7,7 @@
   },
   "description": "make developing TiDB a breeze",
   "icon": "media/logo.png",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "engines": {
     "vscode": "^1.52.0"
   },
@@ -367,6 +367,7 @@
     "@types/mocha": "^8.0.4",
     "@types/node": "^12.11.7",
     "@types/shelljs": "^0.8.8",
+    "@types/tmp": "^0.2.0",
     "@types/vscode": "^1.52.0",
     "@typescript-eslint/eslint-plugin": "^4.9.0",
     "@typescript-eslint/parser": "^4.9.0",
@@ -380,7 +381,6 @@
   },
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "@types/tmp": "^0.2.0",
     "replace-in-file": "^6.1.0",
     "shelljs": "^0.8.4",
     "tmp": "^0.2.1"
