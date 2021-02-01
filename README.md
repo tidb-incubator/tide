@@ -1,5 +1,7 @@
 # TiDE
 
+[![version](https://vsmarketplacebadge.apphb.com/version/dragonly.ticode.svg)](http://aka.ms/vscodevim)
+[![install](https://vsmarketplacebadge.apphb.com/installs-short/dragonly.ticode.svg)](https://marketplace.visualstudio.com/items?itemName=vscodevim.vim)
 ![ci](https://github.com/dragonly/ticode/workflows/ci/badge.svg)
 
 TiDE is a Visual Studio Code extension that makes developing TiDB a breeze.
