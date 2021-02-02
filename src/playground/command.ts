@@ -153,7 +153,7 @@ export class PlaygroundCommand {
   }
 
   static async openInstanceLog(pid: string) {
-    const res = await shell.exec(`ps -p ${pid} | grep tiup`)
+    const res = await shell.exec(`ps w -p ${pid} | grep tiup`)
     console.log('ps result:', res)
     const m = res?.stdout.match(/log-file=(.+)\.log/)
     if (m) {
@@ -173,7 +173,7 @@ export class PlaygroundCommand {
   }
 
   static async followInstanceLog(tiup: TiUP, pid: string) {
-    const res = await shell.exec(`ps -p ${pid} | grep tiup`)
+    const res = await shell.exec(`ps w -p ${pid} | grep tiup`)
     console.log('ps result:', res)
     const m = res?.stdout.match(/log-file=(.+)\.log/)
     if (m) {
