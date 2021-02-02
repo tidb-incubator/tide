@@ -210,7 +210,7 @@ export class PlaygroundCommand {
     )
     if (!wd) {
       vscode.window.showErrorMessage(
-        `${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`
+        `${instanceName} is not included in workspace, please add it into workspace.`
       )
       return
     }

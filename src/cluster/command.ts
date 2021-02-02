@@ -375,7 +375,7 @@ export class ClusterCommand {
     }
     const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name === instanceName);
     if (!wd) {
-      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, maybe you want to try 'ticode init'?`);
+      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, please add it into workspace.`);
       return
     }
     switch (instanceName) {
