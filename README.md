@@ -27,6 +27,12 @@ Do all the things just in your favorite Visual Studio Code:
 - Debug TiDB Cluster on Kubernetes
 - And mooooooooore!
 
+## Community
+
+### Slack
+
+Join our [slack channel](https://slack.tidb.io/invite?team=tidb-community&channel=tide&ref=website) 🥳
+
 ## Demo
 
 Scaffold:
