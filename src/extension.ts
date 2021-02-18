@@ -354,7 +354,7 @@ async function checkEnvs() {
     )
     if (res === 'Install') {
       await tiup.invokeAnyInNewTerminal(
-        `curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh && tiup install cluster && tiup install playground && exit`,
+        `curl --proto '=https' --tlsv1.2 -sSf https://tiup-mirrors.pingcap.com/install.sh | sh && exit`,
         'install tiup'
       )
     }
