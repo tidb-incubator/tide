@@ -24,15 +24,24 @@ Open any repo in VSCode, for example tidb, then choose menu "File / Add Folder t
 
 > Note: again, you don't need to add all repos, just the repos you want to develop.
 
-![add-folder-to-workspace](./add-folder-to-workspace.jpg)
 
-![untitled-workspace](./untitled-workspace.jpg)
+<div>
+  <img src="./add-folder-to-workspace.jpg" style="zoom:50%">
+</div>
+
+<div>
+  <img src="./untitled-workspace.jpg" style="zoom:50%">
+</div>
 
 Save the workspace by the menu "File / Save Workspace as ..." to any path, for example save it as "tidb-dev.code-workspace".
 
-![save-workspace](./save-workspace.jpg)
+<div>
+  <img src="./save-workspace.jpg" style="zoom:50%">
+</div>
 
-![final-workspace](./final-workspace.jpg)
+<div>
+  <img src="./final-workspace.jpg" style="zoom:50%">
+</div>
 
 ## 3. Setup build tools
 
@@ -85,7 +94,9 @@ Clicking the "start default playground" item will automatically build current ti
 
 After playground is starting successfully, you can refresh the playground to get the topo.
 
-![playground-topo](./playground-topo.jpg)
+<div>
+  <img src="./playground-topo.jpg" style="zoom:50%">
+</div>
 
 ### View component log
 
@@ -97,9 +108,13 @@ Click the menu item "View Log" in the component to view its log:
 
 You can debug the whole playground cluster or a single component, just click the "Debug" menu item in the cluster or a single component.
 
-![debug-playground-cluster](./debug-playground-cluster.jpg)
+<div>
+  <img src="./debug-playground-cluster.jpg" style="zoom:50%">
+</div>
 
-![debug-playground-component](./debug-playground-component.jpg)
+<div>
+  <img src="./debug-playground-component.jpg" style="zoom:50%">
+</div>
 
 ### Start configured playground
 
@@ -119,7 +134,9 @@ You can also assign the tidb with a special configuration, modify the `component
 
 Start the playground by clicking the menu item "Start playground by config":
 
-![start-configured-playground](./start-configured-playground.jpg)
+<div>
+  <img src="./start-configured-playground.jpg" style="zoom:50%">
+</div>
 
 ## 5. Use clusters
 
@@ -127,7 +144,9 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
 
 - Start/Stop/Restart/Destory cluster, Open dashboard/grafa
 
-  ![cluster](./cluster.jpg)
+  <div>
+    <img src="./cluster.jpg" style="zoom:50%">
+  </div>
 
 - Modify and apply cluster configuration
 
@@ -135,19 +154,27 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
 
 - Restart/Patch component
 
-  ![cluster-component](./cluster-component.jpg)
+  <div>
+    <img src="./cluster-component.jpg" style="zoom:50%">
+  </div>
 
 - Restart/Patch/Debug/SSH instance
 
-  ![cluster-instance](./cluster-instance.jpg)
+  <div>
+    <img src="./cluster-instance.jpg" style="zoom:50%">
+  </div>
 
 - View instance log
 
-  ![cluster-instance-log](./cluster-instance-log.jpg)
+  <div>
+    <img src="./cluster-instance-log.jpg" style="zoom:50%">
+  </div>
 
 - Modify and apply instance configuration
 
-  ![cluster-instance-config](./cluster-instance-config.jpg)
+  <div>
+    <img src="./cluster-instance-config.jpg" style="zoom:50%">
+  </div>
 
 ## 6. Use scaffold
 
@@ -157,7 +184,9 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
 
 At first, we need to start the dashboard in development mode, just one click:
 
-![start dashboard](./dashboard-start.jpg)
+<div>
+  <img src="./dashboard-start.jpg" style="zoom:50%">
+</div>
 
 It will do three things:
 
