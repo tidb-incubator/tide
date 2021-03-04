@@ -1,3 +1,5 @@
+# TiDB, PD, TiKV, TiFlash in the same host and have only one replica.
+
 global:
   user: tidb
   deploy_dir: tidb-deploy

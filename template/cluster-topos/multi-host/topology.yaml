@@ -1,3 +1,5 @@
+# TiDB, PD, TiKV, TiFlash each in different hosts.
+
 global:
   user: tidb
   deploy_dir: tidb-deploy

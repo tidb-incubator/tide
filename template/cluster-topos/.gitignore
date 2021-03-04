@@ -1,2 +1,3 @@
 .vagrant/
 tiup-cluster-*.log
+data/

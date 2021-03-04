@@ -1,3 +1,5 @@
+# All instances in a single host, but on different disks.
+
 global:
   user: vagrant
   deploy_dir: tidb-deploy
