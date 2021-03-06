@@ -181,6 +181,18 @@
       {
         "command": "ticode.topo.diffModification",
         "title": "Diff Modificatioin"
+      },
+      {
+        "command": "ticode.topo.vagrantUp",
+        "title": "vagrant up"
+      },
+      {
+        "command": "ticode.topo.vagrantReload",
+        "title": "vagrant reload"
+      },
+      {
+        "command": "ticode.topo.vagrantDestroy",
+        "title": "vagrant destroy"
       }
     ],
     "viewsContainers": {
@@ -355,7 +367,23 @@
         },
         {
           "command": "ticode.topo.diffModification",
-          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/"
+          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.topo.vagrantUp",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.topo.vagrantReload",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@2"
+        },
+        {
+          "command": "ticode.topo.vagrantDestroy",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@3"
         }
       ]
     }

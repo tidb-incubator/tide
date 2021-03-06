@@ -248,6 +248,21 @@ export async function activate(context: vscode.ExtensionContext) {
         fileName
       )
     }),
+    registerCommand('ticode.topo.vagrantUp', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantUp(localFoder, folderName)
+    }),
+    registerCommand('ticode.topo.vagrantReload', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantReload(localFoder, folderName)
+    }),
+    registerCommand('ticode.topo.vagrantDestroy', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantDestroy(localFoder, folderName)
+    }),
   ]
 
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
