@@ -110,4 +110,29 @@ export class TopoManagerCommand {
     const cmd = `cd "${fullFolderPath}" && vagrant ssh ${machineName} && exit`
     runNewTerminal('vagrant ssh', cmd)
   }
+
+  static async addTopo(localFolder: string) {
+    let clusterName = await vscode.window.showInputBox({
+      prompt: 'Your cluster name',
+    })
+    if (!clusterName || clusterName.trim() === '') {
+      return
+    }
+    const folders = fs.readdirSync(localFolder)
+    if (folders.indexOf(clusterName) >= 0) {
+      vscode.window.showErrorMessage(
+        'The cluster name exists, please choose another name.'
+      )
+      return
+    }
+    const fullFolderPath = path.join(localFolder, clusterName)
+    fs.mkdirSync(fullFolderPath, { recursive: true })
+
+    const topologyFile = path.join(fullFolderPath, 'topology.yaml')
+    fs.writeFileSync(topologyFile, '# add your content here')
+    const vagrantFile = path.join(fullFolderPath, 'Vagrantfile')
+    fs.writeFileSync(vagrantFile, '# add your content here')
+
+    vscode.commands.executeCommand('ticode.topo.refresh')
+  }
 }

@@ -187,6 +187,14 @@
         }
       },
       {
+        "command": "ticode.topo.add",
+        "title": "TiCode: Add topo",
+        "icon": {
+          "light": "media/plus.svg",
+          "dark": "media/plus.svg"
+        }
+      },
+      {
         "command": "ticode.topo.diffModification",
         "title": "Diff Modificatioin"
       },
@@ -264,6 +272,11 @@
         },
         {
           "command": "ticode.topo.refresh",
+          "when": "view == ticode-topo-manager",
+          "group": "navigation"
+        },
+        {
+          "command": "ticode.topo.add",
           "when": "view == ticode-topo-manager",
           "group": "navigation"
         }
