@@ -63,8 +63,16 @@ export class TopoManagerCommand {
     if (!checkRet) {
       return
     }
+    const res = await vscode.window.showWarningMessage(
+      `Are you sure to remove this virtual machine? If you have deployed a cluster in it, you need to destroy the cluster first.`,
+      'Let me think',
+      'Remove it anyway'
+    )
+    if (res === 'Let me think') {
+      return
+    }
     const fullFolderPath = path.join(localFolder, folderName)
-    const cmd = `cd "${fullFolderPath}" && vagrant destroy && exit`
+    const cmd = `cd "${fullFolderPath}" && vagrant destroy --force && exit`
     runNewTerminal('vagrant destroy', cmd)
   }
 
