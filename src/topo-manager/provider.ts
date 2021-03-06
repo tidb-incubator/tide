@@ -86,26 +86,6 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
     if (element?.contextValue === 'topo-cluster-name') {
       const clusterName = element.label
 
-      // Vagrantfile
-      const fullVagrantfilePath = path.join(
-        this.localFolder,
-        clusterName,
-        'Vagrantfile'
-      )
-      const vagrantItem: Item = new Item(
-        'Vagrantfile',
-        vscode.TreeItemCollapsibleState.None,
-        {
-          command: 'vscode.open',
-          title: 'open',
-          arguments: [vscode.Uri.file(fullVagrantfilePath)],
-        }
-      )
-      // remember the folderName
-      vagrantItem.extra = element.label
-      vagrantItem.contextValue = 'topo-file-vagrantfile'
-      items.push(vagrantItem)
-
       // topology.yaml
       const fullTopoFilePath = path.join(
         this.localFolder,
@@ -122,10 +102,69 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
         }
       )
       // remember the folderName
-      topoItem.extra = element.label
+      topoItem.extra = clusterName
       topoItem.contextValue = 'topo-file-topology'
       items.push(topoItem)
+
+      // Vagrantfile
+      const fullVagrantfilePath = path.join(
+        this.localFolder,
+        clusterName,
+        'Vagrantfile'
+      )
+      const vagrantItem: Item = new Item(
+        'Vagrantfile',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'vscode.open',
+          title: 'open',
+          arguments: [vscode.Uri.file(fullVagrantfilePath)],
+        }
+      )
+      // remember the folderName
+      vagrantItem.extra = clusterName
+      vagrantItem.contextValue = 'topo-file-vagrantfile'
+      items.push(vagrantItem)
+
+      // virtual machines
+      const vagrantFolder = path.join(this.localFolder, clusterName, '.vagrant')
+      if (fs.existsSync(vagrantFolder)) {
+        const vmsItem = new Item(
+          'virtual machines',
+          vscode.TreeItemCollapsibleState.Collapsed
+        )
+        vmsItem.extra = clusterName
+        vmsItem.contextValue = 'topo-vms'
+        items.push(vmsItem)
+      }
     }
+    if (element?.contextValue === 'topo-vms') {
+      const clusterName = element.extra
+      const fullFolderPath = path.join(this.localFolder, clusterName)
+      const cmd = `cd "${fullFolderPath}" && vagrant status --machine-readable | grep state,`
+      const cr = await shell.exec(cmd)
+      if (cr?.code !== 0) {
+        handleError(cr)
+      } else {
+        // output example
+        // > vagrant status --machine-readable | grep state,
+        // 1615034507,node1,state,running
+        // 1615034507,node2,state,running
+        // 1615034507,node3,state,running
+        // 1615034507,node4,state,running
+        const lines = cr.stdout.trim().split('\n')
+        lines.forEach((line) => {
+          const [_id, name, _state, status] = line.split(',')
+
+          const item = new Item(name, vscode.TreeItemCollapsibleState.None)
+          item.description = status
+          item.extra = clusterName
+          item.contextValue = 'topo-vm'
+          items.push(item)
+        })
+      }
+    }
+
     return items
   }
 }
