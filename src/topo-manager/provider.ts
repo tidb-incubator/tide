@@ -52,14 +52,77 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
   async getChildren(element?: Item): Promise<Item[]> {
     const items: Item[] = []
     if (element === undefined) {
-      items.push(new Item('TODO', vscode.TreeItemCollapsibleState.None))
+      const folders = fs.readdirSync(this.localFolder)
+
+      folders.forEach((f) => {
+        const item: Item = new Item(
+          f,
+          vscode.TreeItemCollapsibleState.Collapsed
+        )
+        if (f === '_shared') {
+          item.contextValue = 'topo-vagrant-shared'
+        } else {
+          item.contextValue = 'topo-cluster-name'
+        }
+        items.push(item)
+      })
+    }
+    if (element?.contextValue === 'topo-vagrant-shared') {
+      const fullSharedFolderPath = path.join(this.localFolder, element.label)
+      const subFiles = fs.readdirSync(fullSharedFolderPath)
+      subFiles.forEach((f) => {
+        const fullFilePath = path.join(fullSharedFolderPath, f)
+        const item = new Item(f, vscode.TreeItemCollapsibleState.None, {
+          command: 'vscode.open',
+          title: 'open',
+          arguments: [vscode.Uri.file(fullFilePath)],
+        })
+        items.push(item)
+      })
+    }
+    if (element?.contextValue === 'topo-cluster-name') {
+      const clusterName = element.label
+
+      // Vagrantfile
+      const fullVagrantfilePath = path.join(
+        this.localFolder,
+        clusterName,
+        'Vagrantfile'
+      )
+      const vagrantItem: Item = new Item(
+        'Vagrantfile',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'vscode.open',
+          title: 'open',
+          arguments: [vscode.Uri.file(fullVagrantfilePath)],
+        }
+      )
+      items.push(vagrantItem)
+
+      // topology.yaml
+      const fullTopoFilePath = path.join(
+        this.localFolder,
+        clusterName,
+        'topology.yaml'
+      )
+      const topoItem: Item = new Item(
+        'topology.yaml',
+        vscode.TreeItemCollapsibleState.None,
+        {
+          command: 'vscode.open',
+          title: 'open',
+          arguments: [vscode.Uri.file(fullTopoFilePath)],
+        }
+      )
+      items.push(topoItem)
     }
     return items
   }
 }
 
 class Item extends vscode.TreeItem {
-  public extra: any
+  public extra?: any
   constructor(
     public readonly label: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
