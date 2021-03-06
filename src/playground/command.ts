@@ -8,8 +8,6 @@ import { TiUP } from '../tiup'
 import { Item } from './provider'
 
 export class PlaygroundCommand {
-  checkTiUP() {}
-
   static async checkPlaygroundRun() {
     const res = await shell.exec('ps aux | grep tiup-playground | grep -v grep')
     const lines = res?.stdout.trim().split('\n').length

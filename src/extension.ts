@@ -22,6 +22,7 @@ import { MachineProvider } from './machine-manager/provider'
 import { ScaffoldProvider } from './scaffold/provider'
 import { ScaffoldCommand } from './scaffold/command'
 import { DashboardCommand } from './dashboard/command'
+import { TopoManagerCommand } from './topo-manager/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -230,6 +231,22 @@ export async function activate(context: vscode.ExtensionContext) {
      */
     registerCommand('ticode.dashboard.run', (treeItem) => {
       DashboardCommand.start(treeItem)
+    }),
+    /**
+     * Topo Manager
+     */
+    // context menu
+    registerCommand('ticode.topo.diffModification', (treeItem) => {
+      const folderName = treeItem.extra
+      const fileName = treeItem.label
+      const templateFolder = topoProvider.templateFolder
+      const localFoder = topoProvider.localFolder
+      TopoManagerCommand.diffModification(
+        templateFolder,
+        localFoder,
+        folderName,
+        fileName
+      )
     }),
   ]
 

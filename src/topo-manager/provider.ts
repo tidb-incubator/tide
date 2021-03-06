@@ -77,6 +77,9 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
           title: 'open',
           arguments: [vscode.Uri.file(fullFilePath)],
         })
+        // remember the folderName
+        item.extra = element.label
+        item.contextValue = 'topo-file-shared'
         items.push(item)
       })
     }
@@ -98,6 +101,9 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
           arguments: [vscode.Uri.file(fullVagrantfilePath)],
         }
       )
+      // remember the folderName
+      vagrantItem.extra = element.label
+      vagrantItem.contextValue = 'topo-file-vagrantfile'
       items.push(vagrantItem)
 
       // topology.yaml
@@ -115,6 +121,9 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
           arguments: [vscode.Uri.file(fullTopoFilePath)],
         }
       )
+      // remember the folderName
+      topoItem.extra = element.label
+      topoItem.contextValue = 'topo-file-topology'
       items.push(topoItem)
     }
     return items

@@ -177,6 +177,10 @@
       {
         "command": "ticode.dashboard.run",
         "title": "Start dashboard"
+      },
+      {
+        "command": "ticode.topo.diffModification",
+        "title": "Diff Modificatioin"
       }
     ],
     "viewsContainers": {
@@ -348,6 +352,10 @@
           "command": "ticode.cluster.applyClusterConfAndRestart",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
           "group": "1@2"
+        },
+        {
+          "command": "ticode.topo.diffModification",
+          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/"
         }
       ]
     }
