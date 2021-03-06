@@ -193,6 +193,10 @@
       {
         "command": "ticode.topo.vagrantDestroy",
         "title": "vagrant destroy"
+      },
+      {
+        "command": "ticode.topo.vagrantSSH",
+        "title": "vagrant ssh"
       }
     ],
     "viewsContainers": {
@@ -384,6 +388,10 @@
           "command": "ticode.topo.vagrantDestroy",
           "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
           "group": "2@3"
+        },
+        {
+          "command": "ticode.topo.vagrantSSH",
+          "when": "view == ticode-topo-manager && viewItem == topo-vm"
         }
       ]
     }

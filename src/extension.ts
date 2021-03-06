@@ -264,6 +264,13 @@ export async function activate(context: vscode.ExtensionContext) {
       const folderName = treeItem.extra
       TopoManagerCommand.vagrantDestroy(localFoder, folderName)
     }),
+    registerCommand('ticode.topo.vagrantSSH', (treeItem) => {
+      // treeItem.contextValue = 'topo-vm'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      const machineName = treeItem.label
+      TopoManagerCommand.vagrantSSH(localFoder, folderName, machineName)
+    }),
   ]
 
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))

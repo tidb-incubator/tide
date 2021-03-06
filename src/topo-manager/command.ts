@@ -96,4 +96,18 @@ export class TopoManagerCommand {
       )
     }
   }
+
+  static async vagrantSSH(
+    localFolder: string,
+    folderName: string,
+    machineName: string
+  ) {
+    const checkRet = await this.checkVagrant()
+    if (!checkRet) {
+      return
+    }
+    const fullFolderPath = path.join(localFolder, folderName)
+    const cmd = `cd "${fullFolderPath}" && vagrant ssh ${machineName} && exit`
+    runNewTerminal('vagrant ssh', cmd)
+  }
 }
