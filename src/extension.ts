@@ -45,7 +45,7 @@ export async function activate(context: vscode.ExtensionContext) {
   vscode.window.registerTreeDataProvider('ticode-kube-cluster', kubeProvider)
 
   // topo tree view
-  const topoProvider = new TopoProvider()
+  const topoProvider = new TopoProvider(context)
   vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
 
   // machine tree view
@@ -311,7 +311,7 @@ async function stopPlayground() {
   }
 }
 
-// TiUp Cluster
+// TiUP Cluster
 async function listClusters() {
   const uri = vscode.Uri.parse('ticode:list')
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
