@@ -167,6 +167,19 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
 
     return items
   }
+
+  ///////////////
+  // refresh
+  private _onDidChangeTreeData: vscode.EventEmitter<
+    Item | undefined | null | void
+  > = new vscode.EventEmitter<Item | undefined | null | void>()
+  readonly onDidChangeTreeData: vscode.Event<
+    Item | undefined | null | void
+  > = this._onDidChangeTreeData.event
+
+  refresh(): void {
+    this._onDidChangeTreeData.fire()
+  }
 }
 
 class Item extends vscode.TreeItem {

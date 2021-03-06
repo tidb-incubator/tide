@@ -235,6 +235,7 @@ export async function activate(context: vscode.ExtensionContext) {
     /**
      * Topo Manager
      */
+    registerCommand('ticode.topo.refresh', () => topoProvider.refresh()),
     // context menu
     registerCommand('ticode.topo.diffModification', (treeItem) => {
       const templateFolder = topoProvider.templateFolder

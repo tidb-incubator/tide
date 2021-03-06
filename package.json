@@ -179,6 +179,14 @@
         "title": "Start dashboard"
       },
       {
+        "command": "ticode.topo.refresh",
+        "title": "TiCode: Refresh Topo Manager",
+        "icon": {
+          "light": "media/refresh.svg",
+          "dark": "media/refresh.svg"
+        }
+      },
+      {
         "command": "ticode.topo.diffModification",
         "title": "Diff Modificatioin"
       },
@@ -252,6 +260,11 @@
         {
           "command": "ticode.cluster.refresh",
           "when": "view == ticode-tiup-cluster",
+          "group": "navigation"
+        },
+        {
+          "command": "ticode.topo.refresh",
+          "when": "view == ticode-topo-manager",
           "group": "navigation"
         }
       ],
