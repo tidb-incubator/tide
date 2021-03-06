@@ -237,13 +237,14 @@ export async function activate(context: vscode.ExtensionContext) {
      */
     // context menu
     registerCommand('ticode.topo.diffModification', (treeItem) => {
-      const folderName = treeItem.extra
-      const fileName = treeItem.label
       const templateFolder = topoProvider.templateFolder
       const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      const fileName = treeItem.label
       TopoManagerCommand.diffModification(
         templateFolder,
         localFoder,
+        tempFolder,
         folderName,
         fileName
       )

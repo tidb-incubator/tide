@@ -2,12 +2,12 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
 import { shell } from '../shell'
-import { title } from 'process'
 import { runNewTerminal } from '../utils'
 export class TopoManagerCommand {
   static diffModification(
     templateFolder: string,
     localFolder: string,
+    tempFolder: string,
     folderName: string,
     fileName: string
   ) {
@@ -18,19 +18,18 @@ export class TopoManagerCommand {
       )
       return
     }
-    // generate example
-    const exampleTemplateFile = path.join(
-      templateFolder,
-      folderName,
-      'example.' + fileName
-    )
-    fs.copyFileSync(templateFile, exampleTemplateFile)
+    // copy template file to temp folder
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder, { recursive: true })
+    }
+    const tempTemplateFile = path.join(tempFolder, fileName)
+    fs.copyFileSync(templateFile, tempTemplateFile)
 
     // view diff
     const localFile = path.join(localFolder, folderName, fileName)
     vscode.commands.executeCommand(
       'vscode.diff',
-      vscode.Uri.file(exampleTemplateFile),
+      vscode.Uri.file(tempTemplateFile),
       vscode.Uri.file(localFile),
       `${fileName} changes`
     )
