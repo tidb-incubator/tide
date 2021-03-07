@@ -240,6 +240,15 @@ export async function activate(context: vscode.ExtensionContext) {
       TopoManagerCommand.addTopo(topoProvider.localFolder)
     ),
     // context menu
+    registerCommand('ticode.topo.remove', (treeItem) =>
+      // treeItem.contextValue = 'topo-cluster-added'
+      TopoManagerCommand.removeTopo(topoProvider.localFolder, treeItem.label)
+    ),
+    registerCommand('ticode.topo.rename', (treeItem) =>
+      // treeItem.contextValue = 'topo-cluster-added'
+      TopoManagerCommand.renameTopo(topoProvider.localFolder, treeItem.label)
+    ),
+    // context menu
     registerCommand('ticode.topo.diffModification', (treeItem) => {
       const templateFolder = topoProvider.templateFolder
       const localFoder = topoProvider.localFolder

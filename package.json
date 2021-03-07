@@ -195,6 +195,14 @@
         }
       },
       {
+        "command": "ticode.topo.remove",
+        "title": "Remove"
+      },
+      {
+        "command": "ticode.topo.rename",
+        "title": "Rename"
+      },
+      {
         "command": "ticode.topo.diffModification",
         "title": "Diff Modificatioin"
       },
@@ -393,6 +401,16 @@
         {
           "command": "ticode.cluster.applyClusterConfAndRestart",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
+          "group": "1@2"
+        },
+        {
+          "command": "ticode.topo.remove",
+          "when": "view == ticode-topo-manager && viewItem == topo-cluster-added",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.topo.rename",
+          "when": "view == ticode-topo-manager && viewItem == topo-cluster-added",
           "group": "1@2"
         },
         {

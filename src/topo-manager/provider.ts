@@ -8,6 +8,8 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
   public templateFolder: string = ''
   public localFolder: string = ''
 
+  public templateClusterFolders: string[] = []
+
   constructor(private context: vscode.ExtensionContext) {
     // copy template files
     this.templateFolder = path.join(
@@ -26,11 +28,11 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
   }
 
   async copyTemplateFiles() {
-    const templateClusterFolders = fs.readdirSync(this.templateFolder)
+    this.templateClusterFolders = fs.readdirSync(this.templateFolder)
     // the result is only the folders name, not include path
-    console.log('template-cluters:', templateClusterFolders)
+    console.log('template-cluters:', this.templateClusterFolders)
 
-    templateClusterFolders.forEach(async (folderName) => {
+    this.templateClusterFolders.forEach(async (folderName) => {
       const localClusterFolder = path.join(this.localFolder, folderName)
       if (!fs.existsSync(localClusterFolder)) {
         // copy
@@ -53,16 +55,22 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
     const items: Item[] = []
     if (element === undefined) {
       const folders = fs.readdirSync(this.localFolder)
+      const nonTemplatedFolders = folders.filter(
+        (f) => this.templateClusterFolders.indexOf(f) < 0
+      )
+      const allFolders = this.templateClusterFolders.concat(nonTemplatedFolders)
 
-      folders.forEach((f) => {
+      allFolders.forEach((f) => {
         const item: Item = new Item(
           f,
           vscode.TreeItemCollapsibleState.Collapsed
         )
         if (f === '_shared') {
           item.contextValue = 'topo-vagrant-shared'
+        } else if (this.templateClusterFolders.indexOf(f) >= 0) {
+          item.contextValue = 'topo-cluster-templated'
         } else {
-          item.contextValue = 'topo-cluster-name'
+          item.contextValue = 'topo-cluster-added'
         }
         items.push(item)
       })
@@ -83,7 +91,10 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
         items.push(item)
       })
     }
-    if (element?.contextValue === 'topo-cluster-name') {
+    if (
+      element?.contextValue === 'topo-cluster-templated' ||
+      element?.contextValue === 'topo-cluster-added'
+    ) {
       const clusterName = element.label
 
       // topology.yaml

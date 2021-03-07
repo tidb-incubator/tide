@@ -135,4 +135,45 @@ export class TopoManagerCommand {
 
     vscode.commands.executeCommand('ticode.topo.refresh')
   }
+
+  static async removeTopo(localFolder: string, folderName: string) {
+    const res = await vscode.window.showWarningMessage(
+      "Are you sure to remove this cluster configurations? Although it only deletes the configure files, but it can't rollback.",
+      'Let me think',
+      'Remove anyway'
+    )
+    if (res === 'Let me think') {
+      return
+    }
+    const fullFolderPath = path.join(localFolder, folderName)
+    fs.rmdirSync(fullFolderPath, { recursive: true })
+
+    vscode.commands.executeCommand('ticode.topo.refresh')
+  }
+
+  static async renameTopo(localFolder: string, folderName: string) {
+    let clusterName = await vscode.window.showInputBox({
+      prompt: 'Your cluster name',
+      value: folderName,
+    })
+    if (
+      !clusterName ||
+      clusterName.trim() === '' ||
+      clusterName.trim() === folderName
+    ) {
+      return
+    }
+    const folders = fs.readdirSync(localFolder)
+    if (folders.indexOf(clusterName) >= 0) {
+      vscode.window.showErrorMessage(
+        'The cluster name exists, please choose another name.'
+      )
+      return
+    }
+    const srcFolderPath = path.join(localFolder, folderName)
+    const targetFolderPath = path.join(localFolder, clusterName)
+    fs.renameSync(srcFolderPath, targetFolderPath)
+
+    vscode.commands.executeCommand('ticode.topo.refresh')
+  }
 }
