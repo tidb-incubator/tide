@@ -176,4 +176,10 @@ export class TopoManagerCommand {
 
     vscode.commands.executeCommand('ticode.topo.refresh')
   }
+
+  static async deploy(localFolder: string, folderName: string) {
+    const fullFolderPath = path.join(localFolder, folderName)
+    const cmd = `cd "${fullFolderPath}" && tiup cluster deploy ${folderName} nightly topology.yaml && exit`
+    runNewTerminal('deploy', cmd)
+  }
 }

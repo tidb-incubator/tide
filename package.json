@@ -221,6 +221,10 @@
       {
         "command": "ticode.topo.vagrantSSH",
         "title": "vagrant ssh"
+      },
+      {
+        "command": "ticode.topo.deploy",
+        "title": "Deploy"
       }
     ],
     "viewsContainers": {
@@ -436,6 +440,10 @@
         {
           "command": "ticode.topo.vagrantSSH",
           "when": "view == ticode-topo-manager && viewItem == topo-vm"
+        },
+        {
+          "command": "ticode.topo.deploy",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology"
         }
       ]
     }
