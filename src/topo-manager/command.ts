@@ -132,8 +132,7 @@ export class TopoManagerCommand {
     fs.writeFileSync(topologyFile, '# add your content here')
     const vagrantFile = path.join(fullFolderPath, 'Vagrantfile')
     fs.writeFileSync(vagrantFile, '# add your content here')
-
-    vscode.commands.executeCommand('ticode.topo.refresh')
+    this.refresh()
   }
 
   static async removeTopo(localFolder: string, folderName: string) {
@@ -147,8 +146,7 @@ export class TopoManagerCommand {
     }
     const fullFolderPath = path.join(localFolder, folderName)
     fs.rmdirSync(fullFolderPath, { recursive: true })
-
-    vscode.commands.executeCommand('ticode.topo.refresh')
+    this.refresh()
   }
 
   static async renameTopo(localFolder: string, folderName: string) {
@@ -173,13 +171,16 @@ export class TopoManagerCommand {
     const srcFolderPath = path.join(localFolder, folderName)
     const targetFolderPath = path.join(localFolder, clusterName)
     fs.renameSync(srcFolderPath, targetFolderPath)
-
-    vscode.commands.executeCommand('ticode.topo.refresh')
+    this.refresh()
   }
 
   static async deploy(localFolder: string, folderName: string) {
     const fullFolderPath = path.join(localFolder, folderName)
     const cmd = `cd "${fullFolderPath}" && tiup cluster deploy ${folderName} nightly topology.yaml && exit`
     runNewTerminal('deploy', cmd)
+  }
+
+  static refresh() {
+    vscode.commands.executeCommand('ticode.topo.refresh')
   }
 }
