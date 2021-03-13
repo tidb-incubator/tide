@@ -251,24 +251,20 @@
     "views": {
       "ticode-explorer": [
         {
-          "id": "ticode-tiup-cluster",
-          "name": "TiUP Cluster"
-        },
-        {
           "id": "ticode-tiup-playground",
           "name": "TiUP Playground"
         },
         {
+          "id": "ticode-topo-manager",
+          "name": "VM & Topo Manager"
+        },
+        {
+          "id": "ticode-tiup-cluster",
+          "name": "TiUP Cluster"
+        },
+        {
           "id": "ticode-kube-cluster",
           "name": "Kubernetes Cluster"
-        },
-        {
-          "id": "ticode-topo-manager",
-          "name": "Topo Manager"
-        },
-        {
-          "id": "ticode-machine-manager",
-          "name": "Machine Manager"
         },
         {
           "id": "ticode-scaffold",

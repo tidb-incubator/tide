@@ -1,28 +1,29 @@
-import * as tmp from 'tmp'
 import * as vscode from 'vscode'
 import * as path from 'path'
+import * as tmp from 'tmp'
 
+import { fs } from './fs'
+import { host } from './host'
+import { shell } from './shell'
+import { create as createTiUP } from './tiup'
+
+import * as config from './components/config/config'
+
+import { PlaygroundCommand } from './playground/command'
+import { PlaygroundProvider } from './playground/provider'
+import { TopoProvider } from './topo-manager/provider'
+import { TopoManagerCommand } from './topo-manager/command'
 import {
   ClusterCommand,
   ClusterComponent,
   InstanceAndCluster,
 } from './cluster/command'
 import { ClusterProvider } from './cluster/provider'
-import * as config from './components/config/config'
-import { fs } from './fs'
-import { host } from './host'
+import { DashboardCommand } from './dashboard/command'
 import { KubeCommand } from './kubernetes/command'
 import { KubeProvider } from './kubernetes/provider'
-import { PlaygroundCommand } from './playground/command'
-import { PlaygroundProvider } from './playground/provider'
-import { shell } from './shell'
-import { create as createTiUP } from './tiup'
-import { TopoProvider } from './topo-manager/provider'
-import { MachineProvider } from './machine-manager/provider'
 import { ScaffoldProvider } from './scaffold/provider'
 import { ScaffoldCommand } from './scaffold/command'
-import { DashboardCommand } from './dashboard/command'
-import { TopoManagerCommand } from './topo-manager/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -37,6 +38,10 @@ export async function activate(context: vscode.ExtensionContext) {
     playgroundProvider
   )
 
+  // topo tree view
+  const topoProvider = new TopoProvider(context)
+  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
+
   // clsuter tree view
   const clusterProvider = new ClusterProvider()
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
@@ -44,17 +49,6 @@ export async function activate(context: vscode.ExtensionContext) {
   // kubernetes tree view
   const kubeProvider = new KubeProvider()
   vscode.window.registerTreeDataProvider('ticode-kube-cluster', kubeProvider)
-
-  // topo tree view
-  const topoProvider = new TopoProvider(context)
-  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
-
-  // machine tree view
-  const machineProvider = new MachineProvider()
-  vscode.window.registerTreeDataProvider(
-    'ticode-machine-manager',
-    machineProvider
-  )
 
   // scaffold tree view
   const scaffoldProvider = new ScaffoldProvider()
@@ -368,7 +362,7 @@ async function tiupHelp() {
   await tiup.invokeInSharedTerminal('help')
 }
 
-// TiUp Playground
+// TiUP Playground
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
     'Are you sure reload the config? Your current config will be overrided',
@@ -414,8 +408,7 @@ async function showPodInDocument(podName: string) {
 }
 
 async function checkEnvs() {
-  const workFolders = vscode.workspace.workspaceFolders
-
+  // const workFolders = vscode.workspace.workspaceFolders
   // open guide
   const guideFile = path.join(__dirname, '..', 'doc', 'guide.md')
   vscode.commands.executeCommand(
