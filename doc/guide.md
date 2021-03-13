@@ -4,7 +4,9 @@
 
 If you don't install TiUP, the extension will prompt you to install it:
 
-![install tiup](./install-tiup.jpg)
+<div>
+  <img src="./install-tiup.jpg" style="zoom:75%">
+</div>
 
 ## 2. Clone and import repos
 
@@ -23,7 +25,6 @@ $ git clone https://github.com/pingcap/tidb-dashboard.git
 Open any repo in VSCode, for example tidb, then choose menu "File / Add Folder to Workspace...", add other repo folders to VSCode. The VSCode will automatically organize them as a untitled workspace.
 
 > Note: again, you don't need to add all repos, just the repos you want to develop.
-
 
 <div>
   <img src="./add-folder-to-workspace.jpg" style="zoom:50%">
@@ -86,7 +87,9 @@ Required tools for building:
 
 Assume you have modified some code for tidb/tikv/pd, and you want to test the binaries with a playground cluster. You just need one click:
 
-![start-default-playground](./start-default-playground.jpg)
+<div>
+  <img src="./start-default-playground.jpg" style="zoom:50%">
+</div>
 
 Clicking the "start default playground" item will automatically build current tidb/tikv/pd repos and start a default playground cluster with them.
 
@@ -102,7 +105,9 @@ After playground is starting successfully, you can refresh the playground to get
 
 Click the menu item "View Log" in the component to view its log:
 
-![view-playground-log](./view-playground-log.jpg)
+<div>
+  <img src="./view-playground-log.jpg" style="zoom:50%">
+</div>
 
 ### Debug
 
@@ -154,7 +159,9 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
 
 - Modify and apply cluster configuration
 
-  ![cluster-config](./cluster-config.jpg)
+  <div>
+    <img src="./cluster-config.jpg" style="zoom:50%">
+  </div>
 
 - Restart/Patch component
 
@@ -200,6 +207,10 @@ It will do three things:
 
 Assume you want to add a new individual feature (aka an "app") to dashboard, click the "Add new app to dashboard", input the app name, it will auto generate the template code for you, and auto restart the dashboard as well.
 
-![add new app to dashboard](./dashboard-add-app.jpg)
+<div>
+  <img src="./dashboard-add-app.jpg" style="zoom:50%">
+</div>
 
-![dashboard new page](./dashboard-new-page.jpg)
+<div>
+  <img src="./dashboard-new-page.jpg" style="zoom:60%">
+</div>

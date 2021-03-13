@@ -27,6 +27,8 @@ Do all the things just in your favorite Visual Studio Code:
 - Debug TiDB Cluster on Kubernetes
 - And mooooooooore!
 
+> Note: currently we only test it in macOS, and we plan to support Ubuntu as well.
+
 ## Community
 
 ### Slack
@@ -35,36 +37,46 @@ Join our [slack channel](https://slack.tidb.io/invite?team=tidb-community&channe
 
 ## Demo
 
-Scaffold:
+### Playground
 
-- Bilibiili: https://www.bilibili.com/video/BV12A411H74T/
-
-Debug:
-
-![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
-
-Bilibili: https://www.bilibili.com/video/BV12p4y1x7w8/
-
-Cluster:
-
-- Youtube: https://youtu.be/fxflwr_lFvE
-- Bilibili: https://www.bilibili.com/video/BV1oz4y1U7ec/
-
-![image](https://user-images.githubusercontent.com/1284531/104792552-b7e9ba80-57d9-11eb-907c-1d0cfbc6d72d.png)
-
-Playground:
-
-- Youtube: https://youtu.be/57pU6Jhc5C0
-- Bilibili: https://www.bilibili.com/video/BV1pK411u7S4/
+Video: https://www.bilibili.com/video/BV1pK411u7S4/
 
 ![image](https://user-images.githubusercontent.com/1284531/104793321-f7fe6c80-57dc-11eb-8b51-a25a6690d87a.png)
 
+### Debug
+
+Video: https://www.bilibili.com/video/BV12p4y1x7w8/
+
+![debug](https://user-images.githubusercontent.com/18556593/104743603-d70b2c80-5786-11eb-988b-8f8c3f2daeae.gif)
+
+### Cluster
+
+Video: https://www.bilibili.com/video/BV1oz4y1U7ec/
+
+![image](https://user-images.githubusercontent.com/1284531/104792552-b7e9ba80-57d9-11eb-907c-1d0cfbc6d72d.png)
+
+### Scaffold
+
+Video: https://www.bilibili.com/video/BV12A411H74T/
+
 ## TODO
 
-- Scaffold for adding new feature
+- Playground
 
-  - [x] Scaffold for tidb-dashboard repo (add a new app in 10 seconds)
-  - [ ] Scaffold for coprocess
+  - [x] Start a simple default playground cluster
+  - [x] Start a confiured playground cluster
+  - [x] Use current repo's binary
+  - [x] List playground cluster instances
+  - [x] View logs of all instances
+  - [x] Follow logs of all instances
+  - [x] Attach to Debug @Aylei
+
+- Virtual Machines & Cluster Topo Manager
+
+  - [x] Manage vagrant virtual machines
+  - [x] Start virtual machines, ready for deploy a cluster
+  - [x] Manage cluster topos
+  - [x] Deploy a cluster by a topo file
 
 - Cluster
 
@@ -95,35 +107,24 @@ Playground:
   - [x] Attach to Debug @Aylei
   - [ ] Restart on local compile (Rsync)
 
-- Playground
-
-  - [x] Start a simple default playground cluster
-  - [x] Start a confiured playground cluster
-  - [x] Use current repo's binary
-  - [x] List playground cluster instances
-  - [x] View logs of all instances
-  - [x] Follow logs of all instances
-  - [x] Attach to Debug @Aylei
-
-- Bench
-
-  - [ ] Config bench
-  - [ ] Start bench
-
 - Kubernetes
 
   - [ ] TreeView
   - [ ] Attach to Debug
   - [ ] Restart on local compile (Rsync)
 
-- Virtaul Machines & Cluster Topo Manager
+- Scaffold for adding new feature
 
-  - [x] Manager vagrant virtual machines
-  - [x] Start virtual machines, ready for deploy a cluster
-  - [x] Manage cluster topos
-  - [x] Deploy a cluster by a topo
+  - [x] Scaffold for tidb-dashboard repo (add a new app in 10 seconds)
+  - [ ] Scaffold for coprocess
+
+- Bench
+
+  - [ ] Config bench
+  - [ ] Start bench
 
 - TiUP Manager
+
   - [x] Install TiUP
   - [ ] Upgrade TiUP
 
