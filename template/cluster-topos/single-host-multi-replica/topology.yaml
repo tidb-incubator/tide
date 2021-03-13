@@ -22,45 +22,45 @@ server_configs:
       - host
 
 pd_servers:
-  - host: 10.0.1.20
+  - host: 10.0.1.11
 
 tikv_servers:
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20160
     status_port: 20180
     config:
       server.labels: { host: tikv1, rack: rack1 }
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20161
     status_port: 20181
     config:
       server.labels: { host: tikv1, rack: rack1 }
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20162
     status_port: 20182
     config:
       server.labels: { host: tikv2, rack: rack1 }
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20163
     status_port: 20183
     config:
       server.labels: { host: tikv2, rack: rack1 }
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20164
     status_port: 20184
     config:
       server.labels: { host: tikv3, rack: rack2 }
-  - host: 10.0.1.20
+  - host: 10.0.1.11
     port: 20165
     status_port: 20185
     config:
       server.labels: { host: tikv3, rack: rack2 }
 
 tidb_servers:
-  - host: 10.0.1.20
+  - host: 10.0.1.11
 
 grafana_servers:
-  - host: 10.0.1.20
+  - host: 10.0.1.11
 
 monitoring_servers:
-  - host: 10.0.1.20
+  - host: 10.0.1.11

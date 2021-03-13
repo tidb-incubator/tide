@@ -18,22 +18,22 @@ server_configs:
     replication.enable-placement-rules: true
 
 pd_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 tikv_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 tidb_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 tiflash_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 grafana_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 monitoring_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
 
 alertmanager_servers:
-  - host: 10.0.1.2
+  - host: 10.0.1.12
