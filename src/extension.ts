@@ -1,27 +1,29 @@
-import * as tmp from 'tmp'
 import * as vscode from 'vscode'
 import * as path from 'path'
+import * as tmp from 'tmp'
 
+import { fs } from './fs'
+import { host } from './host'
+import { shell } from './shell'
+import { create as createTiUP } from './tiup'
+
+import * as config from './components/config/config'
+
+import { PlaygroundCommand } from './playground/command'
+import { PlaygroundProvider } from './playground/provider'
+import { TopoProvider } from './topo-manager/provider'
+import { TopoManagerCommand } from './topo-manager/command'
 import {
   ClusterCommand,
   ClusterComponent,
   InstanceAndCluster,
 } from './cluster/command'
 import { ClusterProvider } from './cluster/provider'
-import * as config from './components/config/config'
-import { fs } from './fs'
-import { host } from './host'
+import { DashboardCommand } from './dashboard/command'
 import { KubeCommand } from './kubernetes/command'
 import { KubeProvider } from './kubernetes/provider'
-import { PlaygroundCommand } from './playground/command'
-import { PlaygroundProvider } from './playground/provider'
-import { shell } from './shell'
-import { create as createTiUP } from './tiup'
-import { TopoProvider } from './topo-manager/provider'
-import { MachineProvider } from './machine-manager/provider'
 import { ScaffoldProvider } from './scaffold/provider'
 import { ScaffoldCommand } from './scaffold/command'
-import { DashboardCommand } from './dashboard/command'
 
 const tiup = createTiUP(config.getTiUPVersioning(), host, fs, shell)
 
@@ -36,6 +38,10 @@ export async function activate(context: vscode.ExtensionContext) {
     playgroundProvider
   )
 
+  // topo tree view
+  const topoProvider = new TopoProvider(context)
+  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
+
   // clsuter tree view
   const clusterProvider = new ClusterProvider()
   vscode.window.registerTreeDataProvider('ticode-tiup-cluster', clusterProvider)
@@ -43,17 +49,6 @@ export async function activate(context: vscode.ExtensionContext) {
   // kubernetes tree view
   const kubeProvider = new KubeProvider()
   vscode.window.registerTreeDataProvider('ticode-kube-cluster', kubeProvider)
-
-  // topo tree view
-  const topoProvider = new TopoProvider()
-  vscode.window.registerTreeDataProvider('ticode-topo-manager', topoProvider)
-
-  // machine tree view
-  const machineProvider = new MachineProvider()
-  vscode.window.registerTreeDataProvider(
-    'ticode-machine-manager',
-    machineProvider
-  )
 
   // scaffold tree view
   const scaffoldProvider = new ScaffoldProvider()
@@ -231,6 +226,83 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.dashboard.run', (treeItem) => {
       DashboardCommand.start(treeItem)
     }),
+    /**
+     * Topo Manager
+     */
+    registerCommand('ticode.topo.refresh', () => topoProvider.refresh()),
+    registerCommand('ticode.topo.add', () =>
+      TopoManagerCommand.addTopo(topoProvider.localFolder)
+    ),
+    // context menu
+    registerCommand('ticode.topo.remove', (treeItem) =>
+      // treeItem.contextValue = 'topo-cluster-added'
+      TopoManagerCommand.removeTopo(topoProvider.localFolder, treeItem.label)
+    ),
+    registerCommand('ticode.topo.rename', (treeItem) =>
+      // treeItem.contextValue = 'topo-cluster-added'
+      TopoManagerCommand.renameTopo(topoProvider.localFolder, treeItem.label)
+    ),
+    // context menu
+    registerCommand('ticode.topo.diffModification', (treeItem) => {
+      const templateFolder = topoProvider.templateFolder
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      const fileName = treeItem.label
+      TopoManagerCommand.diffModification(
+        templateFolder,
+        localFoder,
+        tempFolder,
+        folderName,
+        fileName
+      )
+    }),
+    registerCommand('ticode.topo.vagrantUp', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantUp(localFoder, folderName)
+    }),
+    registerCommand('ticode.topo.vagrantReload', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantReload(localFoder, folderName)
+    }),
+    registerCommand('ticode.topo.vagrantDestroy', (treeItem) => {
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.vagrantDestroy(localFoder, folderName)
+    }),
+    registerCommand('ticode.topo.vagrantSSH', (treeItem) => {
+      // treeItem.contextValue = 'topo-vm'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      const machineName = treeItem.label
+      TopoManagerCommand.vagrantSSH(localFoder, folderName, machineName)
+    }),
+    registerCommand('ticode.topo.deployByPassword', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-topology'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.deploy(localFoder, folderName, 'password')
+    }),
+    registerCommand('ticode.topo.deployByVagrantKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-topology'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.deploy(localFoder, folderName, 'vagrant_private_key')
+    }),
+    registerCommand('ticode.topo.deployBySelfKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-topology'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.deploy(localFoder, folderName, 'self_private_key')
+    }),
+    // context menu
+    registerCommand('ticode.topo.removeSelfKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-private-key'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.removeSelfKey(localFoder, folderName)
+    }),
   ]
 
   commandsSubscriptions.forEach((x) => context.subscriptions.push(x))
@@ -290,7 +362,7 @@ async function tiupHelp() {
   await tiup.invokeInSharedTerminal('help')
 }
 
-// TiUp Playground
+// TiUP Playground
 async function reloadPlaygroundConfig(playgroundProvider: PlaygroundProvider) {
   const res = await vscode.window.showWarningMessage(
     'Are you sure reload the config? Your current config will be overrided',
@@ -311,7 +383,7 @@ async function stopPlayground() {
   }
 }
 
-// TiUp Cluster
+// TiUP Cluster
 async function listClusters() {
   const uri = vscode.Uri.parse('ticode:list')
   const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
@@ -336,8 +408,7 @@ async function showPodInDocument(podName: string) {
 }
 
 async function checkEnvs() {
-  const workFolders = vscode.workspace.workspaceFolders
-
+  // const workFolders = vscode.workspace.workspaceFolders
   // open guide
   const guideFile = path.join(__dirname, '..', 'doc', 'guide.md')
   vscode.commands.executeCommand(

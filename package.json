@@ -177,6 +177,66 @@
       {
         "command": "ticode.dashboard.run",
         "title": "Start dashboard"
+      },
+      {
+        "command": "ticode.topo.refresh",
+        "title": "TiCode: Refresh Topo Manager",
+        "icon": {
+          "light": "media/refresh.svg",
+          "dark": "media/refresh.svg"
+        }
+      },
+      {
+        "command": "ticode.topo.add",
+        "title": "TiCode: Add topo",
+        "icon": {
+          "light": "media/plus.svg",
+          "dark": "media/plus.svg"
+        }
+      },
+      {
+        "command": "ticode.topo.remove",
+        "title": "Remove"
+      },
+      {
+        "command": "ticode.topo.rename",
+        "title": "Rename"
+      },
+      {
+        "command": "ticode.topo.diffModification",
+        "title": "Diff Modificatioin"
+      },
+      {
+        "command": "ticode.topo.vagrantUp",
+        "title": "vagrant up"
+      },
+      {
+        "command": "ticode.topo.vagrantReload",
+        "title": "vagrant reload"
+      },
+      {
+        "command": "ticode.topo.vagrantDestroy",
+        "title": "vagrant destroy"
+      },
+      {
+        "command": "ticode.topo.vagrantSSH",
+        "title": "vagrant ssh"
+      },
+      {
+        "command": "ticode.topo.deployByPassword",
+        "title": "Deploy by password"
+      },
+      {
+        "command": "ticode.topo.deployByVagrantKey",
+        "title": "Deploy by vagrant private key"
+      },
+      {
+        "command": "ticode.topo.deployBySelfKey",
+        "title": "Deploy by self private key"
+      },
+      {
+        "command": "ticode.topo.removeSelfKey",
+        "title": "Remove"
       }
     ],
     "viewsContainers": {
@@ -191,24 +251,20 @@
     "views": {
       "ticode-explorer": [
         {
-          "id": "ticode-tiup-cluster",
-          "name": "TiUP Cluster"
-        },
-        {
           "id": "ticode-tiup-playground",
           "name": "TiUP Playground"
         },
         {
+          "id": "ticode-topo-manager",
+          "name": "VM & Topo Manager"
+        },
+        {
+          "id": "ticode-tiup-cluster",
+          "name": "TiUP Cluster"
+        },
+        {
           "id": "ticode-kube-cluster",
           "name": "Kubernetes Cluster"
-        },
-        {
-          "id": "ticode-topo-manager",
-          "name": "Topo Manager"
-        },
-        {
-          "id": "ticode-machine-manager",
-          "name": "Machine Manager"
         },
         {
           "id": "ticode-scaffold",
@@ -232,6 +288,16 @@
         {
           "command": "ticode.cluster.refresh",
           "when": "view == ticode-tiup-cluster",
+          "group": "navigation"
+        },
+        {
+          "command": "ticode.topo.refresh",
+          "when": "view == ticode-topo-manager",
+          "group": "navigation"
+        },
+        {
+          "command": "ticode.topo.add",
+          "when": "view == ticode-topo-manager",
           "group": "navigation"
         }
       ],
@@ -348,6 +414,59 @@
           "command": "ticode.cluster.applyClusterConfAndRestart",
           "when": "view == ticode-tiup-cluster && viewItem == cluster-global-config",
           "group": "1@2"
+        },
+        {
+          "command": "ticode.topo.remove",
+          "when": "view == ticode-topo-manager && viewItem == topo-cluster-added",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.topo.rename",
+          "when": "view == ticode-topo-manager && viewItem == topo-cluster-added",
+          "group": "1@2"
+        },
+        {
+          "command": "ticode.topo.diffModification",
+          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/ && viewItem != topo-file-private-key",
+          "group": "1@1"
+        },
+        {
+          "command": "ticode.topo.vagrantUp",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.topo.vagrantReload",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@2"
+        },
+        {
+          "command": "ticode.topo.vagrantDestroy",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-vagrantfile",
+          "group": "2@3"
+        },
+        {
+          "command": "ticode.topo.vagrantSSH",
+          "when": "view == ticode-topo-manager && viewItem == topo-vm"
+        },
+        {
+          "command": "ticode.topo.deployByPassword",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.topo.deployByVagrantKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@2"
+        },
+        {
+          "command": "ticode.topo.deployBySelfKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@3"
+        },
+        {
+          "command": "ticode.topo.removeSelfKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-private-key"
         }
       ]
     }

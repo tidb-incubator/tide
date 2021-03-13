@@ -116,15 +116,12 @@ Playground:
   - [ ] Attach to Debug
   - [ ] Restart on local compile (Rsync)
 
-- Cluster Topo Manager
+- Virtaul Machines & Cluster Topo Manager
 
-  - [ ] Manage cluster topos
-  - [ ] Deploy a cluster by a topo
-
-- Virtual Machines Manager
-
-  - [ ] Manager vagrant virtual machines
-  - [ ] Start virtual machines, ready for deploy a cluster
+  - [x] Manager vagrant virtual machines
+  - [x] Start virtual machines, ready for deploy a cluster
+  - [x] Manage cluster topos
+  - [x] Deploy a cluster by a topo
 
 - TiUP Manager
   - [x] Install TiUP
