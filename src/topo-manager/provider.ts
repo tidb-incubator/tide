@@ -117,6 +117,27 @@ export class TopoProvider implements vscode.TreeDataProvider<Item> {
       topoItem.contextValue = 'topo-file-topology'
       items.push(topoItem)
 
+      // private_key
+      const fullPrivateKeyPath = path.join(
+        this.localFolder,
+        clusterName,
+        'private_key'
+      )
+      if (fs.existsSync(fullPrivateKeyPath)) {
+        const privateKeyItem = new Item(
+          'private_key',
+          vscode.TreeItemCollapsibleState.None,
+          {
+            command: 'vscode.open',
+            title: 'open',
+            arguments: [vscode.Uri.file(fullPrivateKeyPath)],
+          }
+        )
+        privateKeyItem.extra = clusterName
+        privateKeyItem.contextValue = 'topo-file-private-key'
+        items.push(privateKeyItem)
+      }
+
       // Vagrantfile
       const fullVagrantfilePath = path.join(
         this.localFolder,

@@ -2,7 +2,10 @@ import * as vscode from 'vscode'
 import * as fs from 'fs'
 import * as path from 'path'
 import { shell } from '../shell'
-import { runNewTerminal } from '../utils'
+import { handleError, runNewTerminal } from '../utils'
+
+export type DeployType = 'password' | 'vagrant_private_key' | 'self_private_key'
+
 export class TopoManagerCommand {
   static diffModification(
     templateFolder: string,
@@ -174,13 +177,111 @@ export class TopoManagerCommand {
     this.refresh()
   }
 
-  static async deploy(localFolder: string, folderName: string) {
+  static async deploy(
+    localFolder: string,
+    folderName: string,
+    deployType: DeployType
+  ) {
+    // select tidb version
+    const tidbVersion = await vscode.window.showQuickPick(
+      this.getTiDBVesions(),
+      { placeHolder: 'Select tidb version' }
+    )
+    if (tidbVersion === undefined) {
+      return
+    }
+    // input machines user name for login
+    let machineUserName: string | undefined = 'vagrant'
+    if (deployType !== 'vagrant_private_key') {
+      machineUserName = await vscode.window.showInputBox({
+        prompt: 'input the machines user name for login',
+        placeHolder: 'machines username',
+      })
+      if (machineUserName === undefined) {
+        return
+      }
+    }
+    // select private key
     const fullFolderPath = path.join(localFolder, folderName)
-    const cmd = `cd "${fullFolderPath}" && tiup cluster deploy ${folderName} nightly topology.yaml && exit`
-    runNewTerminal('deploy', cmd)
+    if (deployType === 'self_private_key') {
+      // check private_key exist
+      const selfPrivateKey = path.join(fullFolderPath, 'private_key')
+      if (!fs.existsSync(selfPrivateKey)) {
+        const filePath = await vscode.window.showOpenDialog({
+          openLabel: "Select machine's private key for login",
+          canSelectMany: false,
+          title: "Select machine's private key for login",
+        })
+        if (filePath === undefined) {
+          return
+        }
+        fs.copyFileSync(filePath[0].path, selfPrivateKey)
+        this.refresh()
+      }
+    }
+
+    // cmd
+    let cmdFlags = ''
+    if (deployType === 'password') {
+      cmdFlags = '-p'
+      vscode.window.showInformationMessage(
+        'Notice to input the machine login passowrd in the terminal manually.'
+      )
+    } else if (deployType === 'vagrant_private_key') {
+      cmdFlags = '-i ../_shared/vagrant_key'
+    } else if (deployType === 'self_private_key') {
+      cmdFlags = '-i ./private_key'
+    }
+
+    const fullCmd = `cd "${fullFolderPath}" && tiup cluster deploy ${folderName} ${tidbVersion} topology.yaml -u ${machineUserName} ${cmdFlags} -y && exit`
+    runNewTerminal('deploy', fullCmd)
+  }
+
+  static async removeSelfKey(localFolder: string, folderName: string) {
+    const fullPath = path.join(localFolder, folderName, 'private_key')
+    fs.unlinkSync(fullPath)
+    this.refresh()
   }
 
   static refresh() {
     vscode.commands.executeCommand('ticode.topo.refresh')
+  }
+
+  /////////////
+  static tidbVersions: string[] = []
+  static defTiDBVersions: string[] = [
+    'nightly',
+    'v5.0.0-rc',
+    'v4.0.11',
+    'v4.0.10',
+    'v4.0.9',
+  ]
+  static async getTiDBVesions() {
+    if (this.tidbVersions.length > 0) {
+      return this.tidbVersions
+    }
+    const cr = await shell.exec('tiup list tidb')
+    if (cr?.code !== 0) {
+      handleError(cr)
+      return this.defTiDBVersions
+    }
+    // > tiup list tidb
+    // Available versions for tidb:
+    // Version                             Installed  Release                              Platforms
+    // -------                             ---------  -------                              ---------
+    // nightly -> v5.0.0-nightly-20210311             2021-03-11T07:36:35+08:00            darwin/amd64,linux/amd64,linux/arm64
+    // v3.0                                           2020-04-16T16:58:06+08:00            darwin/amd64,linux/amd64
+    // v3.0.0                                         2020-04-16T14:03:31+08:00            darwin/amd64,linux/amd64
+    // v3.0.1                                         2020-04-27T19:38:36+08:00            darwin/amd64,linux/amd64,linux/arm64
+    const lines = cr.stdout.trim().split('\n')
+    const versions: string[] = []
+    lines.forEach((line) => {
+      if (line.startsWith('v')) {
+        const version = line.split(' ')[0]
+        versions.push(version)
+      }
+    })
+    this.tidbVersions = ['nightly'].concat(versions.reverse())
+    return this.tidbVersions
   }
 }

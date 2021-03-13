@@ -223,8 +223,20 @@
         "title": "vagrant ssh"
       },
       {
-        "command": "ticode.topo.deploy",
-        "title": "Deploy"
+        "command": "ticode.topo.deployByPassword",
+        "title": "Deploy by password"
+      },
+      {
+        "command": "ticode.topo.deployByVagrantKey",
+        "title": "Deploy by vagrant private key"
+      },
+      {
+        "command": "ticode.topo.deployBySelfKey",
+        "title": "Deploy by self private key"
+      },
+      {
+        "command": "ticode.topo.removeSelfKey",
+        "title": "Remove"
       }
     ],
     "viewsContainers": {
@@ -419,7 +431,7 @@
         },
         {
           "command": "ticode.topo.diffModification",
-          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/",
+          "when": "view == ticode-topo-manager && viewItem =~ /^topo-file/ && viewItem != topo-file-private-key",
           "group": "1@1"
         },
         {
@@ -442,8 +454,23 @@
           "when": "view == ticode-topo-manager && viewItem == topo-vm"
         },
         {
-          "command": "ticode.topo.deploy",
-          "when": "view == ticode-topo-manager && viewItem == topo-file-topology"
+          "command": "ticode.topo.deployByPassword",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.topo.deployByVagrantKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@2"
+        },
+        {
+          "command": "ticode.topo.deployBySelfKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-topology",
+          "group": "2@3"
+        },
+        {
+          "command": "ticode.topo.removeSelfKey",
+          "when": "view == ticode-topo-manager && viewItem == topo-file-private-key"
         }
       ]
     }

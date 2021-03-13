@@ -284,11 +284,30 @@ export async function activate(context: vscode.ExtensionContext) {
       const machineName = treeItem.label
       TopoManagerCommand.vagrantSSH(localFoder, folderName, machineName)
     }),
-    registerCommand('ticode.topo.deploy', (treeItem) => {
+    registerCommand('ticode.topo.deployByPassword', (treeItem) => {
       // treeItem.contextValue = 'topo-file-topology'
       const localFoder = topoProvider.localFolder
       const folderName = treeItem.extra
-      TopoManagerCommand.deploy(localFoder, folderName)
+      TopoManagerCommand.deploy(localFoder, folderName, 'password')
+    }),
+    registerCommand('ticode.topo.deployByVagrantKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-topology'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.deploy(localFoder, folderName, 'vagrant_private_key')
+    }),
+    registerCommand('ticode.topo.deployBySelfKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-topology'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.deploy(localFoder, folderName, 'self_private_key')
+    }),
+    // context menu
+    registerCommand('ticode.topo.removeSelfKey', (treeItem) => {
+      // treeItem.contextValue = 'topo-file-private-key'
+      const localFoder = topoProvider.localFolder
+      const folderName = treeItem.extra
+      TopoManagerCommand.removeSelfKey(localFoder, folderName)
     }),
   ]
 
