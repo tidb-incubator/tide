@@ -138,7 +138,11 @@ Start the playground by clicking the menu item "Start playground by config":
   <img src="./start-configured-playground.jpg" style="zoom:50%">
 </div>
 
-## 5. Use clusters
+## 5. Use VM & Topo manager
+
+// TODO
+
+## 6. Use clusters
 
 Assume you have deployed some clusters by `tiup cluster` command manually. (We will support it later.) You can manage the clusters in this extension.
 
@@ -176,7 +180,7 @@ Assume you have deployed some clusters by `tiup cluster` command manually. (We w
     <img src="./cluster-instance-config.jpg" style="zoom:50%">
   </div>
 
-## 6. Use scaffold
+## 7. Use scaffold
 
 (currently we only support add new app to dashboard, we will add more later.)
 
