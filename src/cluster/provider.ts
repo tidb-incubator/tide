@@ -31,16 +31,6 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
   async getChildren(element?: Item): Promise<Item[]> {
     const items: Item[] = []
     if (element === undefined) {
-      const item = new Item(
-        'clusters',
-        vscode.TreeItemCollapsibleState.Expanded
-      )
-      item.contextValue = 'clusters'
-      items.push(item)
-      return Promise.resolve(items)
-    }
-
-    if (element.contextValue === 'clusters') {
       const clusters = await ClusterCommand.listClusters()
       clusters.forEach((cluster) => {
         const item = new Item(
@@ -52,6 +42,7 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
         item.contextValue = 'cluster-name'
         items.push(item)
       })
+      return Promise.resolve(items)
     }
     if (element.contextValue === 'cluster-name') {
       const cluster = element.extra as Cluster
