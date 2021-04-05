@@ -118,8 +118,6 @@ export async function activate(context: vscode.ExtensionContext) {
     // navigation action
     registerCommand('ticode.cluster.refresh', () => clusterProvider.refresh()),
     // context menu
-    registerCommand('ticode.cluster.list', listClusters),
-    // context menu
     registerCommand('ticode.cluster.display', (treeItem) =>
       displayClusters(treeItem.label)
     ),
@@ -384,12 +382,6 @@ async function stopPlayground() {
 }
 
 // TiUP Cluster
-async function listClusters() {
-  const uri = vscode.Uri.parse('ticode:list')
-  const doc = await vscode.workspace.openTextDocument(uri) // calls back into the provider
-  await vscode.window.showTextDocument(doc, { preview: false })
-}
-
 async function displayClusters(clusterName?: string) {
   if (clusterName === undefined) {
     vscode.window.showErrorMessage('cluster name is unknown')

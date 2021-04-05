@@ -83,10 +83,6 @@
         }
       },
       {
-        "command": "ticode.cluster.list",
-        "title": "List clusters"
-      },
-      {
         "command": "ticode.cluster.display",
         "title": "Display cluster"
       },
@@ -204,7 +200,7 @@
       },
       {
         "command": "ticode.topo.diffModification",
-        "title": "Diff Modificatioin"
+        "title": "Diff Modification"
       },
       {
         "command": "ticode.topo.vagrantUp",
@@ -272,6 +268,12 @@
         }
       ]
     },
+    "viewsWelcome": [
+      {
+        "view": "ticode-tiup-cluster",
+        "contents": "No cluster deployed, use \"VM & Topo Manager\" to deploy a cluster"
+      }
+    ],
     "menus": {
       "explorer/context": [
         {
@@ -331,10 +333,6 @@
           "command": "ticode.playground.debugCluster",
           "when": "view == ticode-tiup-playground && viewItem == playground-cluster",
           "group": "0@1"
-        },
-        {
-          "command": "ticode.cluster.list",
-          "when": "view == ticode-tiup-cluster && viewItem == clusters"
         },
         {
           "command": "ticode.cluster.display",
