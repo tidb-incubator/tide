@@ -37,7 +37,7 @@ export class TopoManagerCommand {
       `${fileName} changes`
     )
     vscode.window.showWarningMessage(
-      'Notice the left side is the default template file, you should only modify the right side.'
+      'Notice you should only edit the right side, the left side is the template file'
     )
   }
 
@@ -111,7 +111,7 @@ export class TopoManagerCommand {
     }
     const fullFolderPath = path.join(localFolder, folderName)
     const cmd = `cd "${fullFolderPath}" && vagrant ssh ${machineName} && exit`
-    runNewTerminal('vagrant ssh', cmd)
+    runNewTerminal(`vagrant ssh ${machineName}`, cmd)
   }
 
   static async addTopo(localFolder: string) {

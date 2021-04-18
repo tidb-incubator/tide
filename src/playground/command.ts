@@ -248,6 +248,11 @@ export class PlaygroundCommand {
     }
   }
 
+  static async connectMySQL(tiup: TiUP) {
+    const cmd = `mysql --host 127.0.0.1 --port 4000 -u root -p`
+    tiup.invokeAnyInNewTerminal(cmd, 'connect tidb')
+  }
+
   static async stopPlayground() {
     // use "ps ax" instead of "ps aux" make the PID first column
     let cr = await shell.exec('ps ax | grep tiup-playground | grep -v grep')

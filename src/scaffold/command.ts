@@ -76,7 +76,8 @@ async function handleBackend(appName: string, dashboardFolder: string) {
     __dirname,
     '..',
     '..',
-    'scaffold-template',
+    'template',
+    'scaffold',
     'dashboard',
     'be',
     'api'
@@ -107,8 +108,8 @@ async function handleBackend(appName: string, dashboardFolder: string) {
   )
   replace.sync({
     files: apiIndexFile,
-    from: `// "github.com/pingcap-incubator/tidb-dashboard/pkg/apiserver/__APP_NAME__"`,
-    to: `"github.com/pingcap-incubator/tidb-dashboard/pkg/apiserver/${appName}"\n// "github.com/pingcap-incubator/tidb-dashboard/pkg/apiserver/__APP_NAME__"`,
+    from: `// "github.com/pingcap/tidb-dashboard/pkg/apiserver/__APP_NAME__"`,
+    to: `"github.com/pingcap/tidb-dashboard/pkg/apiserver/${appName}"\n// "github.com/pingcap/tidb-dashboard/pkg/apiserver/__APP_NAME__"`,
   })
   replace.sync({
     files: apiIndexFile,
@@ -118,7 +119,7 @@ async function handleBackend(appName: string, dashboardFolder: string) {
   replace.sync({
     files: apiIndexFile,
     from: `// __APP_NAME__.RegisterRouter,`,
-    to: `${appName}.RegisterRouter,// __APP_NAME__.RegisterRouter,`,
+    to: `${appName}.RegisterRouter,\n// __APP_NAME__.RegisterRouter,`,
   })
 }
 
@@ -143,7 +144,8 @@ async function handleFe(
     __dirname,
     '..',
     '..',
-    'scaffold-template',
+    'template',
+    'scaffold',
     'dashboard',
     'fe',
     'app'

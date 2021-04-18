@@ -8,9 +8,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
   public playgroundConfigPath: string = ''
   public playgroundDefaultConfigPath: string = ''
 
-  constructor(
-    private context: vscode.ExtensionContext
-  ) {
+  constructor(private context: vscode.ExtensionContext) {
     // initial config files
     this.playgroundConfigFolder = path.join(
       context.globalStoragePath,
@@ -77,9 +75,10 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       __dirname,
       '..',
       '..',
-      'config-template',
+      'template',
+      'config',
       'playground',
-      'playground.toml',
+      'playground.toml'
     )
     fs.copyFileSync(templateFile, this.playgroundConfigPath)
   }
@@ -89,9 +88,10 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
       __dirname,
       '..',
       '..',
-      'config-template',
+      'template',
+      'config',
       'playground',
-      'default.toml',
+      'default.toml'
     )
     fs.copyFileSync(templateFile, this.playgroundDefaultConfigPath)
   }
@@ -155,7 +155,10 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
 
       // instances
       if (running) {
-        let clusterItem = new Item('cluster', vscode.TreeItemCollapsibleState.Expanded)
+        let clusterItem = new Item(
+          'cluster',
+          vscode.TreeItemCollapsibleState.Expanded
+        )
         clusterItem.contextValue = 'playground-cluster'
         items.push(clusterItem)
       }
@@ -170,7 +173,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
             `${inst} (${instances[inst].length})`,
             vscode.TreeItemCollapsibleState.None
           )
-          item.contextValue = 'playground-instance'
+          item.contextValue = `playground-instance-${inst}`
           item.extra = { comp: inst, pids: instances[inst] }
           items.push(item)
         })

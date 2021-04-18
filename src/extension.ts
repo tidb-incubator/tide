@@ -111,6 +111,9 @@ export async function activate(context: vscode.ExtensionContext) {
         treeItem.extra.pids
       )
     }),
+    registerCommand('ticode.playground.connectMySQL', (treeItem) => {
+      PlaygroundCommand.connectMySQL(tiup)
+    }),
 
     /**
      * TiUP Cluster
@@ -194,6 +197,9 @@ export async function activate(context: vscode.ExtensionContext) {
     }),
     registerCommand('ticode.cluster.restartInstance', (treeItem) => {
       ClusterCommand.restartInstance(treeItem.extra as InstanceAndCluster, tiup)
+    }),
+    registerCommand('ticode.cluster.connectMySQL', (treeItem) => {
+      ClusterCommand.connectMySQL(treeItem.extra as ClusterComponent, tiup)
     }),
     // click
     registerCommand('ticode.cluster.viewTopo', (cluster) => {

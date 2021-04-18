@@ -83,11 +83,11 @@ export class ClusterProvider implements vscode.TreeDataProvider<Item> {
           role: comp,
           instances: comps[comp],
         } as ClusterComponent
-        item.contextValue = 'cluster-component'
+        item.contextValue = `cluster-component-${comp}`
         items.push(item)
       })
     }
-    if (element.contextValue === 'cluster-component') {
+    if (element.contextValue?.startsWith('cluster-component')) {
       const cluster = element.extra.cluster as Cluster
       const instances = element.extra.instances as ClusterInstance[]
 

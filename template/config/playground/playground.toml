@@ -1,5 +1,5 @@
 ## tidb version
-# "tidb.version" = "v4.0.9" # other values: nightly
+# "tidb.version" = "v4.0.12" # other values: nightly
 
 ## general
 # host = ""

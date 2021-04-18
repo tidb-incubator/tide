@@ -5,7 +5,6 @@ import { Platform, shell } from '../shell'
 import { TiUP } from '../tiup'
 import { handleError } from '../utils/window'
 
-
 // Name User Version Path PrivateKey
 export type Cluster = Record<
   'name' | 'user' | 'version' | 'path' | 'privateKey',
@@ -202,6 +201,9 @@ export class ClusterCommand {
         vscode.Uri.file(localFileFullPath),
         `${fileName} changes`
       )
+      vscode.window.showWarningMessage(
+        'Notice you should only edit the right side, the left side is the template file'
+      )
     } else {
       vscode.window.showErrorMessage('Error:' + cr?.stderr + cr?.stdout)
     }
@@ -260,6 +262,9 @@ export class ClusterCommand {
       vscode.Uri.file(bakFileFullPath),
       vscode.Uri.file(editFileFullPath),
       `${cluster.name} global config changes`
+    )
+    vscode.window.showWarningMessage(
+      'Notice you should only edit the right side, the left side is the template file'
     )
   }
 
@@ -370,47 +375,56 @@ export class ClusterCommand {
     const instanceName = instance.role
     // TODO: pd, tikv
     if (['tidb'].indexOf(instanceName) < 0) {
-      vscode.window.showErrorMessage(`debug ${instanceName} is not supported yet `);
+      vscode.window.showErrorMessage(
+        `debug ${instanceName} is not supported yet `
+      )
       return
     }
-    const wd = (vscode.workspace.workspaceFolders || []).find((folder) => folder.name === instanceName);
+    const wd = (vscode.workspace.workspaceFolders || []).find(
+      (folder) => folder.name === instanceName
+    )
     if (!wd) {
-      vscode.window.showErrorMessage(`${instanceName} is not included in workspace, please add it into workspace.`);
+      vscode.window.showErrorMessage(
+        `${instanceName} is not included in workspace, please add it into workspace.`
+      )
       return
     }
     switch (instanceName) {
-      case "tidb" :{
+      case 'tidb': {
         const cmd = `ssh -oStrictHostKeyChecking=no -i ${cluster.privateKey} -t ${cluster.user}@${instance.host} "cd ${instance.deployDir}; ./bin/dlv --headless --listen=:45678 --api-version 2 attach \\$(pidof tidb-server)"`
         const remote = vscode.window.createTerminal(`debug ${instanceName}`)
         remote.sendText(cmd)
         remote.show()
         const debugConfiguration = {
-          type: "go",
-          request: "attach",
-          name: "Attach Remote TiDB",
-          mode: "remote",
+          type: 'go',
+          request: 'attach',
+          name: 'Attach Remote TiDB',
+          mode: 'remote',
           remotePath: wd.uri.fsPath,
-          port: "45678",
+          port: '45678',
           host: instance.host,
-        };
-        setTimeout(() => vscode.debug.startDebugging(wd, debugConfiguration), 3 * 1000)
+        }
+        setTimeout(
+          () => vscode.debug.startDebugging(wd, debugConfiguration),
+          3 * 1000
+        )
         break
       }
-      case "pd" :{
+      case 'pd': {
         const debugConfiguration = {
-          type: "go",
-          request: "attach",
-          name: "Attach Remote PD",
-          mode: "remote",
+          type: 'go',
+          request: 'attach',
+          name: 'Attach Remote PD',
+          mode: 'remote',
           remotePath: `${instance.deployDir}/bin/pd-server`,
-          port: "45678",
+          port: '45678',
           host: instance.host,
-        };
+        }
         vscode.debug.startDebugging(wd, debugConfiguration)
         break
       }
       // TODO
-      case "tikv" :{
+      case 'tikv': {
         // unreachable
       }
     }
@@ -434,7 +448,7 @@ export class ClusterCommand {
     let compRole = 'unknown'
     let patchTarget = ''
     let deployDir = ''
-    if (treeItemContextValue === 'cluster-component') {
+    if (treeItemContextValue.startsWith('cluster-component')) {
       const { cluster, role, instances } = treeItemExtra as ClusterComponent
       compRole = role
       patchTarget = `-R ${role}`
@@ -478,12 +492,16 @@ export class ClusterCommand {
     // TODO: use tasks provider to replace
     if (compRole === 'tidb') {
       // compile
-      cmds.push(`cd ${targetFolder} && GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`)
+      cmds.push(
+        `cd ${targetFolder} && GOOS=linux GOARCH=amd64 go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`
+      )
       // hack to weave in dlv
       // hard-code dlv path...
       cmds.push(`cd ${targetFolder}/bin && mv ~/dlv ./`)
       // replace
-      cmds.push(`cd ${targetFolder}/bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`)
+      cmds.push(
+        `cd ${targetFolder}/bin && tar cvzf ${tar} * && tiup cluster patch ${treeItemExtra.cluster.name} ${tar} ${patchTarget} && exit`
+      )
     }
     // TODO: tikv, pd
 
@@ -514,7 +532,7 @@ export class ClusterCommand {
     //
     let compRole = 'unknown'
     let patchTarget = ''
-    if (treeItemContextValue === 'cluster-component') {
+    if (treeItemContextValue.startsWith('cluster-component')) {
       const { cluster, role, instances } = treeItemExtra as ClusterComponent
       compRole = role
       patchTarget = `-R ${role}`
@@ -550,6 +568,19 @@ export class ClusterCommand {
     const { cluster, instance } = treeItemExtra
     const cmd = `cluster restart ${cluster.name} -N ${instance.id}`
     await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async connectMySQL(treeItemExtra: ClusterComponent, tiup: TiUP) {
+    const { instances } = treeItemExtra
+    const availableInst = instances.find((el) => el.status.startsWith('Up'))
+    if (availableInst === undefined) {
+      vscode.window.showWarningMessage('Has no available TiDB instance')
+      return
+    }
+    const { id } = availableInst
+    const [host, port] = id.split(':')
+    const cmd = `mysql --host ${host} --port ${port} -u root -p`
+    await tiup.invokeAnyInNewTerminal(cmd, `mysql ${id}`)
   }
 
   static async viewClusterTopo(cluster: Cluster, tempFolder: string) {
