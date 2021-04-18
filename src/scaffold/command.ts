@@ -76,7 +76,8 @@ async function handleBackend(appName: string, dashboardFolder: string) {
     __dirname,
     '..',
     '..',
-    'scaffold-template',
+    'template',
+    'scaffold',
     'dashboard',
     'be',
     'api'
@@ -143,7 +144,8 @@ async function handleFe(
     __dirname,
     '..',
     '..',
-    'scaffold-template',
+    'template',
+    'scaffold',
     'dashboard',
     'fe',
     'app'
