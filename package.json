@@ -71,6 +71,10 @@
         "title": "Debug"
       },
       {
+        "command": "ticode.playground.connectMySQL",
+        "title": "MySQL"
+      },
+      {
         "command": "ticode.playground.restart",
         "title": "Restart"
       },
@@ -320,18 +324,23 @@
         },
         {
           "command": "ticode.playground.viewInstanceLog",
-          "when": "view == ticode-tiup-playground && viewItem == playground-instance",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance/",
           "group": "0@1"
         },
         {
           "command": "ticode.playground.followInstanceLog",
-          "when": "view == ticode-tiup-playground && viewItem == playground-instance",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance/",
           "group": "0@2"
         },
         {
           "command": "ticode.playground.debugInstance",
-          "when": "view == ticode-tiup-playground && viewItem == playground-instance",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance/",
           "group": "0@3"
+        },
+        {
+          "command": "ticode.playground.connectMySQL",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
+          "group": "1@1"
         },
         {
           "command": "ticode.playground.debugCluster",

@@ -111,6 +111,9 @@ export async function activate(context: vscode.ExtensionContext) {
         treeItem.extra.pids
       )
     }),
+    registerCommand('ticode.playground.connectMySQL', (treeItem) => {
+      PlaygroundCommand.connectMySQL(tiup)
+    }),
 
     /**
      * TiUP Cluster

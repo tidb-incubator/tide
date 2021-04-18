@@ -173,7 +173,7 @@ export class PlaygroundProvider implements vscode.TreeDataProvider<Item> {
             `${inst} (${instances[inst].length})`,
             vscode.TreeItemCollapsibleState.None
           )
-          item.contextValue = 'playground-instance'
+          item.contextValue = `playground-instance-${inst}`
           item.extra = { comp: inst, pids: instances[inst] }
           items.push(item)
         })
