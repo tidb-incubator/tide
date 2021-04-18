@@ -448,7 +448,7 @@ export class ClusterCommand {
     let compRole = 'unknown'
     let patchTarget = ''
     let deployDir = ''
-    if (treeItemContextValue === 'cluster-component') {
+    if (treeItemContextValue.startsWith('cluster-component')) {
       const { cluster, role, instances } = treeItemExtra as ClusterComponent
       compRole = role
       patchTarget = `-R ${role}`
@@ -532,7 +532,7 @@ export class ClusterCommand {
     //
     let compRole = 'unknown'
     let patchTarget = ''
-    if (treeItemContextValue === 'cluster-component') {
+    if (treeItemContextValue.startsWith('cluster-component')) {
       const { cluster, role, instances } = treeItemExtra as ClusterComponent
       compRole = role
       patchTarget = `-R ${role}`
@@ -568,6 +568,19 @@ export class ClusterCommand {
     const { cluster, instance } = treeItemExtra
     const cmd = `cluster restart ${cluster.name} -N ${instance.id}`
     await tiup.invokeInSharedTerminal(cmd)
+  }
+
+  static async connectMySQL(treeItemExtra: ClusterComponent, tiup: TiUP) {
+    const { instances } = treeItemExtra
+    const availableInst = instances.find((el) => el.status.startsWith('Up'))
+    if (availableInst === undefined) {
+      vscode.window.showWarningMessage('Has no available TiDB instance')
+      return
+    }
+    const { id } = availableInst
+    const [host, port] = id.split(':')
+    const cmd = `mysql --host ${host} --port ${port} -u root -p`
+    await tiup.invokeAnyInNewTerminal(cmd, `mysql ${id}`)
   }
 
   static async viewClusterTopo(cluster: Cluster, tempFolder: string) {

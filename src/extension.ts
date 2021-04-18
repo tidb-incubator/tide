@@ -195,6 +195,9 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.cluster.restartInstance', (treeItem) => {
       ClusterCommand.restartInstance(treeItem.extra as InstanceAndCluster, tiup)
     }),
+    registerCommand('ticode.cluster.connectMySQL', (treeItem) => {
+      ClusterCommand.connectMySQL(treeItem.extra as ClusterComponent, tiup)
+    }),
     // click
     registerCommand('ticode.cluster.viewTopo', (cluster) => {
       ClusterCommand.viewClusterTopo(cluster, tempFolder)

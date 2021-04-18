@@ -147,6 +147,10 @@
         "title": "Restart component"
       },
       {
+        "command": "ticode.cluster.connectMySQL",
+        "title": "MySQL"
+      },
+      {
         "command": "ticode.cluster.restartInstance",
         "title": "Restart instance"
       },
@@ -371,18 +375,23 @@
         },
         {
           "command": "ticode.cluster.patchByCurrent",
-          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component$|^cluster-instance$/",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component|^cluster-instance$/",
           "group": "1@1"
         },
         {
           "command": "ticode.cluster.patchByOther",
-          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component$|^cluster-instance$/",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component|^cluster-instance$/",
           "group": "1@2"
         },
         {
           "command": "ticode.cluster.restartComponent",
-          "when": "view == ticode-tiup-cluster && viewItem == cluster-component",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component/",
           "group": "2@1"
+        },
+        {
+          "command": "ticode.cluster.connectMySQL",
+          "when": "view == ticode-tiup-cluster && viewItem =~ /^cluster-component-tidb/",
+          "group": "3@1"
         },
         {
           "command": "ticode.cluster.ssh",
