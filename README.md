@@ -14,10 +14,10 @@ Still in the loop of coding, compiling, copying binary to servers, restarting ev
 
 1. Install the extension
 
-   - Install Extension on [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode)
-   - Or run command `code --install-extension dragonly.ticode`
+   - Install from [Visual Studio Code MarketPlace](https://marketplace.visualstudio.com/items?itemName=dragonly.ticode), or
+   - Run command `code --install-extension dragonly.ticode`
 
-1. Navigate to the TiDE panel in VSCode, follow the [`Step by Step Guide`](./doc/guide.md)
+1. Navigate to the TiDE panel in VS Code, follow the [`Step-by-Step Guide`](./doc/guide.md)
 
 ## Features
 
@@ -27,13 +27,13 @@ Do all the things just in your favorite Visual Studio Code:
 - Debug TiDB Cluster on Kubernetes
 - And mooooooooore!
 
-> Note: currently we only test it in macOS, and we plan to support Ubuntu as well.
+> Note: Currently we only test it in macOS, and we plan to support Ubuntu as well.
 
 ## Community
 
 ### Slack
 
-Join our [slack channel](https://slack.tidb.io/invite?team=tidb-community&channel=tide&ref=website) 🥳
+Join our [Slack channel](https://slack.tidb.io/invite?team=tidb-community&channel=tide&ref=website) 🥳
 
 ## Demo
 
@@ -41,7 +41,7 @@ Join our [slack channel](https://slack.tidb.io/invite?team=tidb-community&channe
 
 Video: https://www.bilibili.com/video/BV1pK411u7S4/
 
-![image](https://user-images.githubusercontent.com/1284531/104793321-f7fe6c80-57dc-11eb-8b51-a25a6690d87a.png)
+![Playground](https://user-images.githubusercontent.com/1284531/104793321-f7fe6c80-57dc-11eb-8b51-a25a6690d87a.png)
 
 ### Debug
 
@@ -64,8 +64,8 @@ Video: https://www.bilibili.com/video/BV12A411H74T/
 - Playground
 
   - [x] Start a simple default playground cluster
-  - [x] Start a confiured playground cluster
-  - [x] Use current repo's binary
+  - [x] Start a configured playground cluster
+  - [x] Use the current repo's binary
   - [x] List playground cluster instances
   - [x] View logs of all instances
   - [x] Follow logs of all instances
@@ -81,22 +81,22 @@ Video: https://www.bilibili.com/video/BV12A411H74T/
 - Cluster
 
   - [x] List all clusters
-  - [x] Display a cluster detail inforamtion
+  - [x] Display a cluster detail information
   - [x] Start / Stop / Destroy a cluster
   - [x] Show a cluster topo (currently by graphviz)
   - [x] Open dashboard / grafana
   - Restart
     - [x] Restart a cluster
-    - [x] restart all instances of a component
-    - [x] restart a single instance
+    - [x] Restart all instances of a component
+    - [x] Restart a single instance
   - Config
     - [x] View a cluster configuration
     - [x] View a single instance configuration
     - [x] Edit and apply a cluster configuration
     - [x] Edit and apply a single instance configuration
-  - [x] view all logs of all instances
+  - [x] View all logs of all instances
   - Patch (replace binary)
-    - Patch by current repo
+    - Patch by the current repo
       - [x] Patch for all instance of a component
       - [x] Patch for a single instance
     - Patch by other binary
