@@ -4,6 +4,10 @@ All notable changes to the "ticode" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.3.3
+
+- Update guide
+
 ### 0.3.2
 
 - Support connect to database by MySQL client one-click - [#50](https://github.com/tidb-incubator/tide/pull/50)
