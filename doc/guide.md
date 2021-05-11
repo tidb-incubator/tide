@@ -145,7 +145,17 @@ Click **Start playground by config**:
 
 ## 5. Use VM & Topo manager
 
-// TODO
+When you don't have enough physical machines to deploy a real TiDB cluster, you can use vagrant to create some virtual machines and deploy the cluster to them.
+
+This feature supports manage virtual machines (create/destroy/reload) by vagrant, and deploy a cluster to virtual machines or physical machines.
+
+<div>
+  <img src="./vm-vagrant.png" style="zoom:50%">
+</div>
+
+<div>
+  <img src="./vm-deploy-cluster.png" style="zoom:50%">
+</div>
 
 ## 6. Use clusters
 
