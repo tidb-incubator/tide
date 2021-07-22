@@ -114,7 +114,18 @@ export async function activate(context: vscode.ExtensionContext) {
     registerCommand('ticode.playground.connectMySQL', (treeItem) => {
       PlaygroundCommand.connectMySQL(tiup)
     }),
-
+    registerCommand('ticode.playground.tpccPrepare', (treeItem) => {
+      PlaygroundCommand.tpccPrepare(tiup)
+    }),
+    registerCommand('ticode.playground.tpccRun', (treeItem) => {
+      PlaygroundCommand.tpccRun(tiup)
+    }),
+    registerCommand('ticode.playground.tpccCleanUp', (treeItem) => {
+      PlaygroundCommand.tpccCleanUp(tiup)
+    }),
+    registerCommand('ticode.playground.tpccCheck', (treeItem) => {
+      PlaygroundCommand.tpccCheck(tiup)
+    }),
     /**
      * TiUP Cluster
      */
@@ -349,7 +360,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
 
 function registerCommand(
   command: string,

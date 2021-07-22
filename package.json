@@ -79,6 +79,22 @@
         "title": "Restart"
       },
       {
+        "command": "ticode.playground.tpccPrepare",
+        "title": "TPCC-Prepare"
+      },
+      {
+        "command": "ticode.playground.tpccRun",
+        "title": "TPCC-Run"
+      },
+      {
+        "command": "ticode.playground.tpccCleanUp",
+        "title": "TPCC-CleanUp"
+      },
+      {
+        "command": "ticode.playground.tpccCheck",
+        "title": "TPCC-Check"
+      },
+      {
         "command": "ticode.cluster.refresh",
         "title": "TiCode: Refresh Cluters",
         "icon": {
@@ -341,6 +357,26 @@
           "command": "ticode.playground.connectMySQL",
           "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
           "group": "1@1"
+        },
+        {
+          "command": "ticode.playground.tpccPrepare",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
+          "group": "2@1"
+        },
+        {
+          "command": "ticode.playground.tpccRun",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
+          "group": "2@2"
+        },
+        {
+          "command": "ticode.playground.tpccCleanUp",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
+          "group": "2@3"
+        },
+        {
+          "command": "ticode.playground.tpccCheck",
+          "when": "view == ticode-tiup-playground && viewItem =~ /^playground-instance-tidb/",
+          "group": "2@4"
         },
         {
           "command": "ticode.playground.debugCluster",

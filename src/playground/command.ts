@@ -253,6 +253,26 @@ export class PlaygroundCommand {
     tiup.invokeAnyInNewTerminal(cmd, 'connect tidb')
   }
 
+  static async tpccPrepare(tiup: TiUP) {
+    const cmd = `tiup bench tpcc prepare --host 127.0.0.1 --port 4000 --user root`
+    tiup.invokeAnyInNewTerminal(cmd, 'TPCC Prepare')
+  }
+
+  static async tpccRun(tiup: TiUP) {
+    const cmd = `tiup bench tpcc run --host 127.0.0.1 --port 4000 --user root`
+    tiup.invokeAnyInNewTerminal(cmd, 'TPCC Run')
+  }
+
+  static async tpccCleanUp(tiup: TiUP) {
+    const cmd = `tiup bench tpcc cleanup --host 127.0.0.1 --port 4000 --user root`
+    tiup.invokeAnyInNewTerminal(cmd, 'TPCC CleanUp')
+  }
+
+  static async tpccCheck(tiup: TiUP) {
+    const cmd = `tiup bench tpcc check --host 127.0.0.1 --port 4000 --user root`
+    tiup.invokeAnyInNewTerminal(cmd, 'TPCC Check')
+  }
+
   static async stopPlayground() {
     // use "ps ax" instead of "ps aux" make the PID first column
     let cr = await shell.exec('ps ax | grep tiup-playground | grep -v grep')
