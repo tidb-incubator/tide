@@ -7,7 +7,7 @@
   },
   "description": "make developing TiDB a breeze",
   "icon": "media/logo.png",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "engines": {
     "vscode": "^1.52.0"
   },

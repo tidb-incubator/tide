@@ -4,6 +4,10 @@ All notable changes to the "ticode" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+### 0.3.4
+
+- Add TPCC commands for playground - [#56](https://github.com/tidb-incubator/tide/pull/56), thanks [@shonge](https://github.com/shonge)
+
 ### 0.3.3
 
 - Update guide
