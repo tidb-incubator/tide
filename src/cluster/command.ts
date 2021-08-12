@@ -579,7 +579,7 @@ export class ClusterCommand {
     }
     const { id } = availableInst
     const [host, port] = id.split(':')
-    const cmd = `mysql --host ${host} --port ${port} -u root -p`
+    const cmd = `mysql --host ${host} --port ${port} -u root -p --comments`
     await tiup.invokeAnyInNewTerminal(cmd, `mysql ${id}`)
   }
 
