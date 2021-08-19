@@ -4,7 +4,7 @@ All notable changes to the "ticode" extension will be documented in this file.
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-### 0.3.4
+### 0.3.5
 
 - Use `--comments` when calling MySQL Client to avoid stripping of TiDB comments - [#58](https://github.com/tidb-incubator/tide/pull/58), thanks [@dveeden](https://github.com/dveeden)
 
