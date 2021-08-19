@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### 0.3.4
 
+- Use `--comments` when calling MySQL Client to avoid stripping of TiDB comments - [#58](https://github.com/tidb-incubator/tide/pull/58), thanks [@dveeden](https://github.com/dveeden)
+
+### 0.3.4
+
 - Add TPCC commands for playground - [#56](https://github.com/tidb-incubator/tide/pull/56), thanks [@shonge](https://github.com/shonge)
 
 ### 0.3.3
