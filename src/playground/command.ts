@@ -249,7 +249,7 @@ export class PlaygroundCommand {
   }
 
   static async connectMySQL(tiup: TiUP) {
-    const cmd = `mysql --host 127.0.0.1 --port 4000 -u root -p`
+    const cmd = `mysql --host 127.0.0.1 --port 4000 -u root -p --comments`
     tiup.invokeAnyInNewTerminal(cmd, 'connect tidb')
   }
 
