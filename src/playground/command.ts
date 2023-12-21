@@ -84,7 +84,7 @@ export class PlaygroundCommand {
             if (folder.name === comp) {
               if (comp === 'tidb') {
                 preCmds.push(
-                  `cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/tidb-server tidb-server/main.go`
+                  `cd ${folder.uri.fsPath} && make && go build -gcflags='-N -l' -o ./bin/tidb-server ./cmd/tidb-server/main.go`
                 )
                 args.push(`--${k} ${folder.uri.fsPath}/bin/tidb-server`)
               } else if (comp === 'tikv') {
